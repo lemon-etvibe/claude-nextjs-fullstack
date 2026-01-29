@@ -31,14 +31,18 @@ Namespace:   /enf:command (예: /enf:commit, /enf:code-review)
 ## Quick Start
 
 ```bash
-# 1. Clone
+# 1. Clone (최초 1회)
 git clone https://github.com/lemon-etvibe/etvibe-nextjs-fullstack.git ~/plugins/enf
 
-# 2. Setup
-cd ~/plugins/enf && chmod +x scripts/setup.sh && ./scripts/setup.sh
+# 2. Setup (플러그인 디렉토리에서 실행)
+cd ~/plugins/enf
+chmod +x scripts/setup.sh
+./scripts/setup.sh              # 인터랙티브 모드 (Tab 자동완성 지원)
+# 또는
+./scripts/setup.sh ~/projects/my-app  # 직접 경로 지정
 
 # 3. Use
-cd ~/your-project && claude
+cd ~/projects/my-app && claude
 ```
 
 ```bash
@@ -53,7 +57,9 @@ cd ~/your-project && claude
 ```powershell
 git clone https://github.com/lemon-etvibe/etvibe-nextjs-fullstack.git C:\plugins\enf
 cd C:\plugins\enf
-.\scripts\setup.ps1
+.\scripts\setup.ps1 C:\projects\my-app   # 직접 경로 지정 권장 (Tab 완성 지원)
+# 또는
+.\scripts\setup.ps1                      # 인터랙티브 모드 (Tab 완성 미지원)
 ```
 </details>
 

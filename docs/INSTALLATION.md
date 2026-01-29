@@ -6,34 +6,51 @@ etvibe-nextjs-fullstack (enf) 플러그인 상세 설치 가이드입니다.
 
 ## 빠른 설치 (셋업 스크립트)
 
-### Windows (PowerShell)
-
-```powershell
-# 1. 플러그인 클론
-git clone https://github.com/lemon-etvibe/etvibe-nextjs-fullstack.git C:\plugins\enf
-
-# 2. 셋업 스크립트 실행
-cd C:\plugins\enf
-.\scripts\setup.ps1
-
-# 3. 프로젝트에서 사용
-cd C:\projects\your-project
-claude
-```
+셋업 스크립트는 **플러그인 디렉토리에서 실행**하며, 설치할 프로젝트 경로를 입력받습니다.
 
 ### macOS/Linux
 
 ```bash
-# 1. 플러그인 클론
+# 1. 플러그인 클론 (최초 1회)
 git clone https://github.com/lemon-etvibe/etvibe-nextjs-fullstack.git ~/plugins/enf
 
-# 2. 셋업 스크립트 실행
+# 2. 셋업 스크립트 실행 (플러그인 디렉토리에서)
 cd ~/plugins/enf
 chmod +x scripts/setup.sh
+
+# 방법 A: 인터랙티브 모드 (Tab 자동완성 지원)
 ./scripts/setup.sh
+# > 설치할 프로젝트 경로를 입력하세요 (Tab으로 자동완성):
+# > ~/projects/my-app
+
+# 방법 B: 직접 경로 지정
+./scripts/setup.sh ~/projects/my-app
 
 # 3. 프로젝트에서 사용
-cd ~/projects/your-project
+cd ~/projects/my-app
+claude
+```
+
+### Windows (PowerShell)
+
+> **Note**: PowerShell의 `Read-Host`는 Tab 자동완성을 지원하지 않습니다.
+> 직접 경로 지정 방식을 권장합니다 (명령줄에서 Tab 완성 가능).
+
+```powershell
+# 1. 플러그인 클론 (최초 1회)
+git clone https://github.com/lemon-etvibe/etvibe-nextjs-fullstack.git C:\plugins\enf
+
+# 2. 셋업 스크립트 실행 (플러그인 디렉토리에서)
+cd C:\plugins\enf
+
+# 권장: 직접 경로 지정 (Tab 완성 지원)
+.\scripts\setup.ps1 C:\projects\my-app
+
+# 또는: 인터랙티브 모드 (Tab 완성 미지원)
+.\scripts\setup.ps1
+
+# 3. 프로젝트에서 사용
+cd C:\projects\my-app
 claude
 ```
 
@@ -219,6 +236,40 @@ claude plugin install enf@enf-local --scope local
 
 # macOS/Linux
 ./scripts/setup.sh
+```
+
+---
+
+## 플러그인 삭제
+
+enf 플러그인은 `--scope local`로 프로젝트별 설치되므로, **각 프로젝트에서 개별적으로 삭제**해야 합니다.
+
+### 특정 프로젝트에서 삭제
+
+```bash
+# 해당 프로젝트로 이동
+cd ~/projects/my-app  # 또는 C:\projects\my-app
+
+# 플러그인 삭제
+claude plugin uninstall enf@enf-local
+```
+
+### 로컬 마켓플레이스 등록 해제
+
+플러그인 소스 자체를 제거하려면:
+
+```bash
+claude plugin marketplace remove enf-local
+```
+
+### 플러그인 파일 삭제
+
+```bash
+# macOS/Linux
+rm -rf ~/plugins/enf
+
+# Windows
+Remove-Item -Recurse -Force C:\plugins\enf
 ```
 
 ---
