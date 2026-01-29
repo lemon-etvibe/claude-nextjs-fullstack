@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@anthropic-ai/context7-mcp@latest"],
+      "env": {}
+    },
+    "next-devtools": {
+      "command": "npx",
+      "args": ["-y", "@anthropic-ai/next-devtools-mcp@latest"],
+      "env": {}
+    },
+    "prisma-local": {
+      "command": "npx",
+      "args": ["prisma", "mcp"],
+      "env": {}
+    }
+  }
+}

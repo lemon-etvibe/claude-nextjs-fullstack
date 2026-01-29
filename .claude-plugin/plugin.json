@@ -1,0 +1,87 @@
+{
+  "name": "enf",
+  "description": "Next.js 16 + Prisma 7 + Better Auth 풀스택 개발을 위한 Claude Code 플러그인 (etvibe-nextjs-fullstack)",
+  "version": "1.0.0",
+  "author": {
+    "name": "lemon-etvibe"
+  },
+  "repository": "https://github.com/lemon-etvibe/etvibe-nextjs-fullstack",
+  "license": "MIT",
+  "keywords": [
+    "nextjs",
+    "prisma",
+    "better-auth",
+    "fullstack",
+    "typescript",
+    "tailwindcss",
+    "shadcn-ui"
+  ],
+  "peerDependencies": {
+    "plugins": {
+      "required": [
+        {
+          "name": "playwright",
+          "marketplace": "claude-plugin-directory",
+          "description": "E2E 테스트"
+        },
+        {
+          "name": "pr-review-toolkit",
+          "marketplace": "claude-plugin-directory",
+          "description": "PR 리뷰 (/review-pr)"
+        },
+        {
+          "name": "commit-commands",
+          "marketplace": "claude-plugin-directory",
+          "description": "커밋 생성 (/commit)"
+        },
+        {
+          "name": "feature-dev",
+          "marketplace": "claude-plugin-directory",
+          "description": "기능 개발 지원"
+        },
+        {
+          "name": "security-guidance",
+          "marketplace": "claude-plugin-directory",
+          "description": "보안 검사"
+        },
+        {
+          "name": "react-best-practices",
+          "marketplace": "agent-skills",
+          "description": "React 최적화 (자동 적용)"
+        },
+        {
+          "name": "javascript-typescript",
+          "marketplace": "agents",
+          "description": "JS/TS 전문가"
+        },
+        {
+          "name": "database-design",
+          "marketplace": "agents",
+          "description": "스키마 설계"
+        }
+      ],
+      "optional": [
+        {
+          "name": "frontend-design",
+          "marketplace": "claude-plugin-directory",
+          "description": "고품질 UI 디자인"
+        },
+        {
+          "name": "web-design-guidelines",
+          "marketplace": "agent-skills",
+          "description": "접근성/UX 감사 (100+ 규칙)"
+        }
+      ]
+    },
+    "marketplaces": [
+      {
+        "name": "agent-skills",
+        "url": "https://github.com/vercel-labs/agent-skills"
+      },
+      {
+        "name": "agents",
+        "url": "https://github.com/wshobson/agents"
+      }
+    ]
+  }
+}
