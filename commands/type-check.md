@@ -1,5 +1,4 @@
 ---
-name: type-check
 description: TypeScript 타입 검증 - strict 모드 준수, 타입 안전성 점검
 allowed-tools:
   - Read

@@ -1,5 +1,4 @@
 ---
-name: perf-audit
 description: 성능 분석 - 번들 크기, Core Web Vitals, 렌더링 전략 점검
 allowed-tools:
   - Read

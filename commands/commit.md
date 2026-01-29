@@ -1,5 +1,4 @@
 ---
-name: commit
 description: Git 커밋 생성 - Conventional Commits 형식
 allowed-tools:
   - Bash

@@ -1,5 +1,4 @@
 ---
-name: code-review
 description: 코드 품질 검사 - TypeScript, 성능, 보안, 베스트 프랙티스 점검
 allowed-tools:
   - Read

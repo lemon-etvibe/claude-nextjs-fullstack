@@ -1,5 +1,4 @@
 ---
-name: task
 description: 업무 정의 및 Git 브랜치 생성 - 작업 시작 워크플로우
 allowed-tools:
   - Bash
@@ -51,15 +50,23 @@ docs/api-readme
 1. 현재 브랜치 상태 확인
 2. 작업 유형 분류
 3. 브랜치명 생성
-4. main 브랜치에서 새 브랜치 생성
+4. dev 브랜치에서 새 브랜치 생성
 
 ```bash
 # 현재 상태 확인
 git status
 
-# main 최신화
-git checkout main
-git pull origin main
+# dev 브랜치 확인 (없으면 main에서 생성)
+if ! git show-ref --verify --quiet refs/heads/dev; then
+  git checkout main
+  git pull origin main
+  git checkout -b dev
+  git push -u origin dev
+fi
+
+# dev 최신화
+git checkout dev
+git pull origin dev
 
 # 새 브랜치 생성
 git checkout -b feat/customer-login
@@ -97,12 +104,12 @@ git checkout -b feat/customer-login
 ### 브랜치 정보
 - **유형**: Feature
 - **브랜치명**: `feat/customer-login`
-- **기반 브랜치**: main
+- **기반 브랜치**: dev
 
 ### 실행된 명령어
 ```bash
-git checkout main
-git pull origin main
+git checkout dev
+git pull origin dev
 git checkout -b feat/customer-login
 ```
 
@@ -116,7 +123,7 @@ git checkout -b feat/customer-login
 1. 기능 구현
 2. `/commit` - 변경사항 커밋
 3. `/push` - 원격 푸시
-4. `/pr` - PR 생성
+4. `/pr` - PR 생성 (→ dev 브랜치로 머지)
 ```
 
 ## 연계 명령어

@@ -1,5 +1,4 @@
 ---
-name: push
 description: Git 원격 저장소 푸시 - 안전한 푸시 워크플로우
 allowed-tools:
   - Bash
@@ -23,13 +22,25 @@ allowed-tools:
 
 ```bash
 # 현재 브랜치 확인
-git branch --show-current
+BRANCH=$(git branch --show-current)
+
+# 보호 브랜치 체크
+if [[ "$BRANCH" == "main" || "$BRANCH" == "dev" ]]; then
+  echo "⚠️  경고: '$BRANCH'는 보호된 브랜치입니다."
+  echo "직접 푸시가 금지되어 있습니다. PR을 통해 변경하세요."
+  echo ""
+  echo "권장 워크플로우:"
+  echo "  1. git checkout -b feat/your-feature"
+  echo "  2. [변경 작업]"
+  echo "  3. /commit → /push → /pr"
+  exit 1
+fi
 
 # 커밋되지 않은 변경사항 확인
 git status
 
 # 원격과의 차이 확인
-git log origin/$(git branch --show-current)..HEAD --oneline
+git log origin/$BRANCH..HEAD --oneline 2>/dev/null || echo "(새 브랜치)"
 ```
 
 ### 2. 푸시 실행
@@ -59,7 +70,15 @@ git log origin/$(git branch --show-current) --oneline -3
 - [ ] 올바른 브랜치인가?
 - [ ] 커밋되지 않은 변경사항이 없는가?
 - [ ] 로컬 커밋이 의도한 것인가?
-- [ ] main/master 브랜치가 아닌가?
+- [ ] main/dev 브랜치가 아닌가? (보호 브랜치)
+
+### 보호 브랜치 정책
+
+| 브랜치 | 직접 푸시 | PR 필요 | 설명 |
+|--------|:---------:|:-------:|------|
+| `main` | ❌ | ✅ | 프로덕션 릴리스 |
+| `dev` | ❌ | ✅ | 개발 통합 브랜치 |
+| `feat/*`, `fix/*` 등 | ✅ | - | 기능 브랜치 |
 
 ### 강제 푸시 경고
 

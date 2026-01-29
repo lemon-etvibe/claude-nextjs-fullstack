@@ -1,5 +1,4 @@
 ---
-name: pr
 description: GitHub Pull Request 생성 - 자동 템플릿 적용
 allowed-tools:
   - Bash
@@ -15,9 +14,11 @@ allowed-tools:
 ## 사용법
 
 ```
-/pr                             # 자동 PR 생성
-/pr --draft                     # Draft PR 생성
-/pr --base develop              # 타겟 브랜치 지정
+/pr                             # 자동 PR 생성 (→ dev)
+/pr --draft                     # Draft PR 생성 (→ dev)
+/pr --release                   # 릴리스 PR 생성 (dev → main)
+/pr --release --version 1.2.0   # 버전 지정 릴리스 PR
+/pr --base <branch>             # 타겟 브랜치 수동 지정
 ```
 
 ## 워크플로우
@@ -38,11 +39,11 @@ gh pr list --head $(git branch --show-current)
 ### 2. 변경사항 분석
 
 ```bash
-# main과의 차이 확인
-git log main..HEAD --oneline
+# dev와의 차이 확인 (기본)
+git log dev..HEAD --oneline
 
 # 변경된 파일 목록
-git diff main...HEAD --stat
+git diff dev...HEAD --stat
 ```
 
 ### 3. PR 생성
@@ -127,6 +128,65 @@ fix(auth): 세션 만료 처리 수정
 refactor(campaign): 캠페인 테이블 컴포넌트 분리
 ```
 
+## 릴리스 PR (--release)
+
+`--release` 플래그를 사용하면 dev → main 릴리스 PR을 생성합니다.
+
+### 사전 조건
+
+- 현재 브랜치가 `dev`여야 함
+- dev 브랜치가 최신 상태여야 함
+
+### 실행 흐름
+
+```bash
+# 현재 브랜치 확인
+BRANCH=$(git branch --show-current)
+if [[ "$BRANCH" != "dev" ]]; then
+  echo "❌ 릴리스 PR은 dev 브랜치에서만 생성할 수 있습니다."
+  exit 1
+fi
+
+# 버전 결정 (지정되지 않으면 CHANGELOG에서 추출 또는 입력 요청)
+VERSION="${VERSION:-$(node scripts/update-changelog.js --get-next-version)}"
+
+# 릴리스 PR 생성
+gh pr create \
+  --base main \
+  --title "release: v${VERSION}" \
+  --body "$(cat <<EOF
+## 릴리스 v${VERSION}
+
+### CHANGELOG 미리보기
+
+$(sed -n '/## \[Unreleased\]/,/## \[/p' CHANGELOG.md | head -50)
+
+### 체크리스트
+
+- [ ] CHANGELOG 내용 확인
+- [ ] 모든 기능 테스트 완료
+- [ ] 문서 업데이트 완료
+EOF
+)"
+```
+
+### 릴리스 PR 템플릿
+
+```markdown
+## 릴리스 v{version}
+
+### CHANGELOG 미리보기
+
+{Unreleased 섹션 내용}
+
+### 체크리스트
+
+- [ ] CHANGELOG 내용 확인
+- [ ] 모든 기능 테스트 완료
+- [ ] 문서 업데이트 완료
+- [ ] 팀 리뷰어 승인
+```
+
 ## 자동 분석 내용
 
 PR 생성 시 다음을 자동으로 분석합니다:
@@ -142,7 +202,7 @@ PR 생성 시 다음을 자동으로 분석합니다:
 
 ### PR 정보
 - **제목**: feat(customer): 고객 로그인 기능 구현
-- **브랜치**: feat/customer-login → main
+- **브랜치**: feat/customer-login → dev
 - **URL**: https://github.com/user/repo/pull/123
 
 ### 포함된 커밋

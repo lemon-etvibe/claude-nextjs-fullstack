@@ -1,162 +1,203 @@
-# etvibe-nextjs-fullstack (enf)
+<p align="center">
+  <img src="https://img.shields.io/badge/Claude_Code-Plugin-5A67D8?style=for-the-badge&logo=anthropic&logoColor=white" alt="Claude Code Plugin" />
+  <img src="https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=next.js&logoColor=white" alt="Next.js 16" />
+  <img src="https://img.shields.io/badge/Prisma-7-2D3748?style=for-the-badge&logo=prisma&logoColor=white" alt="Prisma 7" />
+  <img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+</p>
 
-Next.js 16 + Prisma 7 + Better Auth 풀스택 개발을 위한 Claude Code 플러그인
+# etvibe-nextjs-fullstack
 
-> **Plugin Name**: `enf` - 모든 Commands는 `/enf:command` 형식으로 사용 (예: `/enf:commit`, `/enf:code-review`)
+> **AI-First 풀스택 개발 워크플로우**
+> Next.js 16 + Prisma 7 + Better Auth 프로젝트를 위한 Claude Code 플러그인
 
-## 기술 스택
-
-| 기술 | 버전 | 용도 |
-|------|------|------|
-| Next.js | 16.x | App Router + Turbopack |
-| React | 19.x | UI 프레임워크 |
-| Prisma | 7.x | ORM (pg adapter) |
-| Better Auth | 1.4.x | 인증 |
-| Tailwind CSS | 4.x | 스타일링 |
-| shadcn/ui | latest | UI 컴포넌트 |
+```
+Plugin Name: enf
+Namespace:   /enf:command (예: /enf:commit, /enf:code-review)
+```
 
 ---
 
-## 빠른 시작
+## Why This Plugin?
 
-### Windows (PowerShell)
+| 문제 | 해결 |
+|------|------|
+| 팀마다 다른 코드 스타일 | **4개 Skills**로 컨벤션 자동 적용 |
+| 반복되는 보일러플레이트 | **15개 Commands**로 워크플로우 자동화 |
+| 기술 스택 학습 곡선 | **4개 Agents**가 베스트 프랙티스 가이드 |
+| 코드 리뷰 병목 | AI 기반 사전 리뷰로 품질 향상 |
 
-```powershell
-# 1. 플러그인 클론
-git clone https://github.com/lemon-etvibe/etvibe-nextjs-fullstack.git C:\plugins\enf
+---
 
-# 2. 셋업 스크립트 실행 (플러그인 설치 + alias 등록)
-cd C:\plugins\enf
-.\scripts\setup.ps1
-
-# 3. 새 PowerShell 창에서 프로젝트로 이동 후 사용
-cd C:\projects\my-nextjs-app
-claude-enf
-```
-
-### macOS/Linux
+## Quick Start
 
 ```bash
-# 1. 플러그인 클론
+# 1. Clone
 git clone https://github.com/lemon-etvibe/etvibe-nextjs-fullstack.git ~/plugins/enf
 
-# 2. 셋업 스크립트 실행 (플러그인 설치 + alias 등록)
-cd ~/plugins/enf
-chmod +x scripts/setup.sh
-./scripts/setup.sh
+# 2. Setup
+cd ~/plugins/enf && chmod +x scripts/setup.sh && ./scripts/setup.sh
 
-# 3. 새 터미널에서 프로젝트로 이동 후 사용
-cd ~/projects/my-nextjs-app
-claude-enf
+# 3. Use
+cd ~/your-project && claude
 ```
-
-### 확인
 
 ```bash
-/agents    # 에이전트 목록
-/mcp       # MCP 서버 상태
-/enf:init  # 플러그인 초기화 가이드
+# 확인
+/agents      # 에이전트 목록
+/enf:init    # 플러그인 가이드
 ```
 
-### 플러그인 업데이트
+<details>
+<summary><b>Windows (PowerShell)</b></summary>
 
-```bash
-cd ~/plugins/enf  # 또는 C:\plugins\enf
-git pull origin main
+```powershell
+git clone https://github.com/lemon-etvibe/etvibe-nextjs-fullstack.git C:\plugins\enf
+cd C:\plugins\enf
+.\scripts\setup.ps1
+```
+</details>
+
+---
+
+## Tech Stack
+
+| 기술 | 버전 | 용도 |
+|:-----|:----:|------|
+| **Next.js** | 16.x | App Router + Turbopack |
+| **React** | 19.x | Server Components 우선 |
+| **Prisma** | 7.x | PostgreSQL + pg adapter |
+| **Better Auth** | 1.4.x | 세션 기반 인증 |
+| **Tailwind CSS** | 4.x | CSS-first 설정 |
+| **shadcn/ui** | latest | Radix 기반 컴포넌트 |
+
+---
+
+## What's Included
+
+### Agents (4)
+
+역할별 전문 AI 에이전트가 개발을 지원합니다.
+
+| Agent | 역할 | 특징 |
+|-------|------|------|
+| **dev-assistant** | 코드 구현/리뷰/리팩토링 | Write/Edit 가능, context7 연동 |
+| **architecture-expert** | 시스템 설계/데이터 모델링 | 설계만 담당 (구현 X) |
+| **performance-expert** | 번들 분석/Core Web Vitals | next-devtools 연동 |
+| **docs-writer** | API/컴포넌트 문서 생성 | 템플릿 기반 자동화 |
+
+### Commands (15)
+
+모든 명령어는 `/enf:` 네임스페이스를 사용합니다.
+
+| 구분 | Command | 설명 |
+|:----:|---------|------|
+| **Core** | `code-review` | TypeScript, 성능, 보안 관점의 코드 품질 검사 |
+| | `design-feature` | 새 기능의 아키텍처 설계 (Route, Model, API) |
+| | `schema-design` | Prisma 스키마 설계 및 리뷰 |
+| | `perf-audit` | 번들 크기, Waterfall, Core Web Vitals 분석 |
+| **Dev** | `refactor` | 코드 리팩토링 제안 및 적용 |
+| | `type-check` | TypeScript strict 모드 검증 |
+| | `waterfall-check` | 순차 await 패턴 검출 → Promise.all 제안 |
+| **Git** | `task` | 업무 정의 → 브랜치 자동 생성 |
+| | `commit` | Conventional Commits 형식 커밋 |
+| | `push` | 안전 체크 후 원격 저장소 푸시 |
+| | `pr` | GitHub PR 생성 (템플릿 자동 적용) |
+| **Docs** | `generate-docs` | Server Action/API 문서 자동 생성 |
+| | `component-docs` | 컴포넌트 Props 문서 생성 |
+| | `update-changelog` | CHANGELOG.md 자동 업데이트 |
+| **Guide** | `init` | 플러그인 사용법 및 프로젝트 가이드 |
+
+### Skills (4)
+
+키워드 기반으로 자동 활성화되는 지식 베이스입니다.
+
+| Skill | 활성화 키워드 | 내용 |
+|-------|--------------|------|
+| **coding-conventions** | 컨벤션, 네이밍 | Import 순서, 네이밍 규칙, 커밋 메시지 |
+| **better-auth** | 인증, 로그인, 세션 | 세션 관리, RBAC, Server Action 통합 |
+| **prisma-7** | Prisma, 스키마, DB | v7 설정, pg adapter, 쿼리 패턴 |
+| **tailwind-v4-shadcn** | Tailwind, shadcn, 폼 | CSS-first 설정, Form 패턴, 테마 |
+
+### MCP Servers (3)
+
+| 서버 | 용도 |
+|------|------|
+| **context7** | Next.js, Prisma 등 라이브러리 최신 문서 조회 |
+| **next-devtools** | Next.js 개발 서버 연동 (라우트, 에러 분석) |
+| **prisma-local** | Prisma CLI 연동 (마이그레이션, Studio) |
+
+---
+
+## Bundled Plugins
+
+셋업 스크립트가 자동으로 설치하는 검증된 플러그인 모음입니다.
+
+### Anthropic Official
+
+| 플러그인 | 용도 |
+|---------|------|
+| **playwright** | Playwright 기반 E2E 테스트 작성/실행 |
+| **pr-review-toolkit** | 6가지 관점의 PR 코드 리뷰 (`/review-pr`) |
+| **commit-commands** | 변경사항 분석 기반 커밋 메시지 생성 (`/commit`) |
+| **feature-dev** | 기능 개발 워크플로우 가이드 |
+| **security-guidance** | OWASP Top 10 기반 보안 취약점 검사 |
+| **context7** | 라이브러리 공식 문서 실시간 조회 |
+| **frontend-design** | 고품질 프론트엔드 UI 디자인 생성 |
+| **code-review** | 자동 코드 리뷰 및 개선 제안 |
+
+### Community
+
+| 플러그인 | 출처 | 용도 |
+|---------|------|------|
+| **javascript-typescript** | wshobson/agents | JS/TS 고급 패턴 및 최적화 가이드 |
+| **database-design** | wshobson/agents | 데이터베이스 스키마 설계 전문가 |
+
+---
+
+## Workflow
+
+```
+/enf:task "기능명"          →  브랜치 생성
+       ↓
+/enf:design-feature         →  아키텍처 설계 (선택)
+       ↓
+    [구현]                   →  dev-assistant
+       ↓
+/enf:code-review            →  품질 검사
+       ↓
+/enf:commit → /enf:push → /enf:pr
 ```
 
 ---
 
-## 패키지 구성
-
-### 번들 포함 (자동 설정)
-
-| 구성 요소 | 내용 |
-|----------|------|
-| **에이전트** | dev-assistant, architecture-expert, performance-expert, docs-writer |
-| **스킬** | coding-conventions, better-auth, prisma-7, tailwind-v4-shadcn |
-| **MCP 서버** | context7, next-devtools, prisma-local |
-
-### 외부 플러그인 (셋업 스크립트로 설치)
-
-| 출처 | 플러그인 | 용도 |
-|------|---------|------|
-| Anthropic | playwright | E2E 테스트 |
-| Anthropic | pr-review-toolkit | PR 리뷰 (`/review-pr`) |
-| Anthropic | commit-commands | 커밋 생성 (`/commit`) |
-| Anthropic | feature-dev | 기능 개발 |
-| Anthropic | security-guidance | 보안 검사 |
-| Vercel Labs | react-best-practices | React 최적화 (자동 적용) |
-| wshobson | javascript-typescript | JS/TS 전문가 |
-| wshobson | database-design | 스키마 설계 |
-
----
-
-## 주요 기능
-
-### Commands (15개)
-
-> 모든 Commands는 `/enf:` 접두사 사용
-
-| 카테고리 | Command | 설명 |
-|---------|---------|------|
-| **핵심** | `/enf:code-review` | 코드 품질 검사 (TypeScript, 성능, 보안) |
-| | `/enf:design-feature` | 새 기능 아키텍처 설계 |
-| | `/enf:schema-design` | Prisma 스키마 설계/리뷰 |
-| | `/enf:perf-audit` | 성능 분석 (번들, Core Web Vitals) |
-| **개발** | `/enf:refactor` | 코드 리팩토링 제안 |
-| | `/enf:type-check` | TypeScript 타입 검증 |
-| | `/enf:waterfall-check` | 순차 await 패턴 → Promise.all 제안 |
-| **Git** | `/enf:task` | 업무 정의 → Git 브랜치 생성 |
-| | `/enf:commit` | Conventional Commits 형식 커밋 |
-| | `/enf:push` | 원격 저장소 푸시 (안전 체크) |
-| | `/enf:pr` | GitHub PR 생성 (자동 템플릿) |
-| **문서** | `/enf:generate-docs` | API/Server Action 문서 생성 |
-| | `/enf:component-docs` | 컴포넌트 Props 문서 생성 |
-| | `/enf:update-changelog` | CHANGELOG.md 업데이트 |
-| **가이드** | `/enf:init` | 프로젝트 구조 및 개발 가이드 |
-
-### Hooks (3개)
-
-| Hook | 트리거 | 동작 |
-|------|--------|------|
-| TypeScript 검사 | `.ts/.tsx` 저장 | lint/type 체크 안내 |
-| Server Action 검증 | `_actions/*.ts` 저장 | 인증 패턴, `use server` 확인 |
-| Prisma 스키마 검증 | `schema.prisma` 수정 | 마이그레이션 절차 안내 |
-
----
-
-## 워크플로우 예시
-
-```bash
-# 1. 작업 시작 (브랜치 생성)
-/enf:task "고객 검색 기능 구현"
-
-# 2. 기능 설계 (복잡한 경우)
-/enf:design-feature "고객 검색 필터 및 정렬"
-
-# 3. 코드 리뷰
-/enf:code-review src/app/(admin)/_actions/customer.ts
-
-# 4. 커밋 및 PR
-/commit  # 또는 /enf:commit
-/enf:pr
-```
-
----
-
-## 문서
+## Documentation
 
 | 문서 | 설명 |
 |------|------|
-| [설치 가이드](./docs/INSTALLATION.md) | 상세 설치, Shell alias, 글로벌 설정, 문제 해결 |
-| [커스터마이징 가이드](./docs/CUSTOMIZATION.md) | Hooks, Commands, Agents, Skills 확장 |
-| [개발 가이드](./docs/DEVELOPMENT.md) | 로컬 테스트, 디버깅, 배포 |
-| [기여 가이드](./docs/CONTRIBUTING.md) | 브랜치 규칙, PR 프로세스 |
-| [브랜치 보호 설정](./github/BRANCH_PROTECTION.md) | GitHub 브랜치 보호 규칙 |
+| **[Team Onboarding](./docs/TEAM-ONBOARDING.md)** | 신규 팀원 빠른 시작 |
+| [Installation](./docs/INSTALLATION.md) | 상세 설치 및 문제 해결 |
+| [Guidelines](./docs/GUIDELINES.md) | 플러그인 철학 및 확장 가이드 |
+| [Agents Manual](./docs/AGENTS-MANUAL.md) | 에이전트 상세 사용법 |
+| [Scenario Guides](./docs/SCENARIO-GUIDES.md) | 상황별 워크플로우 |
+| [Skills Activation](./docs/SKILLS-ACTIVATION.md) | 스킬 활성화 가이드 |
+| [CHANGELOG](./CHANGELOG.md) | 버전 이력 |
 
 ---
 
-## 라이선스
+## Update
+
+```bash
+cd ~/plugins/enf
+git pull origin main
+./scripts/setup.sh
+```
+
+---
+
+<p align="center">
+  <sub>Built with Claude Code by <b>etvibe</b> AI Team</sub>
+</p>
+
+## License
 
 MIT

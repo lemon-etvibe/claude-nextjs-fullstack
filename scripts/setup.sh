@@ -6,7 +6,7 @@
 # 이 스크립트는 다음을 수행합니다:
 # 1. 마켓플레이스 소스 등록
 # 2. 외부 플러그인 설치
-# 3. Shell 프로필에 claude-enf alias 등록
+# 3. enf 플러그인 로컬 마켓플레이스 등록 및 설치
 #
 # 사용법:
 #   cd ~/plugins/enf
@@ -14,7 +14,144 @@
 #   ./scripts/setup.sh
 #
 
-set -e
+# 색상 정의
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# 에러 카운터
+ERROR_COUNT=0
+WARNING_COUNT=0
+
+# ============================================
+# 에러 핸들링 함수
+# ============================================
+
+print_error() {
+    echo -e "${RED}❌ $1${NC}"
+}
+
+print_warning() {
+    echo -e "${YELLOW}⚠️  $1${NC}"
+}
+
+print_success() {
+    echo -e "${GREEN}✓ $1${NC}"
+}
+
+print_skip() {
+    echo -e "   ⏭️  $1"
+}
+
+print_info() {
+    echo -e "${BLUE}ℹ️  $1${NC}"
+}
+
+# ============================================
+# 사전 요구사항 확인
+# ============================================
+
+check_prerequisites() {
+    echo ""
+    echo "🔍 사전 요구사항 확인..."
+
+    # 1. Claude CLI 확인
+    if ! command -v claude &> /dev/null; then
+        print_error "Claude Code가 설치되지 않았습니다."
+        echo ""
+        echo "   설치 방법:"
+        echo "   npm install -g @anthropic-ai/claude-code"
+        echo ""
+        echo "   또는 공식 문서 참조:"
+        echo "   https://docs.anthropic.com/en/docs/claude-code"
+        exit 1
+    fi
+    print_success "Claude Code 설치됨"
+
+    # 2. Git 확인
+    if ! command -v git &> /dev/null; then
+        print_error "Git이 설치되지 않았습니다."
+        exit 1
+    fi
+    print_success "Git 설치됨"
+
+    # 3. 네트워크 연결 확인 (GitHub)
+    if ! curl -s --connect-timeout 5 https://github.com > /dev/null 2>&1; then
+        print_warning "GitHub 연결 불가 - 외부 플러그인 설치가 실패할 수 있습니다."
+        WARNING_COUNT=$((WARNING_COUNT + 1))
+    else
+        print_success "네트워크 연결 정상"
+    fi
+
+    echo ""
+}
+
+# ============================================
+# 플러그인 설치 함수 (중복 설치 방지 + 에러 처리)
+# ============================================
+
+install_plugin() {
+    local plugin="$1"
+    local description="$2"
+    local settings_file="$HOME/.claude/settings.json"
+
+    # 설정 파일에서 이미 설치 여부 확인
+    if [ -f "$settings_file" ] && grep -q "\"$plugin\"" "$settings_file"; then
+        print_skip "$description (이미 설치됨)"
+        return 0
+    fi
+
+    # 플러그인 설치 시도
+    if claude plugin install "$plugin" 2>/dev/null; then
+        print_success "$description"
+        return 0
+    else
+        print_warning "$description 설치 실패 (나중에 수동 설치 가능)"
+        echo "      claude plugin install $plugin"
+        WARNING_COUNT=$((WARNING_COUNT + 1))
+        return 0  # 실패해도 계속 진행
+    fi
+}
+
+# ============================================
+# 마켓플레이스 추가 함수 (중복 등록 방지 + 에러 처리)
+# ============================================
+
+add_marketplace() {
+    local url="$1"
+    local name="$2"
+
+    # 이미 등록 여부 확인
+    if claude plugin marketplace list 2>/dev/null | grep -q "$name"; then
+        print_skip "$name (이미 등록됨)"
+        return 0
+    fi
+
+    # 마켓플레이스 추가 시도
+    if claude plugin marketplace add "$url" 2>/dev/null; then
+        print_success "$name 추가 완료"
+        return 0
+    else
+        # URL 유형에 따른 에러 메시지
+        if [[ "$url" == https://github.com/* ]]; then
+            print_warning "$name 등록 실패"
+            echo "      가능한 원인:"
+            echo "      - 저장소 접근 권한 없음 (private repo)"
+            echo "      - GitHub rate limit 초과"
+            echo "      - 네트워크 오류"
+        else
+            print_warning "$name 등록 실패"
+        fi
+        WARNING_COUNT=$((WARNING_COUNT + 1))
+        return 1
+    fi
+}
+
+# ============================================
+# 메인 스크립트 시작
+# ============================================
 
 echo ""
 echo "=============================================="
@@ -23,17 +160,29 @@ echo "=============================================="
 echo ""
 echo "Note: MCP 서버 (context7, next-devtools, prisma-local)는"
 echo "      플러그인 로드 시 자동으로 설정됩니다."
-echo ""
+
+# 사전 요구사항 확인
+check_prerequisites
 
 # ============================================
-# 1. 마켓플레이스 추가
+# 1. 마켓플레이스 등록 및 업데이트
 # ============================================
 
-echo "📦 [1/4] 마켓플레이스 추가..."
-claude plugin marketplace add https://github.com/vercel-labs/agent-skills
-claude plugin marketplace add https://github.com/wshobson/agents
-echo "   ✓ vercel-labs/agent-skills"
-echo "   ✓ wshobson/agents"
+echo "📦 [1/4] 마켓플레이스 등록..."
+
+if add_marketplace "https://github.com/wshobson/agents" "claude-code-workflows"; then
+    echo ""
+    echo "   마켓플레이스 업데이트 중..."
+    if claude plugin marketplace update 2>/dev/null; then
+        print_success "마켓플레이스 업데이트 완료"
+    else
+        print_warning "마켓플레이스 업데이트 실패 (일부 플러그인 설치 불가)"
+        WARNING_COUNT=$((WARNING_COUNT + 1))
+    fi
+else
+    echo ""
+    print_info "커뮤니티 플러그인은 나중에 수동으로 설치할 수 있습니다."
+fi
 
 # ============================================
 # 2. Anthropic 공식 플러그인 설치
@@ -41,16 +190,14 @@ echo "   ✓ wshobson/agents"
 
 echo ""
 echo "📦 [2/4] Anthropic 공식 플러그인 설치..."
-claude plugin install playwright@claude-plugin-directory
-claude plugin install pr-review-toolkit@claude-plugin-directory
-claude plugin install commit-commands@claude-plugin-directory
-claude plugin install feature-dev@claude-plugin-directory
-claude plugin install security-guidance@claude-plugin-directory
-echo "   ✓ playwright (E2E 테스트)"
-echo "   ✓ pr-review-toolkit (/review-pr)"
-echo "   ✓ commit-commands (/commit)"
-echo "   ✓ feature-dev (기능 개발)"
-echo "   ✓ security-guidance (보안 검사)"
+install_plugin "playwright@claude-plugins-official" "playwright (E2E 테스트)"
+install_plugin "pr-review-toolkit@claude-plugins-official" "pr-review-toolkit (/review-pr)"
+install_plugin "commit-commands@claude-plugins-official" "commit-commands (/commit)"
+install_plugin "feature-dev@claude-plugins-official" "feature-dev (기능 개발)"
+install_plugin "security-guidance@claude-plugins-official" "security-guidance (보안 검사)"
+install_plugin "context7@claude-plugins-official" "context7 (라이브러리 문서)"
+install_plugin "frontend-design@claude-plugins-official" "frontend-design (UI 디자인)"
+install_plugin "code-review@claude-plugins-official" "code-review (코드 리뷰)"
 
 # ============================================
 # 3. 커뮤니티 플러그인 설치
@@ -58,53 +205,63 @@ echo "   ✓ security-guidance (보안 검사)"
 
 echo ""
 echo "📦 [3/4] 커뮤니티 플러그인 설치..."
-claude plugin install react-best-practices@agent-skills
-claude plugin install javascript-typescript@agents
-claude plugin install database-design@agents
-echo "   ✓ react-best-practices (React 최적화)"
-echo "   ✓ javascript-typescript (JS/TS 전문가)"
-echo "   ✓ database-design (스키마 설계)"
+install_plugin "javascript-typescript@claude-code-workflows" "javascript-typescript (JS/TS 전문가)"
+install_plugin "database-design@claude-code-workflows" "database-design (스키마 설계)"
 
 # ============================================
-# 4. Shell 프로필에 claude-enf alias 등록
+# 4. 로컬 마켓플레이스 등록 및 enf 플러그인 설치
 # ============================================
 
 echo ""
-echo "📦 [4/4] Shell alias 등록..."
+echo "📦 [4/4] enf 플러그인 설치..."
 
 # 플러그인 경로 (스크립트 위치의 상위 디렉토리)
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PLUGIN_DIR="$(dirname "$SCRIPT_DIR")"
 
-# Shell 프로필 파일 결정
-if [ -n "$ZSH_VERSION" ] || [ -f "$HOME/.zshrc" ]; then
-    SHELL_RC="$HOME/.zshrc"
-elif [ -f "$HOME/.bashrc" ]; then
-    SHELL_RC="$HOME/.bashrc"
-else
-    SHELL_RC="$HOME/.profile"
+# 플러그인 디렉토리 유효성 검사
+if [ ! -f "$PLUGIN_DIR/.claude-plugin/plugin.json" ]; then
+    print_error "플러그인 매니페스트를 찾을 수 없습니다: $PLUGIN_DIR/.claude-plugin/plugin.json"
+    echo ""
+    echo "   이 스크립트는 플러그인 루트 디렉토리의 scripts/ 폴더에서 실행해야 합니다."
+    echo "   예: cd ~/plugins/enf && ./scripts/setup.sh"
+    exit 1
 fi
 
-# alias 코드
-ALIAS_CODE="
-# claude-enf - etvibe-nextjs-fullstack 플러그인으로 Claude Code 실행
-alias claude-enf='claude --plugin-dir $PLUGIN_DIR'"
+# 로컬 마켓플레이스 등록
+add_marketplace "file://$PLUGIN_DIR" "enf-local"
 
-# 이미 등록되어 있는지 확인
-if grep -q "alias claude-enf=" "$SHELL_RC" 2>/dev/null; then
-    echo "   ⚠️  claude-enf alias가 이미 등록되어 있습니다."
+# enf 플러그인 설치 (--scope local로 프로젝트 독립 설치)
+if claude plugin list 2>/dev/null | grep -q "enf@enf-local"; then
+    print_skip "enf 플러그인 (이미 설치됨)"
 else
-    echo "$ALIAS_CODE" >> "$SHELL_RC"
-    echo "   ✓ claude-enf alias 등록 완료! ($SHELL_RC)"
+    if claude plugin install enf@enf-local --scope local 2>/dev/null; then
+        print_success "enf 플러그인 설치 완료"
+    else
+        print_error "enf 플러그인 설치 실패"
+        ERROR_COUNT=$((ERROR_COUNT + 1))
+        echo ""
+        echo "   문제 해결:"
+        echo "   1. 플러그인 검증: claude plugin validate $PLUGIN_DIR"
+        echo "   2. 수동 설치: claude plugin install enf@enf-local --scope local"
+    fi
 fi
 
 # ============================================
-# 완료
+# 완료 메시지
 # ============================================
 
 echo ""
 echo "=============================================="
-echo "  셋업 완료!"
+
+if [ $ERROR_COUNT -eq 0 ] && [ $WARNING_COUNT -eq 0 ]; then
+    echo -e "  ${GREEN}셋업 완료!${NC}"
+elif [ $ERROR_COUNT -eq 0 ]; then
+    echo -e "  ${YELLOW}셋업 완료 (경고 ${WARNING_COUNT}개)${NC}"
+else
+    echo -e "  ${RED}셋업 완료 (에러 ${ERROR_COUNT}개, 경고 ${WARNING_COUNT}개)${NC}"
+fi
+
 echo "=============================================="
 echo ""
 echo "📋 설치된 플러그인:"
@@ -115,19 +272,33 @@ echo "   - pr-review-toolkit (/review-pr)"
 echo "   - commit-commands (/commit)"
 echo "   - feature-dev (기능 개발)"
 echo "   - security-guidance (보안 검사)"
+echo "   - context7 (라이브러리 문서)"
+echo "   - frontend-design (UI 디자인)"
+echo "   - code-review (코드 리뷰)"
 echo ""
-echo "   [커뮤니티]"
-echo "   - react-best-practices (React 최적화)"
+echo "   [커뮤니티 - wshobson/agents]"
 echo "   - javascript-typescript (JS/TS 전문가)"
 echo "   - database-design (스키마 설계)"
+echo ""
+echo "   [로컬 플러그인]"
+echo "   - enf (etvibe-nextjs-fullstack)"
 echo ""
 echo "📋 MCP 서버 (플러그인에서 자동 설정):"
 echo "   - context7 (라이브러리 문서 조회)"
 echo "   - next-devtools (Next.js 개발 서버 연동)"
 echo "   - prisma-local (Prisma 마이그레이션/Studio)"
 echo ""
+echo "📋 선택 플러그인 (수동 설치):"
+echo "   npx @anthropic-ai/claude-code add-skill react-best-practices"
+echo ""
+
+if [ $WARNING_COUNT -gt 0 ]; then
+    echo "⚠️  일부 플러그인 설치에 실패했습니다."
+    echo "   실패한 플러그인은 위의 명령어로 나중에 수동 설치할 수 있습니다."
+    echo ""
+fi
+
 echo "🚀 다음 단계:"
-echo "   1. 새 터미널을 열거나: source $SHELL_RC"
-echo "   2. 프로젝트로 이동: cd ~/projects/your-project"
-echo "   3. Claude Code 실행: claude-enf"
+echo "   1. 프로젝트로 이동: cd ~/projects/your-project"
+echo "   2. Claude Code 실행: claude"
 echo ""

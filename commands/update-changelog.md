@@ -1,5 +1,4 @@
 ---
-name: update-changelog
 description: CHANGELOG.md 자동 업데이트 - 커밋 기반 변경 이력 생성
 allowed-tools:
   - Read

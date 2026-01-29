@@ -1,5 +1,4 @@
 ---
-name: design-feature
 description: 새로운 기능의 아키텍처 설계 - 라우팅, 데이터 모델, 컴포넌트 구조 결정
 allowed-tools:
   - Read

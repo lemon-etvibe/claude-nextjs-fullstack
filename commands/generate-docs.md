@@ -1,5 +1,4 @@
 ---
-name: generate-docs
 description: API 및 Server Action 문서 자동 생성
 allowed-tools:
   - Read

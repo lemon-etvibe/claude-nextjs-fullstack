@@ -1,5 +1,4 @@
 ---
-name: init
 description: 프로젝트 구조 및 개발 가이드 안내
 allowed-tools:
   - Read

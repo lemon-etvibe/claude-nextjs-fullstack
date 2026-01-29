@@ -1,0 +1,13 @@
+{
+  "name": "enf-local",
+  "owner": {
+    "name": "lemon-etvibe"
+  },
+  "plugins": [
+    {
+      "name": "enf",
+      "source": "./",
+      "description": "Next.js 16 + Prisma 7 + Better Auth 풀스택 개발을 위한 Claude Code 플러그인"
+    }
+  ]
+}

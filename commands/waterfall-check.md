@@ -1,5 +1,4 @@
 ---
-name: waterfall-check
 description: Promise.all 최적화 검사 - 순차 await 패턴 찾아 병렬화 제안
 allowed-tools:
   - Read

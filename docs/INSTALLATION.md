@@ -16,9 +16,9 @@ git clone https://github.com/lemon-etvibe/etvibe-nextjs-fullstack.git C:\plugins
 cd C:\plugins\enf
 .\scripts\setup.ps1
 
-# 3. 새 PowerShell 창에서 사용
+# 3. 프로젝트에서 사용
 cd C:\projects\your-project
-claude-enf
+claude
 ```
 
 ### macOS/Linux
@@ -32,9 +32,9 @@ cd ~/plugins/enf
 chmod +x scripts/setup.sh
 ./scripts/setup.sh
 
-# 3. 새 터미널에서 사용
+# 3. 프로젝트에서 사용
 cd ~/projects/your-project
-claude-enf
+claude
 ```
 
 ---
@@ -43,11 +43,11 @@ claude-enf
 
 셋업 스크립트 없이 수동으로 설치하는 방법입니다.
 
-### 1. 마켓플레이스 등록
+### 1. 외부 마켓플레이스 등록
 
 ```bash
-claude plugin marketplace add https://github.com/vercel-labs/agent-skills
 claude plugin marketplace add https://github.com/wshobson/agents
+claude plugin marketplace update
 ```
 
 ### 2. 외부 플러그인 설치
@@ -55,41 +55,41 @@ claude plugin marketplace add https://github.com/wshobson/agents
 #### Anthropic 공식 플러그인
 
 ```bash
-claude plugin install playwright@claude-plugin-directory
-claude plugin install pr-review-toolkit@claude-plugin-directory
-claude plugin install commit-commands@claude-plugin-directory
-claude plugin install feature-dev@claude-plugin-directory
-claude plugin install security-guidance@claude-plugin-directory
+claude plugin install playwright@claude-plugins-official
+claude plugin install pr-review-toolkit@claude-plugins-official
+claude plugin install commit-commands@claude-plugins-official
+claude plugin install feature-dev@claude-plugins-official
+claude plugin install security-guidance@claude-plugins-official
+claude plugin install context7@claude-plugins-official
+claude plugin install frontend-design@claude-plugins-official
+claude plugin install code-review@claude-plugins-official
 ```
 
-#### 커뮤니티 플러그인
+#### 커뮤니티 플러그인 (wshobson/agents)
 
 ```bash
-claude plugin install react-best-practices@agent-skills
-claude plugin install javascript-typescript@agents
-claude plugin install database-design@agents
+claude plugin install javascript-typescript@claude-code-workflows
+claude plugin install database-design@claude-code-workflows
 ```
 
-### 3. Shell Alias 수동 등록
-
-#### Windows (PowerShell)
-
-```powershell
-# PowerShell 프로필 열기
-notepad $PROFILE
-
-# 다음 내용 추가
-function claude-enf {
-    claude --plugin-dir "C:\plugins\enf" $args
-}
-```
-
-#### macOS/Linux
+#### 선택 플러그인 (React 최적화)
 
 ```bash
-# ~/.zshrc 또는 ~/.bashrc에 추가
-echo 'alias claude-enf="claude --plugin-dir ~/plugins/enf"' >> ~/.zshrc
-source ~/.zshrc
+# Vercel Labs의 React 스킬 (별도 설치 방식)
+npx @anthropic-ai/claude-code add-skill react-best-practices
+```
+
+### 3. 로컬 마켓플레이스 등록 및 enf 플러그인 설치
+
+```bash
+# 플러그인 경로로 이동
+cd ~/plugins/enf  # 또는 C:\plugins\enf
+
+# 로컬 마켓플레이스 등록
+claude plugin marketplace add file://$(pwd)
+
+# enf 플러그인 설치 (--scope local로 프로젝트 독립 설치)
+claude plugin install enf@enf-local --scope local
 ```
 
 ---
@@ -105,25 +105,22 @@ source ~/.zshrc
 | commit-commands | 커밋 생성 | `/commit` 명령어, 변경사항 분석 |
 | feature-dev | 기능 개발 | 기능 개발 워크플로우 지원 |
 | security-guidance | 보안 검사 | OWASP Top 10 취약점 검사 |
+| context7 | 문서 조회 | 라이브러리 최신 문서 조회 |
+| frontend-design | UI 디자인 | 고품질 프론트엔드 UI 디자인 |
+| code-review | 코드 리뷰 | 자동 코드 리뷰 |
 
-### 커뮤니티 플러그인
+### 커뮤니티 플러그인 (wshobson/agents)
 
-| 출처 | 플러그인 | 용도 |
-|------|---------|------|
-| Vercel Labs | react-best-practices | React 최적화 패턴 (자동 적용) |
-| wshobson | javascript-typescript | JS/TS 전문가 에이전트 |
-| wshobson | database-design | 스키마 설계 에이전트 |
+| 플러그인 | 용도 |
+|---------|------|
+| javascript-typescript | JS/TS 전문가 에이전트 |
+| database-design | 스키마 설계 에이전트 |
 
-### 옵셔널 플러그인
-
-필요시 수동 설치:
+### 선택 플러그인 (수동 설치)
 
 ```bash
-# 고품질 프론트엔드 UI 디자인 (Anthropic)
-claude plugin install frontend-design@claude-plugin-directory
-
-# 접근성/UX 감사 100+ 규칙 (Vercel Labs)
-claude plugin install web-design-guidelines@agent-skills
+# React 최적화 패턴 (Vercel Labs - 별도 설치 방식)
+npx @anthropic-ai/claude-code add-skill react-best-practices
 ```
 
 ---
@@ -136,6 +133,7 @@ claude plugin install web-design-guidelines@agent-skills
 |------|------|
 | `.mcp.json` | MCP 서버 설정 (context7, next-devtools, prisma-local) |
 | `.claude-plugin/plugin.json` | 플러그인 매니페스트 |
+| `.claude-plugin/marketplace.json` | 로컬 마켓플레이스 정의 |
 
 ### 프로젝트 범위 설정 (옵셔널)
 
@@ -205,10 +203,12 @@ claude plugin install web-design-guidelines@agent-skills
 # Windows
 cd C:\plugins\enf
 git pull origin main
+claude plugin install enf@enf-local --scope local
 
 # macOS/Linux
 cd ~/plugins/enf
 git pull origin main
+claude plugin install enf@enf-local --scope local
 ```
 
 외부 플러그인도 업데이트하려면 셋업 스크립트를 다시 실행:
@@ -232,12 +232,12 @@ git pull origin main
 /mcp
 
 # Claude Code 재시작
-claude-enf
+claude
 ```
 
 MCP 서버가 표시되지 않으면:
 - `.mcp.json` 파일이 플러그인 루트에 있는지 확인
-- 플러그인 경로가 올바른지 확인
+- 플러그인이 설치되어 있는지 확인: `claude plugin list`
 
 ### 에이전트 인식 안 됨
 
@@ -245,30 +245,38 @@ MCP 서버가 표시되지 않으면:
 # 에이전트 목록 확인
 /agents
 
-# 플러그인 경로 확인 (Windows)
-dir C:\plugins\enf\agents\
+# 플러그인 설치 확인
+claude plugin list
 
-# 플러그인 경로 확인 (macOS/Linux)
-ls ~/plugins/enf/agents/
+# enf 플러그인 재설치
+claude plugin install enf@enf-local --scope local
 ```
 
 에이전트가 표시되지 않으면:
-- `--plugin-dir` 경로가 정확한지 확인
-- 플러그인 디렉토리 구조가 올바른지 확인
+- enf 플러그인이 설치되어 있는지 확인
+- 로컬 마켓플레이스가 등록되어 있는지 확인: `claude plugin marketplace list`
 
 ### 플러그인 로드 안 됨
 
 ```bash
-# 매니페스트 파일 확인 (Windows)
-type C:\plugins\enf\.claude-plugin\plugin.json
+# 매니페스트 파일 검증
+claude plugin validate ~/plugins/enf  # 또는 C:\plugins\enf
 
 # 매니페스트 파일 확인 (macOS/Linux)
 cat ~/plugins/enf/.claude-plugin/plugin.json
+
+# 매니페스트 파일 확인 (Windows)
+type C:\plugins\enf\.claude-plugin\plugin.json
 ```
 
+**검증 실패 시**: `plugin.json`에 지원되지 않는 필드가 있을 수 있습니다.
+공식 스키마에서 지원하는 필드:
+- `name`, `version`, `description`, `author`, `homepage`, `repository`, `license`, `keywords`
+- `commands`, `agents`, `skills`, `hooks`, `mcpServers`, `outputStyles`, `lspServers`
+
 문제가 지속되면:
-- 절대 경로로 실행: `claude --plugin-dir /full/path/to/enf`
 - Claude Code 버전 확인: `claude --version`
+- 플러그인 재설치: `claude plugin install enf@enf-local --scope local`
 
 ### 외부 플러그인 설치 실패
 
@@ -276,44 +284,31 @@ cat ~/plugins/enf/.claude-plugin/plugin.json
 # 마켓플레이스 목록 확인
 claude plugin marketplace list
 
+# 마켓플레이스 업데이트
+claude plugin marketplace update
+
 # 플러그인 재설치
 claude plugin uninstall playwright
-claude plugin install playwright@claude-plugin-directory
+claude plugin install playwright@claude-plugins-official
 ```
 
 네트워크 오류 시:
 - GitHub 접근 가능 여부 확인
 - 프록시 설정 확인
 
-### Shell Alias 동작 안 함
+### 플러그인 완전 재설치
 
-#### Windows
-
-```powershell
-# 프로필 위치 확인
-echo $PROFILE
-
-# 프로필 내용 확인
-type $PROFILE
-
-# 프로필 다시 로드
-. $PROFILE
-```
-
-#### macOS/Linux
+문제가 지속되면 플러그인을 완전히 제거하고 다시 설치:
 
 ```bash
-# 어떤 셸인지 확인
-echo $SHELL
+# 플러그인 제거
+claude plugin uninstall enf
 
-# 프로필 확인 (zsh)
-cat ~/.zshrc | grep claude-enf
+# 로컬 마켓플레이스 확인
+claude plugin marketplace list
 
-# 프로필 확인 (bash)
-cat ~/.bashrc | grep claude-enf
-
-# 다시 로드
-source ~/.zshrc  # 또는 source ~/.bashrc
+# 재설치
+claude plugin install enf@enf-local --scope local
 ```
 
 ---

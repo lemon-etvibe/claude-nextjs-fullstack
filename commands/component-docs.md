@@ -1,5 +1,4 @@
 ---
-name: component-docs
 description: React 컴포넌트 Props 문서 자동 생성
 allowed-tools:
   - Read

@@ -1,5 +1,4 @@
 ---
-name: schema-design
 description: Prisma 스키마 설계 및 리뷰 - 데이터 모델, 관계, 인덱스 최적화
 allowed-tools:
   - Read

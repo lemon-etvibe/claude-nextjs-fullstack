@@ -1,5 +1,4 @@
 ---
-name: refactor
 description: 코드 리팩토링 제안 - 가독성, 유지보수성, 성능 개선
 allowed-tools:
   - Read
