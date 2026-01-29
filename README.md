@@ -17,51 +17,69 @@ Next.js 16 + Prisma 7 + Better Auth 풀스택 개발을 위한 Claude Code 플�
 
 ---
 
-## 설치
+## 설치 (Private Repository)
 
-### Step 1: 플러그인 설치
+이 플러그인은 Private Repository로 관리되며, 팀 내부에서만 공유됩니다.
 
-```bash
-# 마켓플레이스 추가 (팀 공유 시)
-claude plugin marketplace add https://github.com/lemon-etvibe/etvibe-nextjs-fullstack
-
-# 플러그인 설치
-claude plugin install etvibe-nextjs-fullstack
-```
-
-또는 로컬에서 직접 테스트:
+### Step 1: 플러그인 클론
 
 ```bash
-# 레포 클론
-git clone https://github.com/lemon-etvibe/etvibe-nextjs-fullstack.git
-
-# 로컬 플러그인으로 실행
-claude --plugin-dir ./etvibe-nextjs-fullstack
+# Private repo 클론 (GitHub 인증 필요)
+git clone https://github.com/lemon-etvibe/etvibe-nextjs-fullstack.git ~/plugins/enf
 ```
 
-### Step 2: 외부 플러그인 설치
+### Step 2: Claude 실행
 
-MCP 서버 (context7, next-devtools, prisma-local)는 플러그인 설치 시 **자동으로 설정**됩니다.
+```bash
+# 플러그인 경로 지정하여 실행
+claude --plugin-dir ~/plugins/enf
+```
+
+### Step 3: (권장) Shell Alias 등록
+
+매번 경로를 입력하지 않도록 alias를 등록합니다:
+
+```bash
+# ~/.zshrc 또는 ~/.bashrc에 추가
+alias claude-enf='claude --plugin-dir ~/plugins/enf'
+```
+
+```bash
+# 적용 후 사용
+source ~/.zshrc
+claude-enf
+```
+
+### Step 4: 외부 플러그인 설치
+
+MCP 서버 (context7, next-devtools, prisma-local)는 플러그인 로드 시 **자동으로 설정**됩니다.
 
 외부 플러그인은 스크립트로 설치합니다:
 
 ```bash
-cd etvibe-nextjs-fullstack
+cd ~/plugins/enf
 chmod +x scripts/install-plugins.sh
 ./scripts/install-plugins.sh
 ```
 
-### Step 3: 확인
+### Step 5: 확인
 
 ```bash
 # Claude Code 실행
-claude
+claude-enf
 
 # 에이전트 목록 확인
 /agents
 
 # MCP 서버 확인
 /mcp
+```
+
+### 플러그인 업데이트
+
+```bash
+cd ~/plugins/enf
+git pull origin main
 ```
 
 ---
@@ -352,9 +370,8 @@ etvibe-nextjs-fullstack/
 # MCP 상태 확인
 /mcp
 
-# 플러그인 재설치
-claude plugin uninstall etvibe-nextjs-fullstack
-claude plugin install etvibe-nextjs-fullstack
+# Claude Code 재시작
+claude-enf
 ```
 
 ### 에이전트가 인식 안 됨
@@ -363,6 +380,9 @@ claude plugin install etvibe-nextjs-fullstack
 # 에이전트 목록 확인
 /agents
 
+# 플러그인 경로 확인
+ls ~/plugins/enf/agents/
+
 # Claude Code 재시작
 ```
 
@@ -370,43 +390,18 @@ claude plugin install etvibe-nextjs-fullstack
 
 ```bash
 # 설치 스크립트 재실행
+cd ~/plugins/enf
 ./scripts/install-plugins.sh
 ```
 
----
-
-## 수동 설치 (스크립트 대신)
-
-### 마켓플레이스 추가
+### 플러그인 로드 안 됨
 
 ```bash
-claude plugin marketplace add https://github.com/vercel-labs/agent-skills
-claude plugin marketplace add https://github.com/wshobson/agents
-```
+# 플러그인 경로 확인
+ls ~/plugins/enf/.claude-plugin/plugin.json
 
-### Anthropic 공식 플러그인
-
-```bash
-claude plugin install playwright@claude-plugin-directory
-claude plugin install pr-review-toolkit@claude-plugin-directory
-claude plugin install commit-commands@claude-plugin-directory
-claude plugin install feature-dev@claude-plugin-directory
-claude plugin install security-guidance@claude-plugin-directory
-```
-
-### 커뮤니티 플러그인
-
-```bash
-claude plugin install react-best-practices@agent-skills
-claude plugin install javascript-typescript@agents
-claude plugin install database-design@agents
-```
-
-### 옵셔널
-
-```bash
-claude plugin install frontend-design@claude-plugin-directory
-claude plugin install web-design-guidelines@agent-skills
+# 절대 경로로 실행
+claude --plugin-dir /Users/$(whoami)/plugins/enf
 ```
 
 ---
@@ -430,6 +425,57 @@ claude plugin install web-design-guidelines@agent-skills
 - `main` 브랜치 직접 커밋 금지 - PR 필수
 - CODEOWNERS 승인 필요
 - Conventional Commits 형식 사용
+
+---
+
+## 참고: 마켓플레이스 설치
+
+> **Note**: 이 플러그인은 Private Repository이므로 마켓플레이스 등록이 불가합니다.
+> 아래 내용은 Public Repository로 전환하거나, 다른 플러그인 설치 시 참고용입니다.
+
+### 마켓플레이스 등록 (Public Repo 전용)
+
+```bash
+# 마켓플레이스에 저장소 추가
+claude plugin marketplace add https://github.com/lemon-etvibe/etvibe-nextjs-fullstack
+
+# 플러그인 설치
+claude plugin install etvibe-nextjs-fullstack
+```
+
+### 외부 플러그인 수동 설치
+
+#### 마켓플레이스 추가
+
+```bash
+claude plugin marketplace add https://github.com/vercel-labs/agent-skills
+claude plugin marketplace add https://github.com/wshobson/agents
+```
+
+#### Anthropic 공식 플러그인
+
+```bash
+claude plugin install playwright@claude-plugin-directory
+claude plugin install pr-review-toolkit@claude-plugin-directory
+claude plugin install commit-commands@claude-plugin-directory
+claude plugin install feature-dev@claude-plugin-directory
+claude plugin install security-guidance@claude-plugin-directory
+```
+
+#### 커뮤니티 플러그인
+
+```bash
+claude plugin install react-best-practices@agent-skills
+claude plugin install javascript-typescript@agents
+claude plugin install database-design@agents
+```
+
+#### 옵셔널
+
+```bash
+claude plugin install frontend-design@claude-plugin-directory
+claude plugin install web-design-guidelines@agent-skills
+```
 
 ---
 
