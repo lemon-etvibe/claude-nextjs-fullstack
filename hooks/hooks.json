@@ -1,0 +1,23 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "./scripts/check-typescript.sh \"$TOOL_INPUT_file_path\""
+          },
+          {
+            "type": "command",
+            "command": "./scripts/check-server-action.sh \"$TOOL_INPUT_file_path\""
+          },
+          {
+            "type": "command",
+            "command": "./scripts/check-prisma-schema.sh \"$TOOL_INPUT_file_path\""
+          }
+        ]
+      }
+    ]
+  }
+}
