@@ -231,10 +231,23 @@ fi
 # 로컬 마켓플레이스 등록
 add_marketplace "file://$PLUGIN_DIR" "enf-local"
 
-# enf 플러그인 설치 (--scope local로 프로젝트 독립 설치)
-if claude plugin list 2>/dev/null | grep -q "enf@enf-local"; then
-    print_skip "enf 플러그인 (이미 설치됨)"
+# enf 플러그인 설치 (--scope local로 프로젝트별 설치)
+# enabled 상태인지 확인 (다른 프로젝트에서 설치됐을 수 있음)
+ENF_STATUS=$(claude plugin list 2>/dev/null | grep -A3 "enf@enf-local" || echo "")
+
+if echo "$ENF_STATUS" | grep -q "Status: ✔ enabled"; then
+    print_skip "enf 플러그인 (이미 활성화됨)"
+elif echo "$ENF_STATUS" | grep -q "enf@enf-local"; then
+    # 설치됐지만 현재 프로젝트에서 disabled 상태 → enable
+    echo "   현재 프로젝트에서 활성화 중..."
+    if claude plugin enable enf@enf-local --scope local 2>/dev/null; then
+        print_success "enf 플러그인 활성화 완료"
+    else
+        print_error "enf 플러그인 활성화 실패"
+        ERROR_COUNT=$((ERROR_COUNT + 1))
+    fi
 else
+    # 미설치 → 새로 설치
     if claude plugin install enf@enf-local --scope local 2>/dev/null; then
         print_success "enf 플러그인 설치 완료"
     else
