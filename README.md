@@ -31,8 +31,10 @@ chmod +x scripts/install-dependencies.sh
 또는 수동으로 설치:
 
 ```bash
-# MCP 서버
-claude mcp add prisma-local npx prisma mcp
+# MCP 서버 (에이전트에서 사용)
+claude mcp add context7 -- npx -y @anthropic-ai/context7-mcp@latest
+claude mcp add next-devtools -- npx -y @anthropic-ai/next-devtools-mcp@latest
+claude mcp add prisma-local -- npx prisma mcp
 
 # 마켓플레이스
 claude plugin marketplace add https://github.com/vercel-labs/agent-skills
