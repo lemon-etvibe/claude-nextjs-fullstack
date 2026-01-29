@@ -18,9 +18,25 @@
 
 ---
 
-## [1.0.0] - 2025-01-29
+## [0.9.0] - 2025-01-30
 
-최초 릴리스. Next.js 16 + Prisma 7 + Better Auth 풀스택 개발을 위한 Claude Code 플러그인.
+프리릴리즈. Next.js 16 + Prisma 7 + Better Auth 풀스택 개발을 위한 Claude Code 플러그인.
+
+### Added
+- 인터랙티브 프로젝트 경로 입력 모드 (`scripts/setup.sh`, `scripts/setup.ps1`)
+- Tab 자동완성 지원 (macOS/Linux)
+- 플러그인 삭제 가이드 (`docs/INSTALLATION.md`)
+- TODO.md 로드맵 문서
+
+### Changed
+- 셋업 스크립트를 플러그인 디렉토리에서 실행하도록 워크플로우 변경
+- 설치 문서 전면 개편
+
+---
+
+## [0.1.0] - 2025-01-29
+
+최초 개발 버전.
 
 ### Added
 

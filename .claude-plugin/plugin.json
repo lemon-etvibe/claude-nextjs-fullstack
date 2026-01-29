@@ -1,7 +1,7 @@
 {
   "name": "enf",
   "description": "Next.js 16 + Prisma 7 + Better Auth 풀스택 개발을 위한 Claude Code 플러그인 (etvibe-nextjs-fullstack)",
-  "version": "1.0.0",
+  "version": "0.9.0",
   "author": {
     "name": "lemon-etvibe"
   },
