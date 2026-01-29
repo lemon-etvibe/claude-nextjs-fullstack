@@ -11,8 +11,42 @@
 # 사용법:
 #   cd ~/plugins/enf
 #   chmod +x scripts/setup.sh
-#   ./scripts/setup.sh
+#   ./scripts/setup.sh                      # 인터랙티브 모드
+#   ./scripts/setup.sh ~/projects/my-app    # 프로젝트 경로 직접 지정
 #
+
+# ============================================
+# 프로젝트 경로 처리
+# ============================================
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PLUGIN_DIR="$(dirname "$SCRIPT_DIR")"
+
+# 인자로 프로젝트 경로가 전달된 경우
+if [ -n "$1" ]; then
+    PROJECT_PATH=$(eval echo "$1")
+# 플러그인 디렉토리에서 실행된 경우 → 경로 입력 받기
+elif [ -f "$PLUGIN_DIR/.claude-plugin/plugin.json" ] && [ "$PWD" = "$PLUGIN_DIR" ]; then
+    echo ""
+    echo "================================================"
+    echo "  etvibe-nextjs-fullstack 셋업"
+    echo "================================================"
+    echo ""
+    echo "📂 설치할 프로젝트 경로를 입력하세요 (Tab으로 자동완성):"
+    read -e -p "> " PROJECT_PATH
+    PROJECT_PATH=$(eval echo "$PROJECT_PATH")
+fi
+
+# 프로젝트 경로가 지정된 경우 이동
+if [ -n "$PROJECT_PATH" ]; then
+    if [ ! -d "$PROJECT_PATH" ]; then
+        echo "❌ 디렉토리가 존재하지 않습니다: $PROJECT_PATH"
+        exit 1
+    fi
+    cd "$PROJECT_PATH"
+    echo "✓ 프로젝트 경로: $PROJECT_PATH"
+    echo ""
+fi
 
 # 색상 정의
 RED='\033[0;31m'
@@ -215,11 +249,7 @@ install_plugin "database-design@claude-code-workflows" "database-design (스키�
 echo ""
 echo "📦 [4/4] enf 플러그인 설치..."
 
-# 플러그인 경로 (스크립트 위치의 상위 디렉토리)
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-PLUGIN_DIR="$(dirname "$SCRIPT_DIR")"
-
-# 플러그인 디렉토리 유효성 검사
+# 플러그인 디렉토리 유효성 검사 (PLUGIN_DIR은 스크립트 시작 시 정의됨)
 if [ ! -f "$PLUGIN_DIR/.claude-plugin/plugin.json" ]; then
     print_error "플러그인 매니페스트를 찾을 수 없습니다: $PLUGIN_DIR/.claude-plugin/plugin.json"
     echo ""
