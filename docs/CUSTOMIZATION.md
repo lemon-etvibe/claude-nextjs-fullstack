@@ -35,11 +35,13 @@ etvibe-nextjs-fullstack/
 │   ├── coding-conventions.md
 │   ├── better-auth.md
 │   └── ...
-├── hooks/                  # 자동 검증 훅
-│   └── hooks.json
-├── scripts/                # 셋업/검증 스크립트
+├── scripts/                # 셋업 및 Hook 스크립트
+│   ├── setup.sh
+│   ├── check-typescript.sh
+│   ├── check-server-action.sh
+│   └── check-prisma-schema.sh
 └── .claude-plugin/         # 플러그인 매니페스트
-    └── plugin.json
+    └── plugin.json         # (hooks 섹션 포함)
 ```
 
 ### 확장 포인트
@@ -49,7 +51,7 @@ etvibe-nextjs-fullstack/
 | **Agent** | 역할별 AI 에이전트 | `agents/*.md` |
 | **Command** | `/enf:명령어` 슬래시 커맨드 | `commands/*.md` |
 | **Skill** | 자동 활성화 지식 베이스 | `skills/*.md` |
-| **Hook** | 파일 수정 시 자동 검증 | `hooks/hooks.json` |
+| **Hook** | 파일 수정 시 자동 검증 | `.claude-plugin/plugin.json` |
 
 ---
 
@@ -330,9 +332,9 @@ export const useCounterStore = create<CounterStore>((set) => ({
 
 ## Hook 추가
 
-### hooks.json 구조
+### hooks.json에 정의
 
-`hooks/hooks.json`:
+`hooks/hooks.json` 파일에 hooks를 정의합니다:
 
 ```json
 {
@@ -343,7 +345,7 @@ export const useCounterStore = create<CounterStore>((set) => ({
         "hooks": [
           {
             "type": "command",
-            "command": "./scripts/check-typescript.sh \"$TOOL_INPUT_file_path\""
+            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/check-typescript.sh \"$TOOL_INPUT_file_path\""
           }
         ]
       }
@@ -351,6 +353,21 @@ export const useCounterStore = create<CounterStore>((set) => ({
   }
 }
 ```
+
+> **중요**: 스크립트 경로는 반드시 `${CLAUDE_PLUGIN_ROOT}`를 사용해야 다른 프로젝트에서 정상 동작합니다.
+
+### 대안: plugin.json 인라인
+
+hooks가 간단한 경우 `.claude-plugin/plugin.json`에 직접 정의할 수도 있습니다:
+
+```json
+{
+  "name": "enf",
+  "hooks": { ... }
+}
+```
+
+**권장**: hooks가 많아질 경우 `hooks/hooks.json` 분리 방식 사용
 
 ### Hook 타입
 
@@ -511,6 +528,7 @@ claude --plugin-dir ./etvibe-nextjs-fullstack
 - [ ] `scripts/` 디렉토리에 스크립트 생성
 - [ ] 실행 권한 부여 (`chmod +x`)
 - [ ] `hooks/hooks.json`에 등록
+- [ ] 경로에 `${CLAUDE_PLUGIN_ROOT}` 사용 확인
 - [ ] 파일 수정 후 동작 확인
 
 ---
