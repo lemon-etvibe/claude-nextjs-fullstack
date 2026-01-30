@@ -332,13 +332,12 @@ export const useCounterStore = create<CounterStore>((set) => ({
 
 ## Hook 추가
 
-### plugin.json에 hooks 정의
+### hooks.json에 정의
 
-`.claude-plugin/plugin.json`에 hooks 섹션을 추가합니다:
+`hooks/hooks.json` 파일에 hooks를 정의합니다:
 
 ```json
 {
-  "name": "enf",
   "hooks": {
     "PostToolUse": [
       {
@@ -356,6 +355,19 @@ export const useCounterStore = create<CounterStore>((set) => ({
 ```
 
 > **중요**: 스크립트 경로는 반드시 `${CLAUDE_PLUGIN_ROOT}`를 사용해야 다른 프로젝트에서 정상 동작합니다.
+
+### 대안: plugin.json 인라인
+
+hooks가 간단한 경우 `.claude-plugin/plugin.json`에 직접 정의할 수도 있습니다:
+
+```json
+{
+  "name": "enf",
+  "hooks": { ... }
+}
+```
+
+**권장**: hooks가 많아질 경우 `hooks/hooks.json` 분리 방식 사용
 
 ### Hook 타입
 
@@ -515,7 +527,8 @@ claude --plugin-dir ./etvibe-nextjs-fullstack
 
 - [ ] `scripts/` 디렉토리에 스크립트 생성
 - [ ] 실행 권한 부여 (`chmod +x`)
-- [ ] `.claude-plugin/plugin.json`의 hooks 섹션에 등록
+- [ ] `hooks/hooks.json`에 등록
+- [ ] 경로에 `${CLAUDE_PLUGIN_ROOT}` 사용 확인
 - [ ] 파일 수정 후 동작 확인
 
 ---
