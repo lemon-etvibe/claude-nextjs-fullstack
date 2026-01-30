@@ -35,48 +35,20 @@
 
 ## Step 1: 플러그인 설치
 
-### macOS/Linux
+> **상세 설치 가이드**: [INSTALLATION.md](./INSTALLATION.md)
 
 ```bash
-# 1. 플러그인 클론
+# 빠른 설치 (macOS/Linux)
 git clone https://github.com/lemon-etvibe/etvibe-nextjs-fullstack.git ~/plugins/enf
-
-# 2. 셋업 스크립트 실행
-cd ~/plugins/enf
-chmod +x scripts/setup.sh
-./scripts/setup.sh
-
-# 3. 설치 확인
-claude plugin list
+cd ~/plugins/enf && chmod +x scripts/setup.sh && ./scripts/setup.sh
 ```
 
-### Windows (PowerShell)
-
-```powershell
-# 1. 플러그인 클론
-git clone https://github.com/lemon-etvibe/etvibe-nextjs-fullstack.git C:\plugins\enf
-
-# 2. 셋업 스크립트 실행
-cd C:\plugins\enf
-.\scripts\setup.ps1
-
-# 3. 설치 확인
-claude plugin list
-```
-
-### 설치 확인
+설치 완료 후 확인:
 
 ```bash
-# 프로젝트 디렉토리로 이동
-cd ~/projects/your-project
-
-# Claude 실행
-claude
-
-# 확인 명령어
-> /agents    # 에이전트 목록 확인
-> /mcp       # MCP 서버 상태 확인
-> /enf:init  # 플러그인 가이드 확인
+cd ~/projects/your-project && claude
+> /agents    # 에이전트 4개 확인
+> /enf:init  # 가이드 확인
 ```
 
 ---

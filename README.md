@@ -181,11 +181,12 @@ cd C:\plugins\enf
 | 문서 | 설명 |
 |------|------|
 | **[Team Onboarding](./docs/TEAM-ONBOARDING.md)** | 신규 팀원 빠른 시작 |
+| [Commands Reference](./docs/COMMANDS-REFERENCE.md) | 커맨드 빠른 참조 |
 | [Installation](./docs/INSTALLATION.md) | 상세 설치 및 문제 해결 |
-| [Guidelines](./docs/GUIDELINES.md) | 플러그인 철학 및 확장 가이드 |
+| [Guidelines](./docs/GUIDELINES.md) | 플러그인 철학 및 워크플로우 |
+| [Customization](./docs/CUSTOMIZATION.md) | 플러그인 확장 가이드 |
 | [Agents Manual](./docs/AGENTS-MANUAL.md) | 에이전트 상세 사용법 |
 | [Scenario Guides](./docs/SCENARIO-GUIDES.md) | 상황별 워크플로우 |
-| [Skills Activation](./docs/SKILLS-ACTIVATION.md) | 스킬 활성화 가이드 |
 | [CHANGELOG](./CHANGELOG.md) | 버전 이력 |
 
 ---
