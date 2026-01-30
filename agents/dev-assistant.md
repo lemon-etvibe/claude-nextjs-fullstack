@@ -8,6 +8,10 @@ tools:
   - Glob
   - mcp__context7__query-docs
   - mcp__context7__resolve-library-id
+  - mcp__next-devtools__nextjs_index
+  - mcp__next-devtools__nextjs_call
+skills:
+  - vercel-react-best-practices
 ---
 
 # 개발 지원 에이전트
@@ -28,36 +32,15 @@ tools:
 - Tailwind CSS 4.x
 - strict TypeScript 5.x 설정
 
-## 프로젝트 구조 (Co-location 원칙)
+## 프로젝트 구조
 
-```
-src/app/
-├── (admin)/              # 관리자 영역
-│   ├── _actions/         # Admin 전용 Server Actions
-│   ├── _components/      # Admin 전용 컴포넌트
-│   ├── _lib/             # Admin 전용 훅/스키마
-│   └── admin/            # 실제 라우트
-│       ├── (auth)/       # 인증 불필요
-│       └── (protected)/  # 인증 필요
-│
-├── (site)/               # 고객 영역
-│   ├── _actions/         # Site 전용 Server Actions
-│   ├── _components/      # Site 전용 컴포넌트
-│   ├── _lib/             # Site 전용 훅/스키마
-│   ├── (main)/           # Header+Footer 레이아웃
-│   ├── (auth)/           # 고객 인증
-│   └── (customer)/       # 마이페이지 (인증 필요)
-│
-└── api/                  # API Routes
-    ├── auth/[...all]/    # Better Auth
-    └── files/            # 파일 업로드/다운로드
+> 상세 구조는 `architecture-expert` 에이전트 참조. Co-location 원칙 적용.
 
-src/components/ui/        # 공통 UI (shadcn/ui)
-src/lib/                  # 공통 유틸 (prisma, auth)
-src/generated/prisma/     # Prisma Client (생성됨)
-```
-
-> `_` prefix 폴더는 Next.js 라우팅에서 제외됨 (Private Folders)
+- `(admin)/` - 관리자 영역 (`_actions/`, `_components/`, `_lib/`)
+- `(site)/` - 고객 영역 (`_actions/`, `_components/`, `_lib/`)
+- `src/components/ui/` - 공통 UI (shadcn/ui)
+- `src/lib/` - 공통 유틸 (prisma, auth)
+- `_` prefix 폴더는 Next.js 라우팅에서 제외됨
 
 ## Server Action 패턴
 
@@ -126,44 +109,13 @@ export async function updateCustomer(id: string, prevState: unknown, formData: F
 
 ## Performance Patterns
 
-### Waterfall Prevention (CRITICAL)
+### Waterfall Prevention
 
-순차적 데이터 요청은 성능의 가장 큰 적이다. 항상 병렬화를 먼저 검토하라.
+> 상세 패턴은 `architecture-expert` 에이전트 참조
 
-```typescript
-// ❌ BAD: 순차 실행 (650ms = 200 + 250 + 200)
-const customer = await fetchCustomer(id)
-const campaigns = await fetchCampaigns(id)
-const stats = await fetchStats(id)
-
-// ✅ GOOD: 병렬 실행 (250ms = max(200, 250, 200))
-const [customer, campaigns, stats] = await Promise.all([
-  fetchCustomer(id),
-  fetchCampaigns(id),
-  fetchStats(id),
-])
-```
-
-### Suspense 경계 활용
-
-```tsx
-// 페이지 구조화로 병렬 스트리밍
-export default function CustomerPage({ params }: Props) {
-  return (
-    <div className="grid grid-cols-3 gap-4">
-      <Suspense fallback={<ProfileSkeleton />}>
-        <CustomerProfile id={params.id} />
-      </Suspense>
-      <Suspense fallback={<CampaignsSkeleton />}>
-        <CustomerCampaigns id={params.id} />
-      </Suspense>
-      <Suspense fallback={<StatsSkeleton />}>
-        <CustomerStats id={params.id} />
-      </Suspense>
-    </div>
-  )
-}
-```
+- **순차 await 3개 이상** → `Promise.all()` 검토
+- **독립 데이터 영역** → Suspense 경계로 분리
+- **의존성 있는 요청** → 순차 실행 유지
 
 ### Bundle Size Optimization
 
@@ -192,9 +144,24 @@ const RichTextEditor = dynamic(() => import("./RichTextEditor"), { ssr: false })
 const StatsChart = dynamic(() => import("./StatsChart"), { ssr: false })
 ```
 
-## context7 MCP 활용
+## MCP 및 스킬 활용
 
+### context7 MCP
 - 최신 Next.js 16 API 문서 조회
 - Prisma 7 쿼리 문법 참조
 - Better Auth 설정 참조
 - Tailwind CSS 4.x 클래스 참조
+
+### next-devtools MCP
+> **주의**: 개발 서버(`pnpm dev`) 실행 중일 때만 동작
+
+- 런타임 에러 분석
+- 라우트 구조 확인
+- 빌드 문제 진단
+
+### vercel-react-best-practices 스킬
+코드 리뷰 시 자동 활성화되어 다음을 검증:
+- Server/Client Components 분리
+- 데이터 페칭 패턴
+- 이미지/폰트 최적화
+- 번들 사이즈 최적화

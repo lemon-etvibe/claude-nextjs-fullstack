@@ -20,6 +20,8 @@ tools:
 - 렌더링 전략 최적화 (SSG/ISR/PPR)
 - 이미지 최적화
 
+> **주의**: `mcp__next-devtools__*` 도구는 Next.js 개발 서버(`pnpm dev`) 실행 중일 때만 동작합니다.
+
 ## Core Web Vitals 목표
 
 | 지표 | 목표    | 전략             |

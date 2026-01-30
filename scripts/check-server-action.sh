@@ -15,12 +15,15 @@ if [[ "$FILE" =~ _actions/.*\.ts$ ]]; then
     echo "  'use server' 지시문이 없습니다!"
   fi
 
-  if ! grep -q "auth.api.getSession" "$FILE" 2>/dev/null; then
+  if ! grep -qE "auth.api.getSession|requireAuth|requireAdmin|requireCustomer" "$FILE" 2>/dev/null; then
     echo "  인증 검사가 없습니다. Better Auth 세션 검증을 권장합니다."
     echo ""
     echo "  권장 패턴:"
     echo "    const session = await auth.api.getSession({ headers: await headers() })"
     echo "    if (!session) return { error: '인증이 필요합니다.' }"
+    echo ""
+    echo "  또는 유틸리티 함수 사용:"
+    echo "    const session = await requireAuth()  // src/lib/auth-utils.ts"
   fi
 
   if ! grep -q "revalidatePath\|revalidateTag" "$FILE" 2>/dev/null; then

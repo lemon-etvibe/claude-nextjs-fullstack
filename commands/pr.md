@@ -147,8 +147,14 @@ if [[ "$BRANCH" != "dev" ]]; then
   exit 1
 fi
 
-# 버전 결정 (지정되지 않으면 CHANGELOG에서 추출 또는 입력 요청)
-VERSION="${VERSION:-$(node scripts/update-changelog.js --get-next-version)}"
+# 버전 결정 (지정되지 않으면 CHANGELOG에서 추출 또는 사용자에게 질문)
+# CHANGELOG.md의 [Unreleased] 다음 버전 헤더에서 추출 시도
+VERSION="${VERSION:-$(grep -oP '## \[\K[0-9]+\.[0-9]+\.[0-9]+' CHANGELOG.md | head -1)}"
+if [[ -z "$VERSION" ]]; then
+  echo "⚠️ 버전을 자동으로 결정할 수 없습니다. --version 플래그로 지정하세요."
+  echo "   예: /pr --release --version 1.2.0"
+  exit 1
+fi
 
 # 릴리스 PR 생성
 gh pr create \
