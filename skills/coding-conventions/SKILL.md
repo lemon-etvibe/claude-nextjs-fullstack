@@ -1,6 +1,13 @@
 ---
 name: coding-conventions
 description: 코딩 컨벤션 가이드 - 컴포넌트, 함수, 변수 작성 시 참조. 코드 작성, 리팩토링, 코드 리뷰 작업에서 사용
+triggers:
+  - 컨벤션
+  - 네이밍
+  - 코드 스타일
+  - import
+  - 커밋
+  - 주석
 ---
 
 # 코딩 컨벤션

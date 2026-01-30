@@ -1,6 +1,13 @@
 ---
 name: prisma-7
 description: Prisma 7 Breaking Changes 및 마이그레이션 가이드
+triggers:
+  - prisma
+  - 스키마
+  - 마이그레이션
+  - 데이터베이스
+  - ORM
+  - pg adapter
 ---
 
 # Prisma 7 가이드
@@ -236,11 +243,12 @@ const result = await prisma.$transaction(async (tx) => {
     },
   })
 
-  // 2. 인플루언서 연결
+  // 2. 인플루언서 연결 (스냅샷 데이터 포함)
   await tx.campaignInfluencer.createMany({
-    data: influencerIds.map((id) => ({
+    data: influencers.map((influencer) => ({
       campaignId: campaign.id,
-      influencerId: id,
+      nickname: influencer.nickname,
+      followerCount: influencer.followerCount,
     })),
   })
 

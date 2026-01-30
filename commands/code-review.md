@@ -4,11 +4,17 @@ allowed-tools:
   - Read
   - Glob
   - Grep
+  - mcp__context7__query-docs
+  - mcp__context7__resolve-library-id
+skills:
+  - vercel-react-best-practices
 ---
 
 # /code-review 명령어
 
 지정된 파일 또는 디렉토리의 코드를 리뷰합니다.
+
+> **활용 도구**: context7 MCP로 최신 Next.js/React 문서 참조, `vercel-react-best-practices` 스킬로 성능 패턴 검증
 
 ## 사용법
 
@@ -96,6 +102,21 @@ allowed-tools:
 전체적인 코드 품질 평가
 ```
 
-## 연계 에이전트
+## 연계 에이전트 및 스킬
 
-이 명령어는 `dev-assistant` 에이전트의 코드 리뷰 체크리스트를 기반으로 합니다.
+- **dev-assistant** 에이전트의 코드 리뷰 체크리스트 기반
+- **vercel-react-best-practices** 스킬로 React/Next.js 성능 최적화 패턴 검증
+- **context7 MCP**로 최신 공식 문서 기반 검증
+
+## Vercel Best Practices 체크 항목
+
+코드 리뷰 시 다음 Vercel 권장 패턴을 함께 검증합니다:
+
+- [ ] Server Components 기본 사용 (필요시만 'use client')
+- [ ] 데이터 페칭 최적화 (fetch 캐싱, revalidate)
+- [ ] 이미지 최적화 (next/image, priority, sizes)
+- [ ] 폰트 최적화 (next/font)
+- [ ] 메타데이터 설정 (generateMetadata)
+- [ ] 스트리밍 및 Suspense 경계
+- [ ] Route Handlers vs Server Actions 선택
+- [ ] 번들 사이즈 최적화 (dynamic import, tree-shaking)

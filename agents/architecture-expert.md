@@ -28,6 +28,8 @@ tools:
 
 > **중요**: Write/Edit 도구 없음 - 설계만 담당, 구현은 dev-assistant
 
+> **주의**: `mcp__next-devtools__*` 도구는 Next.js 개발 서버(`pnpm dev`) 실행 중일 때만 동작합니다.
+
 ---
 
 ## 프로젝트 컨텍스트

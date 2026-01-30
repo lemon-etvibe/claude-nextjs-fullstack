@@ -1,6 +1,14 @@
 ---
 name: better-auth
 description: Better Auth 인증 패턴 가이드 - 세션 관리, 역할 기반 접근 제어, Server Action 통합
+triggers:
+  - 인증
+  - 로그인
+  - 세션
+  - 권한
+  - auth
+  - 로그아웃
+  - 회원가입
 ---
 
 # Better Auth 인증 가이드

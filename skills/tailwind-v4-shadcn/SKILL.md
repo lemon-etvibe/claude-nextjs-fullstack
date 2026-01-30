@@ -1,6 +1,14 @@
 ---
 name: tailwind-v4-shadcn
 description: Tailwind CSS v4 + shadcn/ui 폼 패턴 및 스타일링 가이드
+triggers:
+  - tailwind
+  - 스타일
+  - shadcn
+  - 폼
+  - form
+  - CSS
+  - 테마
 ---
 
 # Tailwind CSS v4 + shadcn/ui 가이드
@@ -36,11 +44,13 @@ description: Tailwind CSS v4 + shadcn/ui 폼 패턴 및 스타일링 가이드
   <div class="@lg:grid-cols-3">...</div>
 </div>
 
-<!-- 3D 변환 -->
-<div class="rotate-x-12 perspective-500">...</div>
+<!-- 3D 변환 (perspective: dramatic/normal/near/distant) -->
+<div class="perspective-normal">
+  <div class="rotate-x-45 rotate-y-12 translate-z-12">...</div>
+</div>
 
 <!-- 그라디언트 위치 -->
-<div class="bg-linear-to-r from-blue-500 from-30%">...</div>
+<div class="bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%">...</div>
 ```
 
 ### 3. 변수 기반 색상
