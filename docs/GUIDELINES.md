@@ -10,7 +10,6 @@ etvibe-nextjs-fullstack (enf) 플러그인의 철학, 역할 정의, 확장 가�
 - [역할 정의](#역할-정의)
 - [워크플로우 원칙](#워크플로우-원칙)
 - [품질 기준](#품질-기준)
-- [확장 가이드라인](#확장-가이드라인)
 
 ---
 
@@ -48,14 +47,7 @@ etvibe-nextjs-fullstack (enf) 플러그인의 철학, 역할 정의, 확장 가�
 
 ## 역할 정의
 
-### Agents 분담표
-
-| Agent | 역할 | Write/Edit | MCP 도구 |
-|-------|------|:----------:|----------|
-| `dev-assistant` | 코드 구현, 리뷰, 리팩토링 | O | context7 |
-| `architecture-expert` | 시스템 설계 (구현 안함) | X | context7, next-devtools |
-| `performance-expert` | 성능 분석, 번들 최적화 | O | next-devtools |
-| `docs-writer` | 문서 작성 | O | context7 |
+> **Agents, Commands, Skills 상세 목록**: [README.md](../README.md#whats-included)
 
 ### Agent 선택 기준
 
@@ -75,24 +67,7 @@ etvibe-nextjs-fullstack (enf) 플러그인의 철학, 역할 정의, 확장 가�
     └── docs-writer
 ```
 
-### Commands 분류
-
-| 카테고리 | Commands | 목적 |
-|----------|----------|------|
-| **핵심** | code-review, design-feature, schema-design, perf-audit | 주요 개발 작업 |
-| **개발** | refactor, type-check, waterfall-check | 코드 품질 |
-| **Git** | task, commit, push, pr | 버전 관리 |
-| **문서** | generate-docs, component-docs, update-changelog | 문서화 |
-| **가이드** | init | 온보딩 |
-
-### Skills 활성화 조건
-
-| Skill | 자동 활성화 키워드 | 용도 |
-|-------|-------------------|------|
-| `coding-conventions` | 컨벤션, 네이밍, 코드 스타일 | 코드 작성 규칙 |
-| `better-auth` | 인증, 세션, 로그인, Better Auth | 인증 구현 |
-| `prisma-7` | Prisma, 스키마, 마이그레이션 | DB 작업 |
-| `tailwind-v4-shadcn` | Tailwind, shadcn, 폼, 스타일 | UI 스타일링 |
+> **커맨드 빠른 참조**: [COMMANDS-REFERENCE.md](./COMMANDS-REFERENCE.md)
 
 ---
 
@@ -253,118 +228,9 @@ etvibe-nextjs-fullstack (enf) 플러그인의 철학, 역할 정의, 확장 가�
 
 ---
 
-## 확장 가이드라인
-
-### Agent 추가 방법
-
-1. `agents/` 디렉토리에 새 파일 생성
-
-```markdown
----
-name: agent-name
-description: 에이전트 설명
-tools:
-  - Read
-  - Edit
-  - Grep
-  - mcp__context7__query-docs
----
-
-# 에이전트 제목
-
-## 역할
-- 역할 1
-- 역할 2
-
-## 컨텍스트
-- 기술 스택 정보
-
-## 작업 지침
-- 지침 1
-- 지침 2
-```
-
-2. 테스트 및 검증
-
-```bash
-claude plugin validate ~/plugins/enf
-```
-
-### Command 추가 방법
-
-1. `commands/` 디렉토리에 `.md` 파일 생성
-
-```markdown
----
-name: command-name
-description: 명령어 설명
----
-
-# Command 제목
-
-## 목적
-명령어의 목적 설명
-
-## 사용법
-\`\`\`
-/enf:command-name [옵션]
-\`\`\`
-
-## 예시
-실행 예시
-```
-
-2. 명령어 테스트
-
-```bash
-claude
-> /enf:command-name
-```
-
-### Skill 추가 방법
-
-1. `skills/skill-name/` 디렉토리 생성
-2. `SKILL.md` 파일 작성
-
-```markdown
----
-name: skill-name
-description: 스킬 설명
----
-
-# 스킬 제목
-
-## 개요
-스킬 개요
-
-## 핵심 내용
-- 내용 1
-- 내용 2
-
-## 코드 패턴
-\`\`\`typescript
-// 예시 코드
-\`\`\`
-```
-
-### Hook 추가 방법
-
-1. `hooks/` 디렉토리에 hook 파일 생성
-2. `.claude-plugin/plugin.json`의 hooks 섹션에 등록
-
-```json
-{
-  "hooks": {
-    "postFileWrite": {
-      "script": "${CLAUDE_PLUGIN_ROOT}/hooks/your-hook.sh"
-    }
-  }
-}
-```
-
----
-
 ## 유지보수 가이드라인
+
+> **플러그인 확장 방법**: Agent, Command, Skill, Hook 추가는 [CUSTOMIZATION.md](./CUSTOMIZATION.md)를 참조하세요.
 
 ### 문서 업데이트 규칙
 
@@ -395,8 +261,8 @@ description: 스킬 설명
 | 문서 | 설명 |
 |------|------|
 | [README](../README.md) | 빠른 시작 |
-| [TEAM-ONBOARDING](./TEAM-ONBOARDING.md) | 신규 팀원 온보딩 |
+| [COMMANDS-REFERENCE](./COMMANDS-REFERENCE.md) | 커맨드 빠른 참조 |
+| [CUSTOMIZATION](./CUSTOMIZATION.md) | 플러그인 확장 가이드 |
 | [AGENTS-MANUAL](./AGENTS-MANUAL.md) | 에이전트 상세 매뉴얼 |
 | [SCENARIO-GUIDES](./SCENARIO-GUIDES.md) | 시나리오별 가이드 |
-| [SKILLS-ACTIVATION](./SKILLS-ACTIVATION.md) | 스킬 활성화 가이드 |
 | [CHANGELOG](../CHANGELOG.md) | 버전 이력 |
