@@ -27,13 +27,20 @@ allowed-tools:
 
 ```bash
 # 현재 브랜치 확인
-git branch --show-current
+CURRENT_BRANCH=$(git branch --show-current)
+
+# ⚠️ dev 또는 main 브랜치에서 직접 PR 생성 방지
+if [[ "$CURRENT_BRANCH" == "dev" || "$CURRENT_BRANCH" == "main" ]]; then
+  echo "⚠️ 경고: '$CURRENT_BRANCH' 브랜치에서 직접 PR을 생성하려고 합니다."
+  echo "   작업 브랜치(feat/*, fix/* 등)에서 PR을 생성하는 것이 권장됩니다."
+  # → AskUserQuestion으로 계속 여부 확인
+fi
 
 # 원격에 푸시되었는지 확인
-git log origin/$(git branch --show-current)..HEAD --oneline
+git log origin/$CURRENT_BRANCH..HEAD --oneline 2>/dev/null
 
 # 이미 PR이 있는지 확인
-gh pr list --head $(git branch --show-current)
+gh pr list --head $CURRENT_BRANCH
 ```
 
 ### 2. 변경사항 분석
@@ -48,8 +55,12 @@ git diff dev...HEAD --stat
 
 ### 3. PR 생성
 
+> **중요**: 기본 타겟은 항상 `dev` 브랜치입니다. `--base main`은 릴리스 PR에서만 사용합니다.
+
 ```bash
+# ⚠️ --base dev 필수 명시 (기본 브랜치가 main이므로)
 gh pr create \
+  --base dev \
   --title "feat(customer): 고객 로그인 기능 구현" \
   --body "$(cat <<'EOF'
 ## 개요
@@ -192,6 +203,16 @@ EOF
 - [ ] 문서 업데이트 완료
 - [ ] 팀 리뷰어 승인
 ```
+
+## 타겟 브랜치 규칙
+
+| 상황 | 타겟 브랜치 | 명령어 |
+|------|------------|--------|
+| 일반 작업 | `dev` (기본) | `/pr` |
+| 릴리스 | `main` | `/pr --release` |
+| 수동 지정 | 지정 브랜치 | `/pr --base <branch>` |
+
+> **⚠️ 주의**: `--base` 없이 `gh pr create` 실행 시 리포지토리 기본 브랜치(main)로 PR이 생성됩니다. 반드시 `--base dev`를 명시하세요.
 
 ## 자동 분석 내용
 
