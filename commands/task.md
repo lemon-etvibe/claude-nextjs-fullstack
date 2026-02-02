@@ -48,13 +48,27 @@ docs/api-readme
 ### 3. 실행 단계
 
 1. 현재 브랜치 상태 확인
-2. 작업 유형 분류
-3. 브랜치명 생성
-4. dev 브랜치에서 새 브랜치 생성
+2. **⚠️ dev 브랜치 기반 여부 확인 (경고)**
+3. 작업 유형 분류
+4. 브랜치명 생성
+5. dev 브랜치에서 새 브랜치 생성
 
 ```bash
 # 현재 상태 확인
 git status
+CURRENT_BRANCH=$(git branch --show-current)
+
+# ⚠️ 현재 브랜치가 dev가 아니면 경고
+if [[ "$CURRENT_BRANCH" != "dev" ]]; then
+  echo "⚠️ 경고: 현재 브랜치가 '$CURRENT_BRANCH'입니다."
+  echo "   새 작업 브랜치는 'dev'에서 분리하는 것이 권장됩니다."
+  echo ""
+  echo "   계속하시겠습니까?"
+  echo "   - Y: dev로 이동 후 브랜치 생성 (권장)"
+  echo "   - N: 현재 브랜치에서 분리 (비권장)"
+  echo "   - C: 취소"
+  # → AskUserQuestion으로 확인 필요
+fi
 
 # dev 브랜치 확인 (없으면 main에서 생성)
 if ! git show-ref --verify --quiet refs/heads/dev; then
@@ -71,6 +85,8 @@ git pull origin dev
 # 새 브랜치 생성
 git checkout -b feat/customer-login
 ```
+
+> **중요**: 모든 작업 브랜치는 `dev`에서 분리해야 합니다. `main`에서 직접 분리하면 PR 타겟이 꼬일 수 있습니다.
 
 ### 4. 작업 컨텍스트 설정
 

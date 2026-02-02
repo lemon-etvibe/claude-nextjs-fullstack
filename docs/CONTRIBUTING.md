@@ -35,13 +35,33 @@
 ### 워크플로우
 
 ```
-1. feature/* 또는 fix/* 브랜치 생성
-2. 작업 후 dev로 푸시 또는 PR
+1. dev 브랜치에서 feature/* 또는 fix/* 브랜치 생성
+2. 작업 후 dev로 PR 생성
 3. dev에서 테스트
-4. dev → main PR 생성
+4. dev → main 릴리스 PR 생성
 5. CODEOWNERS 승인
 6. main으로 머지
 ```
+
+> ⚠️ **중요**: 모든 작업 브랜치는 반드시 `dev`에서 분리해야 합니다. `main`에서 직접 분리하면 PR 타겟이 꼬일 수 있습니다.
+
+### 브랜치 분리 규칙
+
+| 상황 | 기반 브랜치 | 명령어 |
+|------|------------|--------|
+| 새 기능 개발 | `dev` (필수) | `git checkout dev && git checkout -b feat/...` |
+| 버그 수정 | `dev` (필수) | `git checkout dev && git checkout -b fix/...` |
+| 핫픽스 (긴급) | `main` (예외) | `git checkout main && git checkout -b hotfix/...` |
+
+### PR 타겟 브랜치 규칙
+
+| 상황 | 타겟 브랜치 | 명령어 |
+|------|------------|--------|
+| 일반 작업 PR | `dev` (기본) | `gh pr create --base dev` |
+| 릴리스 PR | `main` | `gh pr create --base main --head dev` |
+| 핫픽스 PR | `main` (예외) | `gh pr create --base main --head hotfix/...` |
+
+> ⚠️ **주의**: `gh pr create`는 `--base` 없이 실행하면 리포지토리 기본 브랜치(`main`)로 PR이 생성됩니다. **반드시 `--base dev`를 명시하세요.**
 
 ---
 
@@ -49,7 +69,14 @@
 
 ### Step 1: 브랜치 생성
 
+> ⚠️ **반드시 `dev` 브랜치에서 분리하세요!**
+
 ```bash
+# 1. dev 브랜치로 이동 및 최신화
+git checkout dev
+git pull origin dev
+
+# 2. 작업 브랜치 생성
 # 기능 개발
 git checkout -b feature/add-new-command
 
@@ -58,6 +85,13 @@ git checkout -b fix/hook-error
 
 # 문서 업데이트
 git checkout -b docs/update-readme
+```
+
+**잘못된 예시** (하지 마세요):
+```bash
+# ❌ main에서 직접 분리
+git checkout main
+git checkout -b feature/...  # → PR 타겟이 main이 되어 문제 발생
 ```
 
 ### Step 2: 작업 및 커밋
