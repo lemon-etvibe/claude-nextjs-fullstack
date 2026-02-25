@@ -1,25 +1,25 @@
 ---
-description: 코드 리팩토링 제안 - 가독성, 유지보수성, 성능 개선
+description: Code refactoring suggestions - readability, maintainability, and performance improvements
 allowed-tools:
   - Read
   - Glob
   - Grep
 ---
 
-# /refactor 명령어
+# /refactor Command
 
-기존 코드의 리팩토링 방안을 분석하고 제안합니다.
+Analyzes existing code and suggests refactoring approaches.
 
-## 사용법
+## Usage
 
 ```
-/refactor <파일경로>
+/refactor <file-path>
 /refactor src/app/(admin)/_components/CustomerTable.tsx
 ```
 
-## 리팩토링 관점
+## Refactoring Perspectives
 
-### 1. 코드 중복 제거
+### 1. Eliminate Code Duplication
 
 ```typescript
 // BEFORE: 중복 로직
@@ -32,7 +32,7 @@ const activeAdmins = users.filter(u =>
 )
 ```
 
-### 2. 컴포넌트 분리
+### 2. Component Decomposition
 
 ```tsx
 // BEFORE: 거대한 컴포넌트 (200+ lines)
@@ -52,7 +52,7 @@ function CustomerPage() {
 }
 ```
 
-### 3. Custom Hook 추출
+### 3. Custom Hook Extraction
 
 ```typescript
 // BEFORE: 컴포넌트에 로직 혼재
@@ -88,7 +88,7 @@ function CustomerList() {
 }
 ```
 
-### 4. 조건문 단순화
+### 4. Simplify Conditionals
 
 ```typescript
 // BEFORE: 중첩 조건
@@ -108,7 +108,7 @@ if (!user.isActive) return <Inactive />
 // do something
 ```
 
-### 5. 타입 안전성 강화
+### 5. Strengthen Type Safety
 
 ```typescript
 // BEFORE: any 타입
@@ -126,7 +126,7 @@ function processData(data: DataResponse) {
 }
 ```
 
-### 6. 성능 최적화
+### 6. Performance Optimization
 
 ```typescript
 // BEFORE: 불필요한 리렌더
@@ -146,23 +146,23 @@ function Parent({ items }) {
 }
 ```
 
-## 리팩토링 원칙
+## Refactoring Principles
 
 ### DO
 
-- 작은 단위로 점진적 리팩토링
-- 테스트 유지하며 변경
-- 기능 변경 없이 구조만 개선
-- 명확한 이름 사용
+- Refactor incrementally in small units
+- Maintain tests while making changes
+- Improve structure without changing functionality
+- Use clear naming
 
 ### DON'T
 
-- 한 번에 대규모 변경
-- 기능 추가와 리팩토링 동시 진행
-- 과도한 추상화
-- 성능 최적화 우선 (가독성이 먼저)
+- Make large-scale changes all at once
+- Add features and refactor simultaneously
+- Over-abstract
+- Prioritize performance over readability
 
-## 출력 형식
+## Output Format
 
 ```markdown
 ## 리팩토링 제안: {파일명}
@@ -199,7 +199,7 @@ function Parent({ items }) {
 - ...
 ```
 
-## 연계 명령어
+## Related Commands
 
-- `/code-review` - 리팩토링 전 코드 품질 점검
-- `/type-check` - 리팩토링 후 타입 검증
+- `/code-review` - Code quality review before refactoring
+- `/type-check` - Type verification after refactoring

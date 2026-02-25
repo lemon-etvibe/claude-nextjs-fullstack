@@ -1,6 +1,6 @@
 ---
 name: error-handling
-description: 에러 핸들링 패턴 가이드 — Server Action, API Route, Prisma, Error Boundary 에러 처리
+description: Error Handling Pattern Guide - Server Action, API Route, Prisma, and Error Boundary Error Handling
 tested-with:
   enf: "0.9.1"
   next: "16.x"
@@ -17,13 +17,14 @@ triggers:
   - Error Boundary
   - 404
   - 500
+  - error handling
 ---
 
-# 에러 핸들링 패턴
+# Error Handling Patterns
 
-## 1. Server Action 에러
+## 1. Server Action Errors
 
-### 응답 타입
+### Response Type
 
 ```typescript
 type ActionResult<T = void> =
@@ -31,7 +32,7 @@ type ActionResult<T = void> =
   | { error: string; fieldErrors?: Record<string, string[]> }
 ```
 
-### 기본 패턴
+### Base Pattern
 
 ```typescript
 "use server"
@@ -74,7 +75,7 @@ export async function createCustomer(
 }
 ```
 
-### fieldErrors 클라이언트 연동
+### fieldErrors Client Integration
 
 ```tsx
 "use client"
@@ -105,9 +106,9 @@ function CustomerForm() {
 
 ---
 
-## 2. API Route 에러 (Next.js 16 Route Handlers)
+## 2. API Route Errors (Next.js 16 Route Handlers)
 
-### 공통 에러 응답
+### Common Error Response
 
 ```typescript
 // src/lib/api-error.ts
@@ -127,7 +128,7 @@ export function apiError(
 }
 ```
 
-### 2-1. 파일 업로드
+### 2-1. File Upload
 
 ```typescript
 // src/app/api/files/route.ts
@@ -171,7 +172,7 @@ export async function POST(request: NextRequest) {
 }
 ```
 
-### 2-2. 외부 웹훅
+### 2-2. External Webhook
 
 ```typescript
 // src/app/api/webhooks/[provider]/route.ts
@@ -201,7 +202,7 @@ export async function POST(request: NextRequest) {
 }
 ```
 
-### 2-3. 외부 API 프록시
+### 2-3. External API Proxy
 
 ```typescript
 // src/app/api/external/[service]/route.ts
@@ -278,9 +279,9 @@ export async function GET(request: NextRequest) {
 
 ---
 
-## 3. Prisma 에러
+## 3. Prisma Errors
 
-### 에러 코드별 처리
+### Handling by Error Code
 
 ```typescript
 import { Prisma } from "@/generated/prisma"
@@ -318,7 +319,7 @@ function handlePrismaError(error: unknown): { error: string } {
 }
 ```
 
-### API Route에서 Prisma 에러
+### Prisma Errors in API Routes
 
 ```typescript
 // API Route에서는 HTTP 상태 코드와 함께 반환
@@ -341,18 +342,18 @@ function handlePrismaApiError(error: unknown): NextResponse {
 }
 ```
 
-### 주요 Prisma 에러 코드
+### Key Prisma Error Codes
 
-| 코드 | 설명 | HTTP | 사용자 메시지 |
-|------|------|:----:|--------------|
-| P2002 | Unique constraint | 409 | "중복된 데이터" |
-| P2025 | Record not found | 404 | "찾을 수 없음" |
-| P2003 | Foreign key 위반 | 400 | "참조 데이터 없음" |
-| P2024 | Connection timeout | 503 | "일시적 불안정" |
+| Code | Description | HTTP | User Message |
+|------|-------------|:----:|--------------|
+| P2002 | Unique constraint | 409 | "Duplicate data" |
+| P2025 | Record not found | 404 | "Not found" |
+| P2003 | Foreign key violation | 400 | "Referenced data missing" |
+| P2024 | Connection timeout | 503 | "Temporarily unavailable" |
 
 ---
 
-## 4. 트랜잭션 에러
+## 4. Transaction Errors
 
 ```typescript
 try {
@@ -463,7 +464,7 @@ export default function NotFound() {
 }
 ```
 
-### Server Component에서 notFound() 호출
+### Calling notFound() in Server Component
 
 ```typescript
 import { notFound } from "next/navigation"
@@ -487,9 +488,9 @@ export default async function CustomerPage({
 
 ---
 
-## 6. 클라이언트 에러
+## 6. Client Errors
 
-### useActionState + 에러 표시
+### useActionState + Error Display
 
 ```tsx
 "use client"
@@ -519,7 +520,7 @@ function CustomerForm() {
 }
 ```
 
-### 낙관적 업데이트 롤백
+### Optimistic Update Rollback
 
 ```tsx
 "use client"
@@ -548,20 +549,20 @@ function ToggleStatus({ item }: { item: Item }) {
 
 ## 7. Quick Reference
 
-| 레이어 | 성공 | 예상된 에러 | 예상치 못한 에러 |
-|--------|------|------------|-----------------|
-| Server Action | `{ success: true }` | `{ error: "사유" }` | `{ error: "일반 메시지" }` + console.error |
+| Layer | Success | Expected Error | Unexpected Error |
+|-------|---------|----------------|------------------|
+| Server Action | `{ success: true }` | `{ error: "reason" }` | `{ error: "generic message" }` + console.error |
 | API Route | `200/201` + JSON | `400/401/403/404` + JSON | `500` + JSON + console.error |
 | Error Boundary | N/A | N/A | `error.tsx` / `global-error.tsx` |
-| 클라이언트 | toast.success | 인라인/toast | Error Boundary catch |
+| Client | toast.success | Inline / toast | Error Boundary catch |
 
 ---
 
-## 8. 주의사항
+## 8. Important Notes
 
-1. **에러 메시지 노출 금지** — 내부 에러(스택 트레이스, SQL 등)를 사용자에게 직접 전달하지 않는다
-2. **console.error 필수** — 예상치 못한 에러는 반드시 서버 로그에 기록한다
-3. **digest 활용** — Next.js가 Error Boundary에 전달하는 `digest`로 프로덕션 에러를 추적한다
-4. **Prisma import 경로** — Prisma 7에서는 `@/generated/prisma`에서 import한다 (`@prisma/client` 아님)
-5. **HTTP 상태 코드 준수** — API Route는 항상 적절한 상태 코드를 반환한다 (200만 사용하지 않는다)
-6. **예상된 에러 vs 예상치 못한 에러** — 검증/인증 실패는 사용자 친화적 메시지, DB 장애 등은 일반 메시지로 구분한다
+1. **Do not expose error details** -- never pass internal errors (stack traces, SQL, etc.) directly to the user
+2. **console.error is mandatory** -- unexpected errors must always be logged on the server
+3. **Use digest** -- track production errors using the `digest` that Next.js passes to Error Boundaries
+4. **Prisma import path** -- in Prisma 7, import from `@/generated/prisma` (not `@prisma/client`)
+5. **Follow HTTP status codes** -- API Routes must always return appropriate status codes (do not use only 200)
+6. **Expected vs unexpected errors** -- use user-friendly messages for validation/auth failures; use generic messages for DB failures and similar issues

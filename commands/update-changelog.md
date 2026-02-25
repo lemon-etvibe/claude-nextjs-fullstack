@@ -1,5 +1,5 @@
 ---
-description: CHANGELOG.md 자동 업데이트 - 커밋 기반 변경 이력 생성
+description: Auto-update CHANGELOG.md - commit-based change history generation
 allowed-tools:
   - Read
   - Write
@@ -8,11 +8,11 @@ allowed-tools:
   - Grep
 ---
 
-# /update-changelog 명령어
+# /update-changelog Command
 
-Git 커밋 히스토리를 기반으로 CHANGELOG.md를 업데이트합니다.
+Updates CHANGELOG.md based on the Git commit history.
 
-## 사용법
+## Usage
 
 ```
 /update-changelog                       # 마지막 태그 이후 변경사항
@@ -20,9 +20,9 @@ Git 커밋 히스토리를 기반으로 CHANGELOG.md를 업데이트합니다.
 /update-changelog --version 1.1.0       # 버전 명시
 ```
 
-## CHANGELOG 형식
+## CHANGELOG Format
 
-[Keep a Changelog](https://keepachangelog.com/) 형식을 따릅니다.
+Follows the [Keep a Changelog](https://keepachangelog.com/) format.
 
 ```markdown
 # Changelog
@@ -57,9 +57,9 @@ All notable changes to this project will be documented in this file.
 - 캠페인 관리 기능
 ```
 
-## 커밋 타입 매핑
+## Commit Type Mapping
 
-| Conventional Commit | CHANGELOG 섹션 |
+| Conventional Commit | CHANGELOG Section |
 | ------------------- | -------------- |
 | feat | Added |
 | fix | Fixed |
@@ -67,15 +67,15 @@ All notable changes to this project will be documented in this file.
 | style | Changed |
 | refactor | Changed |
 | perf | Changed |
-| test | (제외) |
-| chore | (제외) |
+| test | (excluded) |
+| chore | (excluded) |
 | security | Security |
 | deprecate | Deprecated |
 | remove | Removed |
 
-## 자동화 프로세스
+## Automation Process
 
-### 1. 커밋 수집
+### 1. Collect Commits
 
 ```bash
 # 마지막 태그 이후 커밋
@@ -85,7 +85,7 @@ git log $(git describe --tags --abbrev=0)..HEAD --oneline
 git log v1.0.0..HEAD --oneline
 ```
 
-### 2. 커밋 분류
+### 2. Classify Commits
 
 ```
 feat(customer): 고객 검색 기능 추가    → Added
@@ -93,11 +93,11 @@ fix(auth): 로그인 오류 수정             → Fixed
 refactor(campaign): 테이블 컴포넌트 분리 → Changed
 ```
 
-### 3. CHANGELOG 업데이트
+### 3. Update CHANGELOG
 
-기존 CHANGELOG.md 상단에 새 섹션 추가
+Add new section at the top of the existing CHANGELOG.md
 
-## 출력 예시
+## Output Example
 
 ```markdown
 ## [1.1.0] - 2024-02-01
@@ -115,16 +115,16 @@ refactor(campaign): 테이블 컴포넌트 분리 → Changed
 - 이메일 유효성 검사 버그 수정 (#122)
 ```
 
-## 수동 편집 가이드
+## Manual Editing Guide
 
-자동 생성 후 다음을 검토/수정하세요:
+After auto-generation, review and edit the following:
 
-1. **사용자 친화적 설명**: 기술적 용어를 일반 용어로
-2. **중복 제거**: 관련 커밋 통합
-3. **이슈 링크**: PR/이슈 번호 추가
-4. **Breaking Changes**: 별도 하이라이트
+1. **User-friendly descriptions**: Replace technical jargon with plain language
+2. **Remove duplicates**: Consolidate related commits
+3. **Issue links**: Add PR/issue numbers
+4. **Breaking Changes**: Highlight separately
 
-## Breaking Changes 표시
+## Breaking Changes Notation
 
 ```markdown
 ## [2.0.0] - 2024-03-01
@@ -138,11 +138,11 @@ refactor(campaign): 테이블 컴포넌트 분리 → Changed
 ...
 ```
 
-## 연계 에이전트
+## Related Agents
 
-이 명령어는 `docs-writer` 에이전트의 문서 작성 원칙을 기반으로 합니다.
+This command is based on the `docs-writer` agent's documentation writing principles.
 
-## 연계 명령어
+## Related Commands
 
-- `/commit` - 커밋 생성
-- `/pr` - PR 생성 (CHANGELOG 포함)
+- `/commit` - Create commit
+- `/pr` - Create PR (including CHANGELOG)

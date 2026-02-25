@@ -1,6 +1,6 @@
 ---
 name: better-auth
-description: Better Auth 인증 패턴 가이드 - 세션 관리, 역할 기반 접근 제어, Server Action 통합
+description: Better Auth Authentication Pattern Guide - Session Management, Role-based Access Control, Server Action Integration
 tested-with:
   enf: "0.9.1"
   next: "16.x"
@@ -14,19 +14,25 @@ triggers:
   - auth
   - 로그아웃
   - 회원가입
+  - authentication
+  - login
+  - session
+  - authorization
+  - logout
+  - signup
 ---
 
-# Better Auth 인증 가이드
+# Better Auth Authentication Guide
 
-## 설치 및 설정
+## Installation & Setup
 
-### 1. 설치
+### 1. Installation
 
 ```bash
 pnpm add better-auth
 ```
 
-### 2. 환경 변수
+### 2. Environment Variables
 
 ```env
 # .env.local
@@ -35,7 +41,7 @@ BETTER_AUTH_URL="http://localhost:3000"
 DATABASE_URL="postgresql://..."
 ```
 
-### 3. Auth 설정
+### 3. Auth Configuration
 
 ```typescript
 // src/lib/auth.ts
@@ -86,9 +92,9 @@ export const { GET, POST } = toNextJsHandler(auth)
 
 ---
 
-## 세션 관리 패턴
+## Session Management Patterns
 
-### Server Component에서 세션 확인
+### Checking Session in Server Component
 
 ```typescript
 // src/app/(admin)/admin/(protected)/layout.tsx
@@ -118,7 +124,7 @@ export default async function ProtectedLayout({
 }
 ```
 
-### Server Action에서 인증
+### Authentication in Server Action
 
 ```typescript
 // src/app/(admin)/_actions/customer.ts
@@ -165,7 +171,7 @@ export async function updateCustomer(
 }
 ```
 
-### 클라이언트에서 세션 사용
+### Using Session on the Client
 
 ```typescript
 // src/lib/auth-client.ts
@@ -201,9 +207,9 @@ export function UserMenu() {
 
 ---
 
-## 로그인/회원가입 구현
+## Login / Signup Implementation
 
-### 로그인 폼
+### Login Form
 
 ```tsx
 "use client"
@@ -275,7 +281,7 @@ export function LoginForm() {
 }
 ```
 
-### 회원가입
+### Signup
 
 ```typescript
 import { signUp } from "@/lib/auth-client"
@@ -291,9 +297,9 @@ const { error } = await signUp.email({
 
 ---
 
-## 역할 기반 접근 제어 (RBAC)
+## Role-based Access Control (RBAC)
 
-### 사용자 타입 정의
+### User Type Definition
 
 ```typescript
 // src/lib/types.ts
@@ -307,7 +313,7 @@ export interface User {
 }
 ```
 
-### 권한 체크 유틸리티
+### Authorization Check Utilities
 
 ```typescript
 // src/lib/auth-utils.ts
@@ -348,7 +354,7 @@ export async function requireCustomer() {
 }
 ```
 
-### 사용 예시
+### Usage Examples
 
 ```typescript
 // 페이지에서
@@ -373,9 +379,9 @@ export async function deleteCustomer(id: string) {
 
 ---
 
-## Proxy (경로 보호)
+## Proxy (Route Protection)
 
-> **Next.js 16**: `middleware.ts`가 deprecated되고 `proxy.ts`로 변경되었습니다. 런타임도 Edge → **Node.js**로 변경되어 DB 접근이 가능하지만, Proxy는 가벼운 경로 보호만 담당하는 것이 권장됩니다. 실제 인증 검증은 Server Component의 `auth.api.getSession()`에서 수행합니다.
+> **Next.js 16**: `middleware.ts` has been deprecated and replaced by `proxy.ts`. The runtime also changed from Edge to **Node.js**, making DB access possible. However, it is recommended that the Proxy only handles lightweight route protection. Actual authentication verification should be performed in Server Components via `auth.api.getSession()`.
 
 ```typescript
 // src/proxy.ts (Next.js 16 표준 파일 컨벤션)
@@ -401,21 +407,21 @@ export const config = {
 }
 ```
 
-### Proxy vs Server Component 역할 분담
+### Proxy vs Server Component Role Division
 
-| 레이어 | 런타임 | 역할 | 예시 |
-|--------|--------|------|------|
-| Proxy (proxy.ts) | Node.js | 쿠키 존재 여부 확인 (빠른 리다이렉트) | 세션 쿠키 없으면 → `/admin/login` |
-| Server Component (layout.tsx) | Node.js | 실제 세션 검증 + 권한 체크 | `auth.api.getSession()` → 역할 확인 |
+| Layer | Runtime | Role | Example |
+|-------|---------|------|---------|
+| Proxy (proxy.ts) | Node.js | Check cookie existence (fast redirect) | No session cookie --> `/admin/login` |
+| Server Component (layout.tsx) | Node.js | Actual session verification + authorization check | `auth.api.getSession()` --> role verification |
 
-> **왜 Proxy에서 실제 인증을 하지 않는가?**
-> Next.js 16의 Proxy는 Node.js 런타임이라 DB 접근이 가능하지만, 렌더 코드와 분리된 네트워크 경계에서 실행됩니다. 공유 모듈이나 전역 상태에 의존하지 않는 것이 권장되므로, 쿠키 존재 여부만 확인하고 실제 세션 유효성 검증은 Server Component에서 수행합니다. Rate limiting 등 가벼운 방어는 이 레이어에 추가할 수 있습니다.
+> **Why not perform actual authentication in the Proxy?**
+> Although the Proxy in Next.js 16 runs on the Node.js runtime and can access the DB, it executes at a network boundary separated from the render code. It is recommended not to rely on shared modules or global state, so only cookie existence is checked here while actual session validity verification is performed in Server Components. Lightweight defenses such as rate limiting can be added at this layer.
 
 ---
 
-## 세션 갱신 및 만료 처리
+## Session Refresh and Expiration Handling
 
-### 클라이언트 세션 갱신
+### Client Session Refresh
 
 ```tsx
 "use client"
@@ -439,7 +445,7 @@ export function SessionRefresher() {
 }
 ```
 
-### 세션 만료 감지
+### Session Expiration Detection
 
 ```tsx
 "use client"
@@ -467,9 +473,9 @@ export function SessionGuard({ children }: { children: React.ReactNode }) {
 
 ---
 
-## 주의사항
+## Important Notes
 
-1. **세션 쿠키명**: `better-auth.session_token`
-2. **HTTPS 필수**: 프로덕션에서는 반드시 HTTPS 사용
-3. **CSRF 보호**: Better Auth가 자동으로 처리
-4. **DB 연결**: Prisma adapter 사용 시 connection pooling 설정 필요
+1. **Session cookie name**: `better-auth.session_token`
+2. **HTTPS required**: Always use HTTPS in production
+3. **CSRF protection**: Handled automatically by Better Auth
+4. **DB connection**: Connection pooling setup required when using the Prisma adapter

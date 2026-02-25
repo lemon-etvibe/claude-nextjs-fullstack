@@ -1,5 +1,5 @@
 ---
-description: TypeScript 타입 검증 - strict 모드 준수, 타입 안전성 점검
+description: TypeScript type verification - strict mode compliance and type safety audit
 allowed-tools:
   - Read
   - Glob
@@ -7,30 +7,30 @@ allowed-tools:
   - Bash
 ---
 
-# /type-check 명령어
+# /type-check Command
 
-TypeScript 타입 검사를 수행하고 타입 관련 이슈를 분석합니다.
+Performs TypeScript type checking and analyzes type-related issues.
 
-## 사용법
+## Usage
 
 ```
 /type-check                     # 전체 프로젝트 검사
-/type-check <파일경로>          # 특정 파일 분석
+/type-check <file-path>         # 특정 파일 분석
 ```
 
-## 검사 단계
+## Check Steps
 
-### 1. tsc 실행
+### 1. Run tsc
 
 ```bash
 pnpm tsc --noEmit
 ```
 
-에러 발생 시 각 에러를 분석하고 해결 방안을 제시합니다.
+When errors occur, analyzes each error and provides resolution suggestions.
 
-### 2. 타입 안전성 검사
+### 2. Type Safety Inspection
 
-#### any 타입 사용
+#### any Type Usage
 
 ```typescript
 // BAD
@@ -46,7 +46,7 @@ interface DataType { ... }
 function processData(data: DataType) { ... }
 ```
 
-#### 타입 단언 남용
+#### Type Assertion Overuse
 
 ```typescript
 // BAD: 무분별한 단언
@@ -62,7 +62,7 @@ if (isUser(data)) {
 }
 ```
 
-#### Non-null 단언
+#### Non-null Assertion
 
 ```typescript
 // BAD: 위험한 !
@@ -77,9 +77,9 @@ if (obj.prop !== undefined) {
 }
 ```
 
-### 3. Strict 모드 준수
+### 3. Strict Mode Compliance
 
-tsconfig.json 설정:
+tsconfig.json configuration:
 
 ```json
 {
@@ -92,7 +92,7 @@ tsconfig.json 설정:
 }
 ```
 
-### 4. 제네릭 활용
+### 4. Generics Utilization
 
 ```typescript
 // BEFORE: 반복되는 타입
@@ -105,7 +105,7 @@ function getFirst<T>(items: T[]): T | undefined {
 }
 ```
 
-### 5. 유틸리티 타입 활용
+### 5. Utility Types Utilization
 
 ```typescript
 // Partial - 모든 속성 선택적
@@ -121,7 +121,7 @@ type CreateUser = Omit<User, 'id' | 'createdAt'>
 type StatusMap = Record<Status, string>
 ```
 
-## 일반적인 타입 에러와 해결
+## Common Type Errors and Solutions
 
 ### 1. 'X' is possibly 'undefined'
 
@@ -160,7 +160,7 @@ function getValue<T, K extends keyof T>(obj: T, key: K): T[K] {
 }
 ```
 
-## 출력 형식
+## Output Format
 
 ```markdown
 ## TypeScript 검사 결과
@@ -194,7 +194,7 @@ function getValue<T, K extends keyof T>(obj: T, key: K): T[K] {
 2. ...
 ```
 
-## 연계 명령어
+## Related Commands
 
-- `/code-review` - 전체 코드 품질 검사
-- `/refactor` - 타입 관련 리팩토링 제안
+- `/code-review` - Full code quality review
+- `/refactor` - Type-related refactoring suggestions

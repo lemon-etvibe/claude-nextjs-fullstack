@@ -1,5 +1,5 @@
 ---
-description: 새로운 기능의 아키텍처 설계 - 라우팅, 데이터 모델, 컴포넌트 구조 결정
+description: Architecture design for new features - routing, data model, and component structure decisions
 allowed-tools:
   - Read
   - Glob
@@ -8,40 +8,40 @@ allowed-tools:
   - mcp__context7__resolve-library-id
 ---
 
-# /design-feature 명령어
+# /design-feature Command
 
-새로운 기능을 추가하기 전에 아키텍처를 설계합니다.
+Designs the architecture before adding a new feature.
 
-## 사용법
+## Usage
 
 ```
-/design-feature "<기능 설명>"
+/design-feature "<feature description>"
 /design-feature "고객 관리 CRUD"
 /design-feature "인플루언서 검색 필터"
 ```
 
-## 설계 프로세스
+## Design Process
 
-### 1. 요구사항 분석
+### 1. Requirements Analysis
 
-먼저 다음을 파악하세요:
+First, identify the following:
 
-- 기능의 목적과 사용자 스토리
-- 필요한 데이터와 관계
-- UI/UX 요구사항
-- 인증/권한 요구사항
+- Feature purpose and user stories
+- Required data and relationships
+- UI/UX requirements
+- Authentication/authorization requirements
 
-### 2. Route Group 결정
+### 2. Route Group Decision
 
-| 조건                 | Route Group                  | 예시                    |
+| Condition | Route Group | Example |
 | -------------------- | ---------------------------- | ----------------------- |
-| Admin + 인증 불필요  | `(admin)/admin/(auth)/`      | login                   |
-| Admin + 인증 필요    | `(admin)/admin/(protected)/` | dashboard, customers    |
-| Site + Header/Footer | `(site)/(main)/`             | home, influencers, blog |
-| Site + 인증 화면     | `(site)/(auth)/`             | login, register         |
-| Site + 인증 필요     | `(site)/(customer)/`         | mypage                  |
+| Admin + No auth required | `(admin)/admin/(auth)/` | login |
+| Admin + Auth required | `(admin)/admin/(protected)/` | dashboard, customers |
+| Site + Header/Footer | `(site)/(main)/` | home, influencers, blog |
+| Site + Auth screen | `(site)/(auth)/` | login, register |
+| Site + Auth required | `(site)/(customer)/` | mypage |
 
-### 3. 파일 구조 설계
+### 3. File Structure Design
 
 ```
 src/app/(<route-group>)/
@@ -61,7 +61,7 @@ src/app/(<route-group>)/
     └── loading.tsx
 ```
 
-### 4. 데이터 모델 설계
+### 4. Data Model Design
 
 ```prisma
 model Feature {
@@ -75,36 +75,36 @@ model Feature {
 }
 ```
 
-### 5. Server Action vs API Route 결정
+### 5. Server Action vs API Route Decision
 
-| 사용처        | 선택            | 이유                                 |
+| Use Case | Choice | Reason |
 | ------------- | --------------- | ------------------------------------ |
-| 폼 제출       | Server Action   | Progressive Enhancement, 캐시 무효화 |
-| CRUD 작업     | Server Action   | 인증 통합, revalidatePath            |
-| 파일 업로드   | API Route       | 스트리밍, multipart/form-data        |
-| 외부 웹훅     | API Route       | POST 엔드포인트 필요                 |
-| 외부 API 연동 | API Route       | 시크릿 키 관리, 타임아웃             |
+| Form submission | Server Action | Progressive Enhancement, cache invalidation |
+| CRUD operations | Server Action | Auth integration, revalidatePath |
+| File upload | API Route | Streaming, multipart/form-data |
+| External webhooks | API Route | POST endpoint required |
+| External API integration | API Route | Secret key management, timeouts |
 
-### 6. 컴포넌트 분류
+### 6. Component Classification
 
-| 범위             | 위치                   | 예시                        |
+| Scope | Location | Example |
 | ---------------- | ---------------------- | --------------------------- |
-| 페이지 전용      | `페이지/_components/`  | CustomerTable, CustomerForm |
-| Route Group 공유 | `(group)/_components/` | AdminShell, SiteHeader      |
-| 전체 공유        | `src/components/`      | Button, Card (shadcn/ui)    |
+| Page-specific | `page/_components/` | CustomerTable, CustomerForm |
+| Route Group shared | `(group)/_components/` | AdminShell, SiteHeader |
+| Global shared | `src/components/` | Button, Card (shadcn/ui) |
 
-### 7. 성능 고려사항
+### 7. Performance Considerations
 
-- [ ] 독립 데이터 요청 병렬화 (Promise.all)
-- [ ] Suspense 경계 위치 결정
-- [ ] 캐시 전략 (ISR/SSG/Dynamic)
-- [ ] 무거운 컴포넌트 dynamic import
+- [ ] Parallelize independent data requests (Promise.all)
+- [ ] Determine Suspense boundary placement
+- [ ] Cache strategy (ISR/SSG/Dynamic)
+- [ ] Dynamic import for heavy components
 
-## 출력 형식
+## Output Format
 
-설계 결과를 **Handoff Artifact** 형식으로 출력합니다. 이 문서는 dev-assistant가 즉시 구현을 시작할 수 있는 수준이어야 합니다.
+Output the design result as a **Handoff Artifact**. This document should be at a level where dev-assistant can immediately begin implementation.
 
-> **Handoff Artifact 상세 형식**: `architecture-expert` 에이전트 문서의 "Handoff Artifact" 섹션 참조
+> **Handoff Artifact detailed format**: See the "Handoff Artifact" section in the `architecture-expert` agent documentation
 
 ```markdown
 # Handoff: {기능명}
@@ -118,16 +118,16 @@ model Feature {
 ## 7. 구현 순서 (체크리스트)
 ```
 
-### 필수 항목
+### Required Items
 
-- **에러 처리** 섹션 포함 — Prisma 에러 케이스, 인증 실패, 404 등
-- **컴포넌트 타입** 명시 — SC (Server Component) / CC (Client Component)
-- **구현 순서** 체크리스트 — dev-assistant의 작업 순서 결정
+- **Error Handling** section included -- Prisma error cases, authentication failures, 404, etc.
+- **Component type** specified -- SC (Server Component) / CC (Client Component)
+- **Implementation order** checklist -- Determines dev-assistant's work sequence
 
-## 연계 에이전트
+## Related Agents
 
-이 명령어는 `architecture-expert` 에이전트의 설계 가이드라인과 Handoff Artifact 형식을 기반으로 합니다.
-설계 완료 후 사용자에게 안내합니다:
+This command is based on the `architecture-expert` agent's design guidelines and Handoff Artifact format.
+After design completion, inform the user:
 
-> dev-assistant에게 Handoff Artifact를 전달하여 구현을 시작하세요.
-> 예: `@dev-assistant 위 Handoff Artifact 기반으로 구현해줘. 구현 순서 1번부터.`
+> Pass the Handoff Artifact to dev-assistant to begin implementation.
+> Example: `@dev-assistant 위 Handoff Artifact 기반으로 구현해줘. 구현 순서 1번부터.`

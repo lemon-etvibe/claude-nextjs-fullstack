@@ -1,5 +1,5 @@
 ---
-description: API 및 Server Action 문서 자동 생성
+description: Auto-generate API and Server Action documentation
 allowed-tools:
   - Read
   - Write
@@ -7,19 +7,19 @@ allowed-tools:
   - Grep
 ---
 
-# /generate-docs 명령어
+# /generate-docs Command
 
-Server Actions 또는 API Routes의 문서를 자동으로 생성합니다.
+Automatically generates documentation for Server Actions or API Routes.
 
-## 사용법
+## Usage
 
 ```
-/generate-docs <파일경로>
+/generate-docs <file-path>
 /generate-docs src/app/(admin)/_actions/customer.ts
 /generate-docs src/app/api/files
 ```
 
-## Server Action 문서 템플릿
+## Server Action Documentation Template
 
 ```markdown
 # {ActionName}
@@ -111,7 +111,7 @@ export function CustomerForm({ customerId }: { customerId: string }) {
 - `revalidatePath('/admin/customers')`
 ```
 
-## API Route 문서 템플릿
+## API Route Documentation Template
 
 ```markdown
 # {API 이름}
@@ -194,28 +194,28 @@ const data = await response.json()
 \`\`\`
 ```
 
-## 문서화 프로세스
+## Documentation Process
 
-### 1. 코드 분석
+### 1. Code Analysis
 
-- 함수 시그니처 추출
-- 파라미터 타입 분석
-- 반환 타입 분석
-- Zod 스키마에서 필드 정보 추출
+- Extract function signatures
+- Analyze parameter types
+- Analyze return types
+- Extract field information from Zod schemas
 
-### 2. 컨텍스트 파악
+### 2. Context Identification
 
-- 인증 요구사항 확인
-- 캐시 무효화 확인
-- 에러 처리 패턴 확인
+- Check authentication requirements
+- Check cache invalidation
+- Check error handling patterns
 
-### 3. 문서 생성
+### 3. Document Generation
 
-- 템플릿 적용
-- 사용 예시 생성
-- 파일 저장
+- Apply template
+- Generate usage examples
+- Save file
 
-## 출력 위치
+## Output Location
 
 ```
 docs/
@@ -225,11 +225,11 @@ docs/
     └── {action-name}.md
 ```
 
-## 연계 에이전트
+## Related Agents
 
-이 명령어는 `docs-writer` 에이전트의 문서 템플릿을 기반으로 합니다.
+This command is based on the `docs-writer` agent's documentation templates.
 
-## 연계 명령어
+## Related Commands
 
-- `/component-docs` - 컴포넌트 문서 생성
-- `/update-changelog` - CHANGELOG 업데이트
+- `/component-docs` - Generate component documentation
+- `/update-changelog` - Update CHANGELOG

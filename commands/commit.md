@@ -1,5 +1,5 @@
 ---
-description: Git 커밋 생성 - Conventional Commits 형식
+description: Git commit creation - Conventional Commits format
 allowed-tools:
   - Bash
   - Read
@@ -7,14 +7,14 @@ allowed-tools:
   - Grep
 ---
 
-# /commit 명령어
+# /commit Command
 
-변경사항을 분석하고 Conventional Commits 형식의 커밋을 생성합니다.
+Analyzes changes and creates a commit in Conventional Commits format.
 
-> **참고**: 외부 플러그인 `commit-commands`가 설치된 경우 해당 플러그인이 우선 사용됩니다.
-> 이 명령어는 폴백용으로 제공됩니다.
+> **Note**: If the external plugin `commit-commands` is installed, that plugin takes priority.
+> This command is provided as a fallback.
 
-## 사용법
+## Usage
 
 ```
 /commit                         # 자동 커밋 메시지 생성
@@ -22,7 +22,7 @@ allowed-tools:
 /commit --amend                 # 이전 커밋 수정
 ```
 
-## Conventional Commits 형식
+## Conventional Commits Format
 
 ```
 <type>(<scope>): <description>
@@ -34,29 +34,29 @@ allowed-tools:
 
 ### Type
 
-| Type | 설명 |
+| Type | Description |
 | ---- | ---- |
-| `feat` | 새로운 기능 |
-| `fix` | 버그 수정 |
-| `docs` | 문서 변경 |
-| `style` | 코드 포맷팅 (기능 변경 없음) |
-| `refactor` | 코드 리팩토링 |
-| `test` | 테스트 추가/수정 |
-| `chore` | 빌드, 설정 등 기타 |
-| `perf` | 성능 개선 |
+| `feat` | New feature |
+| `fix` | Bug fix |
+| `docs` | Documentation changes |
+| `style` | Code formatting (no functional changes) |
+| `refactor` | Code refactoring |
+| `test` | Add/modify tests |
+| `chore` | Build, configuration, and other miscellaneous |
+| `perf` | Performance improvements |
 
-### Scope (선택적)
+### Scope (optional)
 
-변경이 영향을 미치는 영역:
+Area affected by the change:
 
-- `auth` - 인증 관련
-- `customer` - 고객 관련
-- `campaign` - 캠페인 관련
-- `ui` - UI 컴포넌트
-- `prisma` - 데이터베이스
-- `api` - API 관련
+- `auth` - Authentication related
+- `customer` - Customer related
+- `campaign` - Campaign related
+- `ui` - UI components
+- `prisma` - Database
+- `api` - API related
 
-### 예시
+### Examples
 
 ```
 feat(customer): 고객 목록 필터 기능 추가
@@ -68,9 +68,9 @@ feat(customer): 고객 목록 필터 기능 추가
 Closes #123
 ```
 
-## 워크플로우
+## Workflow
 
-### 1. 변경사항 확인
+### 1. Check Changes
 
 ```bash
 git status
@@ -78,13 +78,13 @@ git diff --staged
 git diff
 ```
 
-### 2. 변경사항 분석
+### 2. Analyze Changes
 
-- 어떤 파일이 변경되었는가?
-- 어떤 유형의 변경인가? (feat/fix/refactor 등)
-- 변경의 범위는? (scope)
+- Which files were changed?
+- What type of change is it? (feat/fix/refactor, etc.)
+- What is the scope of the change?
 
-### 3. 스테이징
+### 3. Staging
 
 ```bash
 # 특정 파일
@@ -94,28 +94,28 @@ git add src/app/(admin)/_actions/customer.ts
 git add src/app/(admin)/
 ```
 
-### 4. 커밋 생성
+### 4. Create Commit
 
 ```bash
 git commit -m "feat(customer): 고객 검색 기능 추가"
 ```
 
-## 커밋 메시지 작성 가이드
+## Commit Message Writing Guide
 
 ### DO
 
-- 현재 시제 사용 ("Add" not "Added")
-- 첫 글자 소문자 (영문) 또는 한글
-- 50자 이내의 제목
-- 무엇을, 왜 변경했는지 설명
+- Use present tense ("Add" not "Added")
+- Lowercase first letter (English) or Korean
+- Subject line within 50 characters
+- Explain what and why was changed
 
 ### DON'T
 
-- 마침표로 끝내지 않음
-- "커밋" 같은 자명한 단어 사용
-- 너무 모호한 설명 ("수정", "업데이트")
+- Do not end with a period
+- Do not use self-evident words like "commit"
+- Avoid overly vague descriptions ("fix", "update")
 
-## 출력 형식
+## Output Format
 
 ```markdown
 ## 커밋 생성
@@ -140,8 +140,8 @@ git commit -m "feat(customer): 고객 검색 기능 추가"
 - **브랜치**: feat/customer-search
 ```
 
-## 연계 명령어
+## Related Commands
 
-- `/task` - 작업 시작
-- `/push` - 원격 푸시
-- `/pr` - PR 생성
+- `/task` - Start a task
+- `/push` - Push to remote
+- `/pr` - Create PR
