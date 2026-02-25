@@ -24,8 +24,8 @@
 - **i18n**: frontmatter description 영문 전환 (skills/agents/commands 전체)
 
 ### Fixed
-- **i18n**: translate Korean inline example and document translation rules (#16)
-- (버그 수정 시 여기에 기록)
+- **i18n**: design-feature.md 한글 인라인 예시 영문 전환 (#16)
+- **docs**: CONTRIBUTING.md에 i18n 리뷰 체크리스트 추가 — Output Format/docs-writer 템플릿 한글 유지 규칙 문서화 (#16)
 
 ---
 

@@ -92,6 +92,7 @@ Claude가 로드하는 파일을 영문 전환. 사용자 대면 문서(docs/, R
 
 - [x] README.md 상단 한국어 안내 문구 추가
 - [x] 영문화 검증 — frontmatter 무결성, triggers 한글+영문 병행, 코드 주석 한글 유지 확인
+- [x] 팀 리뷰 피드백 반영 — design-feature.md 한글 인라인 예시 영문 전환, CONTRIBUTING.md i18n 규칙 문서화 (#16)
 
 ## Phase 6-B: 배포/모니터링 가이드 (1.1)
 
@@ -149,3 +150,4 @@ Phase 1~5 + 6-A 완료 시 릴리즈 가능
 - [x] Phase 4: COMPATIBILITY.md + tested-with 메타데이터 + /enf:health 커맨드 (2026-02-25)
 - [x] Phase 5: error-handling 스킬 + Handoff Artifact 프로토콜 (2026-02-25)
 - [x] Phase 6-A: 영문화 — Skills 6개 + Agents 4개 + Commands 17개 + README 안내 문구 (2026-02-25)
+- [x] Phase 6-A 팀 리뷰 패치: design-feature.md 영문 전환 + CONTRIBUTING.md i18n 규칙 문서화 (2026-02-25)
