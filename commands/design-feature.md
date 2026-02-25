@@ -102,50 +102,32 @@ model Feature {
 
 ## 출력 형식
 
+설계 결과를 **Handoff Artifact** 형식으로 출력합니다. 이 문서는 dev-assistant가 즉시 구현을 시작할 수 있는 수준이어야 합니다.
+
+> **Handoff Artifact 상세 형식**: `architecture-expert` 에이전트 문서의 "Handoff Artifact" 섹션 참조
+
 ```markdown
-## 기능 설계: {기능명}
+# Handoff: {기능명}
 
-### 1. 요구사항 요약
-- ...
-
-### 2. 라우팅 구조
-- Route Group: (admin)/admin/(protected)/
-- URL 패턴: /admin/features, /admin/features/[id]
-
-### 3. 파일 구조
-```
-src/app/(admin)/
-├── _actions/feature.ts
-├── _components/
-│   ├── FeatureForm.tsx
-│   └── FeatureTable.tsx
-└── admin/(protected)/features/
-    ├── page.tsx
-    └── [id]/page.tsx
+## 1. 요구사항 요약
+## 2. 데이터 모델 (Prisma 스키마)
+## 3. 파일 구조 (SC/CC 타입 명시)
+## 4. Server Actions / API Routes (함수명, 인증, 설명)
+## 5. 컴포넌트 목록 (타입, Props)
+## 6. 에러 처리 (Prisma 에러 코드, 인증 실패, 404 케이스)
+## 7. 구현 순서 (체크리스트)
 ```
 
-### 4. 데이터 모델
-```prisma
-model Feature { ... }
-```
+### 필수 항목
 
-### 5. Server Actions
-- createFeature
-- updateFeature
-- deleteFeature
-
-### 6. 컴포넌트 목록
-| 컴포넌트 | 타입 | 설명 |
-| -------- | ---- | ---- |
-
-### 7. 구현 순서
-1. Prisma 스키마 추가 → 마이그레이션
-2. Server Actions 구현
-3. 컴포넌트 구현
-4. 페이지 통합
-```
+- **에러 처리** 섹션 포함 — Prisma 에러 케이스, 인증 실패, 404 등
+- **컴포넌트 타입** 명시 — SC (Server Component) / CC (Client Component)
+- **구현 순서** 체크리스트 — dev-assistant의 작업 순서 결정
 
 ## 연계 에이전트
 
-이 명령어는 `architecture-expert` 에이전트의 설계 가이드라인을 기반으로 합니다.
-구현은 `dev-assistant` 에이전트가 담당합니다.
+이 명령어는 `architecture-expert` 에이전트의 설계 가이드라인과 Handoff Artifact 형식을 기반으로 합니다.
+설계 완료 후 사용자에게 안내합니다:
+
+> dev-assistant에게 Handoff Artifact를 전달하여 구현을 시작하세요.
+> 예: `@dev-assistant 위 Handoff Artifact 기반으로 구현해줘. 구현 순서 1번부터.`

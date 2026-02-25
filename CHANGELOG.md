@@ -11,6 +11,8 @@
 - **compatibility**: Phase 4 유통기한 관리 (#13)
 - **testing**: Phase 3-A 테스트 패턴 스킬 및 커맨드 추가 (#11)
 - **compatibility**: Phase 4 유통기한 관리 — COMPATIBILITY.md, tested-with 메타데이터, /enf:health 커맨드
+- **error-handling**: Phase 5 에러 핸들링 스킬 추가 — Server Action, API Route, Prisma, Error Boundary 패턴
+- **workflow**: Phase 5 에이전트 핸드오프 프로토콜 정의 — Handoff Artifact 형식, design-feature 출력 강화
 
 ### Changed
 - **troubleshooting**: Phase 3-B 트러블슈팅 가이드 추가 (#12)

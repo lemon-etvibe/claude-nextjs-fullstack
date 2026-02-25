@@ -324,7 +324,7 @@ export async function updateCustomer(...) {
 
 ## 고급 시나리오
 
-### 1. 복잡한 기능 설계
+### 1. 복잡한 기능 설계 (Handoff Protocol)
 
 #### 시나리오
 "캠페인-인플루언서 매칭 시스템을 설계해야 해요"
@@ -332,26 +332,28 @@ export async function updateCustomer(...) {
 #### 워크플로우
 
 ```bash
-# 1. 설계 요청 (architecture-expert)
+# 1. 설계 요청 → Handoff Artifact 출력
 > /enf:design-feature "캠페인-인플루언서 매칭 시스템"
 # 요구사항:
 # - 캠페인에 여러 인플루언서 지원
 # - 상태 관리 (지원 → 매칭 → 진행 → 완료)
 # - 각 단계별 알림
 
-# 2. 설계 검토 후 데이터 모델 구체화
-> /enf:schema-design
-# CampaignInfluencer 중간 테이블 필요
+# 2. Handoff Artifact 확인 후 구현 시작
+> @dev-assistant 위 Handoff Artifact 기반으로 구현해줘. 구현 순서 1번(Prisma 스키마)부터.
 
-# 3. 구현 (dev-assistant)
-> 위 설계대로 구현해줘. 먼저 Prisma 스키마부터.
+# 3. 구현 순서대로 진행
+> 다음 단계(Server Actions)를 구현해줘
 
-# 4. 성능 검토 (performance-expert)
+# 4. 성능 검토
 > /enf:perf-audit
 
-# 5. 문서화 (docs-writer)
+# 5. 문서화
 > 캠페인-인플루언서 매칭 시스템 문서를 작성해줘
 ```
+
+#### Handoff Artifact란?
+architecture-expert가 `/enf:design-feature` 실행 시 출력하는 구조화된 설계 문서입니다. 구현에 필요한 모든 정보(데이터 모델, 파일 구조, 에러 케이스, 구현 순서)를 포함합니다.
 
 ---
 

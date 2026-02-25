@@ -126,6 +126,8 @@ chore: 빌드/설정
 
 ## 7. 에러 핸들링
 
+> **상세 패턴**: `error-handling` 스킬 참조 — Server Action, API Route, Prisma, Error Boundary 에러 처리
+
 ```typescript
 // 서버 - 유효성 검증
 if (!valid) notFound();
