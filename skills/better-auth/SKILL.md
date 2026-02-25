@@ -368,15 +368,15 @@ export async function deleteCustomer(id: string) {
 
 ---
 
-## Middleware (경로 보호)
+## Proxy (경로 보호)
 
-> **참고**: Middleware는 가벼운 경로 보호만 담당합니다. 실제 인증 검증은 Server Component의 `auth.api.getSession()`에서 수행합니다.
+> **Next.js 16**: `middleware.ts`가 deprecated되고 `proxy.ts`로 변경되었습니다. 런타임도 Edge → **Node.js**로 변경되어 DB 접근이 가능하지만, Proxy는 가벼운 경로 보호만 담당하는 것이 권장됩니다. 실제 인증 검증은 Server Component의 `auth.api.getSession()`에서 수행합니다.
 
 ```typescript
-// src/middleware.ts
+// src/proxy.ts (Next.js 16 표준 파일 컨벤션)
 import { NextRequest, NextResponse } from "next/server"
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Admin 경로 보호 (로그인 페이지 제외)
@@ -396,15 +396,15 @@ export const config = {
 }
 ```
 
-### Middleware vs Server Component 역할 분담
+### Proxy vs Server Component 역할 분담
 
-| 레이어 | 역할 | 예시 |
-|--------|------|------|
-| Middleware | 쿠키 존재 여부 확인 (빠른 리다이렉트) | 세션 쿠키 없으면 → `/admin/login` |
-| Server Component (layout.tsx) | 실제 세션 검증 + 권한 체크 | `auth.api.getSession()` → 역할 확인 |
+| 레이어 | 런타임 | 역할 | 예시 |
+|--------|--------|------|------|
+| Proxy (proxy.ts) | Node.js | 쿠키 존재 여부 확인 (빠른 리다이렉트) | 세션 쿠키 없으면 → `/admin/login` |
+| Server Component (layout.tsx) | Node.js | 실제 세션 검증 + 권한 체크 | `auth.api.getSession()` → 역할 확인 |
 
-> **왜 Middleware에서 실제 인증을 하지 않는가?**
-> Middleware는 Edge Runtime에서 실행되므로 DB 접근이 제한됩니다. 쿠키 존재 여부만 확인하고, 실제 세션 유효성 검증은 Server Component에서 수행합니다. Rate limiting 등 Edge Runtime에서 가능한 방어는 필요 시 이 레이어에 추가할 수 있습니다.
+> **왜 Proxy에서 실제 인증을 하지 않는가?**
+> Next.js 16의 Proxy는 Node.js 런타임이라 DB 접근이 가능하지만, 렌더 코드와 분리된 네트워크 경계에서 실행됩니다. 공유 모듈이나 전역 상태에 의존하지 않는 것이 권장되므로, 쿠키 존재 여부만 확인하고 실제 세션 유효성 검증은 Server Component에서 수행합니다. Rate limiting 등 가벼운 방어는 이 레이어에 추가할 수 있습니다.
 
 ---
 

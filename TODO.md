@@ -12,12 +12,12 @@ etvibe-nextjs-fullstack 플러그인 로드맵
 - [x] `.env` 커밋 방어 hook 추가 (exit 2 — 작업 중단)
 - [x] `plugin.json` + `marketplace.json` description 영문 병기
 
-## Phase 2: P1 보안/안정성
+## Phase 2: P1 보안/안정성 ✅
 
-- [ ] 권한 설정 축소 (`--force`, `-D` 등 destructive 명령 제외)
-- [ ] `claude:*` 와일드카드 → 명시적 allowlist
-- [ ] MCP 버전 고정 (`npx -y @latest` → `@x.y.z`)
-- [ ] Better Auth proxy.ts → API Route handler 업데이트
+- [x] 권한 설정 축소 (`--force`, `-D` 등 destructive 명령 제외)
+- [x] `claude:*` 와일드카드 → 명시적 allowlist
+- [x] MCP 버전 고정 (`npx -y @latest` → `@x.y.z`)
+- [x] Better Auth proxy.ts → middleware.ts 패턴 업데이트
 
 ## Phase 3: 기능 완결 (병렬)
 
@@ -63,8 +63,8 @@ Phase 1~4 완료 시 릴리즈 가능
 | 조건 | 필수 |
 |------|:----:|
 | P0 해결 (hooks 통합, .env 방어) | ✅ |
-| P1 해결 (권한 축소, proxy.ts) | O |
-| 보안 (.env 방어, MCP 고정) | O |
+| P1 해결 (권한 축소, proxy.ts) | ✅ |
+| 보안 (.env 방어, MCP 고정) | ✅ |
 | /enf:test 커맨드 | O |
 | TROUBLESHOOTING.md | O |
 | COMPATIBILITY.md | O |
@@ -94,3 +94,4 @@ Phase 1~4 완료 시 릴리즈 가능
 - [x] code-review MCP/스킬 연동 (2026-02-25)
 - [x] 브랜치 워크플로우 문서 강화 (2026-02-25)
 - [x] Phase 1 P0: hooks 3→1 통합, .env exit 2 방어, 영문 병기 (2026-02-25)
+- [x] Phase 2 P1: 권한 축소, claude:* 제거, MCP 버전 고정, proxy.ts→middleware.ts (2026-02-25)
