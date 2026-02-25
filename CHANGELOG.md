@@ -20,14 +20,14 @@
 
 ## [1.0.1] - 2026-02-25
 
-### Added
-- (예정된 기능 추가 시 여기에 기록)
-
 ### Changed
-- (변경된 기능 있을 시 여기에 기록)
+- Quick Start 설치 가이드를 마켓플레이스 방식으로 변경 (git clone 제거)
+- 팀 온보딩 문서 설치 섹션 마켓플레이스 방식으로 변경
+- Update 섹션 간소화 (`claude plugin update enf@enf`)
 
 ### Fixed
-- (버그 수정 시 여기에 기록)
+- CI: deliver 워크플로우 태그 재생성 시 기존 태그 처리 개선
+- CI: persist-credentials 설정으로 DEPLOY_TOKEN 정상 동작
 
 ---
 
