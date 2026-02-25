@@ -641,3 +641,119 @@ Neo와 Seraph 로드맵을 참고하되, 위의 누락 사항을 반영:
 크리티컬 수정(P0 2건 + P1 2건) → 운영 안정성(트러블슈팅 + MCP 고정) → 기능 완결(테스트) 순서로 가면, **견고한 1.0**이 될 수 있어요.
 
 *좋은 도구는 잘 될 때 빛나지만, 훌륭한 도구는 잘 안 될 때도 사용자를 잡아줍니다.* 🔮
+
+---
+
+## 14. 팀 합의 최종 로드맵
+
+> 작성일: 2026-02-25
+> 합의: Claude Opus 4.5 (제작자) + Neo (개발 리드) + Seraph (보안/인프라) + Oracle (품질 게이트키퍼)
+
+### 14.1 크리티컬 이슈 최종 분류 (만장일치)
+
+| 이슈 | 최종 등급 | 합의 상태 |
+|------|:---------:|:---------:|
+| 3.2 `--no-turbo` 플래그 오류 | **P0** | 만장일치 |
+| 3.4 hooks 패턴 범위 과다 | **P0** | 만장일치 |
+| 3.3 권한 설정 과도 (`git:*`, `claude:*`) | **P1** | 만장일치 (Opus 4.5 P2→P1 수정 수용) |
+| 3.1 Better Auth proxy.ts 구식 | **P1** | 만장일치 |
+
+### 14.2 종합 점수 (팀 합의)
+
+| 항목 | 원본 | 수정 반영 후 | 팀 합의 |
+|------|:----:|:-----------:|:------:|
+| 품질 | 8.0 | 8.5 | **8.5** |
+| 완성도 | 7.0 | 7.5 | **7.5** |
+| 일관성 | 7.5 | 8.0 | **8.0** |
+| 효과성 | 8.5 | 8.5 | **8.5** |
+| 기술 정확성 | 8.0 | 8.5 | **8.5** |
+| 확장성 | 6.5 | 7.5→6.5 | **6.5** (3:1 합의) |
+| **종합** | **7.7** | **8.2→7.9** | **7.9** |
+
+### 14.3 최종 실행 로드맵
+
+```
+Phase 1 ──── P0 즉시 수정 ─────────────────────── [1-2시간]
+  │
+  ├─ 1. --no-turbo 플래그 제거 (settings.local.json)
+  ├─ 2. hooks 패턴을 src/**/*.{ts,tsx}, prisma/schema.prisma로 제한
+  ├─ 3. .env 커밋 방어 hook 추가 (Seraph 제안, hooks 수정 시 같이)
+  └─ 4. plugin.json description 영문 병기 (Seraph 제안, 5분 작업)
+
+Phase 2 ──── P1 보안/안정성 ────────────────────── [반나절]
+  │
+  ├─ 5. 권한 설정 축소 (--force, -D 등 destructive 명령 제외)
+  ├─ 6. claude:* 와일드카드 → 명시적 allowlist
+  └─ 7. MCP 버전 고정 (npx -y @latest → @x.y.z)
+
+Phase 3 ──── 기능 완결 (병렬) ──────────────────── [2-3일]
+  │
+  ├─ 3-A. 테스트 패턴 스킬 + /enf:test 커맨드
+  │       ├─ Vitest Unit Test 패턴
+  │       ├─ Testing Library 컴포넌트 테스트
+  │       ├─ Playwright E2E
+  │       └─ Server Action 테스트 패턴
+  │
+  └─ 3-B. 트러블슈팅 가이드 (docs/TROUBLESHOOTING.md)
+          ├─ 스킬 잘못된 코드 생성 시 롤백
+          ├─ hooks 실패 시 우회 방법
+          └─ MCP 연결 실패 시 수동 대체
+
+Phase 4 ──── 유통기한 관리 (Oracle 제안) ────────── [1일]
+  │
+  ├─ 8. COMPATIBILITY.md — 지원 버전 매트릭스
+  │     ├─ Next.js 16.x, Prisma 7.x, Better Auth ^1.4.0
+  │     └─ 메이저 버전 업 체크리스트
+  ├─ 9. 각 스킬 상단에 tested-with 메타데이터 추가 (Seraph 제안)
+  └─ 10. /enf:health 커맨드 — 버전 호환성 자동 검증
+
+Phase 5 ──── 워크플로우 고도화 ─────────────────── [1-2일]
+  │
+  ├─ 11. 에이전트 핸드오프 프로토콜 정의 (Oracle 제안)
+  │      └─ architecture-expert → dev-assistant 전달 포맷 표준화
+  ├─ 12. 에러 핸들링 / API Route 패턴 보강
+  └─ 13. Better Auth proxy.ts → API Route handler 업데이트
+
+Phase 6 ──── 확장 ─────────────────────────────── [1주]
+  │
+  ├─ 14. 영문화 (README, SKILL 4개, COMMANDS-REFERENCE)
+  ├─ 15. 배포/모니터링 가이드 (Vercel, Sentry)
+  └─ 16. 모노레포 가이드 (필요 시)
+```
+
+### 14.4 팀 의견 반영 추적
+
+| 제안 | 제안자 | 반영 위치 | 상태 |
+|------|--------|----------|:----:|
+| hooks 패턴 제한 | 원본 리포트 | Phase 1-2 | 반영 |
+| .env 커밋 방어 | Seraph | Phase 1-3 | 반영 |
+| plugin.json 영문 병기 | Seraph | Phase 1-4 | 반영 |
+| MCP 버전 고정 | Neo + Seraph | Phase 2-7 | 반영 |
+| 테스트 + 트러블슈팅 병렬 | Opus 4.5 (전원 동의) | Phase 3 A/B | 반영 |
+| COMPATIBILITY.md | Neo + Seraph | Phase 4-8 | 반영 |
+| tested-with 메타데이터 | Seraph | Phase 4-9 | 반영 |
+| 에이전트 핸드오프 프로토콜 | Oracle | Phase 5-11 | 반영 |
+| 유통기한 관리 | Oracle | Phase 4 전체 | 반영 |
+| 트러블슈팅 가이드 | Oracle | Phase 3-B | 반영 |
+
+### 14.5 1.0 릴리즈 게이트 조건
+
+Phase 1~4 완료 시 1.0 릴리즈 가능. Phase 5~6은 1.x 후속 업데이트.
+
+| 게이트 | 조건 | 필수 |
+|--------|------|:----:|
+| P0 해결 | --no-turbo, hooks 패턴 | O |
+| P1 해결 | 권한 축소, proxy.ts | O |
+| 보안 | .env 방어, MCP 고정 | O |
+| 테스트 | /enf:test 커맨드 존재 | O |
+| 트러블슈팅 | TROUBLESHOOTING.md 존재 | O |
+| 유통기한 | COMPATIBILITY.md 존재 | O |
+| 영문화 | plugin.json description | O |
+| 핸드오프 | 프로토콜 문서화 | X (1.1) |
+| 풀 영문화 | README, SKILL, COMMANDS | X (1.1) |
+| 모노레포 | 가이드 문서 | X (1.2+) |
+
+---
+
+*이 로드맵은 4명의 리뷰어 합의에 기반하며, 실행 순서의 근거가 됩니다.*
+*다음 단계: Phase 1부터 순차 진행*
