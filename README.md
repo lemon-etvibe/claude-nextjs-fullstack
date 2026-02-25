@@ -25,7 +25,7 @@ Namespace:   /enf:command (예: /enf:commit, /enf:code-review)
 | 문제 | 해결 |
 |------|------|
 | 팀마다 다른 코드 스타일 | **6개 Skills**로 컨벤션 자동 적용 |
-| 반복되는 보일러플레이트 | **16개 Commands**로 워크플로우 자동화 |
+| 반복되는 보일러플레이트 | **17개 Commands**로 워크플로우 자동화 |
 | 기술 스택 학습 곡선 | **4개 Agents**가 베스트 프랙티스 가이드 |
 | 코드 리뷰 병목 | AI 기반 사전 리뷰로 품질 향상 |
 
@@ -94,7 +94,7 @@ cd C:\plugins\enf
 | **performance-expert** | 번들 분석/Core Web Vitals | next-devtools 연동 |
 | **docs-writer** | API/컴포넌트 문서 생성 | 템플릿 기반 자동화 |
 
-### Commands (16)
+### Commands (17)
 
 모든 명령어는 `/enf:` 네임스페이스를 사용합니다.
 
@@ -114,6 +114,7 @@ cd C:\plugins\enf
 | **Docs** | `generate-docs` | Server Action/API 문서 자동 생성 |
 | | `component-docs` | 컴포넌트 Props 문서 생성 |
 | | `update-changelog` | CHANGELOG.md 자동 업데이트 |
+| **Test** | `test` | 테스트 실행 및 테스트 코드 생성 (Vitest, Playwright) |
 | **진단** | `health` | 프로젝트 버전 호환성 검사 |
 | **Guide** | `init` | 플러그인 사용법 및 프로젝트 가이드 |
 
