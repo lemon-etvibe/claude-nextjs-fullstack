@@ -194,6 +194,7 @@ Verified plugins automatically installed by the setup script.
 | [Agents Manual](./docs/AGENTS-MANUAL.md) | Detailed agent usage |
 | [Scenario Guides](./docs/SCENARIO-GUIDES.md) | Workflow guides by scenario |
 | [Compatibility](./docs/COMPATIBILITY.md) | Supported version matrix |
+| [Contributing](./docs/CONTRIBUTING.md) | Contribution guide |
 | [CHANGELOG](./CHANGELOG.md) | Version history |
 
 ---

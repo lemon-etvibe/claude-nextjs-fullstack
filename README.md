@@ -197,6 +197,7 @@ cd C:\plugins\enf
 | [Agents Manual](./docs/AGENTS-MANUAL.md) | 에이전트 상세 사용법 |
 | [Scenario Guides](./docs/SCENARIO-GUIDES.md) | 상황별 워크플로우 |
 | [Compatibility](./docs/COMPATIBILITY.md) | 지원 버전 매트릭스 |
+| [Contributing](./docs/CONTRIBUTING.md) | 기여 가이드 |
 | [CHANGELOG](./CHANGELOG.md) | 버전 이력 |
 
 ---
