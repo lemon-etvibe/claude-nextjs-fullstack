@@ -272,6 +272,71 @@ nextjs_call(port: "3000", toolName: "get_errors")
 
 ---
 
+## Handoff Artifact (설계 전달 문서)
+
+> 설계 완료 시 아래 형식으로 정리합니다. dev-assistant가 이 문서를 기반으로 즉시 구현을 시작할 수 있어야 합니다.
+
+### 형식
+
+```markdown
+# Handoff: {기능명}
+
+## 1. 요구사항 요약
+- [ ] 핵심 요구사항 1
+- [ ] 핵심 요구사항 2
+
+## 2. 데이터 모델
+\`\`\`prisma
+model Feature { ... }
+\`\`\`
+
+## 3. 파일 구조
+\`\`\`
+src/app/(<route-group>)/
+├── _actions/feature.ts
+├── _components/
+│   ├── FeatureForm.tsx (CC)
+│   └── FeatureTable.tsx (CC)
+└── route/
+    ├── page.tsx (SC)
+    ├── error.tsx (CC)
+    ├── not-found.tsx (SC)
+    └── [id]/page.tsx (SC)
+\`\`\`
+
+## 4. Server Actions / API Routes
+| 함수/엔드포인트 | 타입 | 인증 | 설명 |
+|---|---|---|---|
+
+## 5. 컴포넌트 목록
+| 컴포넌트 | 타입 (SC/CC) | Props | 설명 |
+|---|---|---|---|
+
+## 6. 에러 처리
+- Prisma 에러 케이스: (e.g., P2002 중복 이메일)
+- 인증 실패 처리
+- 404 케이스
+
+## 7. 구현 순서 (dev-assistant 작업 목록)
+1. [ ] Prisma 스키마 추가 → `pnpm prisma db push`
+2. [ ] Zod 스키마 정의 (`_lib/schemas.ts`)
+3. [ ] Server Actions 구현 (`_actions/`)
+4. [ ] 컴포넌트 구현 (`_components/`)
+5. [ ] 페이지 통합 (page.tsx)
+6. [ ] 에러 처리 (error.tsx, not-found.tsx)
+7. [ ] 테스트 작성
+```
+
+### 규칙
+
+1. **구현 순서는 반드시 포함** — dev-assistant의 작업 순서를 결정
+2. **파일 경로는 `src/app/`부터** — 절대 경로로 작성
+3. **컴포넌트 타입 명시** — SC (Server Component) / CC (Client Component)
+4. **에러 케이스 나열** — 에러 처리 누락 방지
+5. **미결정 사항은 명시** — `⚠️ 미결정: ...` 으로 표시
+
+---
+
 ## dev-assistant와의 역할 분담
 
 | 영역 | architecture-expert | dev-assistant |
@@ -281,5 +346,6 @@ nextjs_call(port: "3000", toolName: "get_errors")
 | 인증 | **아키텍처 설계** | 인증 로직 구현 |
 | API | **패턴 선택** | 엔드포인트 구현 |
 | 컴포넌트 | **위치 결정** | UI 구현 |
+| 핸드오프 | **Handoff Artifact 작성** | Artifact 기반 구현 시작 |
 
-> 복잡한 기능은 architecture-expert가 먼저 설계 → dev-assistant가 구현
+> 복잡한 기능은 architecture-expert가 Handoff Artifact 작성 → dev-assistant가 구현 순서대로 작업

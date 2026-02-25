@@ -43,10 +43,10 @@ etvibe-nextjs-fullstack 플러그인 로드맵
 - [x] 각 스킬 상단에 `tested-with` 메타데이터 추가
 - [x] `/enf:health` 커맨드 — 버전 호환성 자동 검증
 
-## Phase 5: 워크플로우 고도화
+## Phase 5: 워크플로우 고도화 ✅
 
-- [ ] 에이전트 핸드오프 프로토콜 정의 (architecture-expert → dev-assistant)
-- [ ] 에러 핸들링 / API Route 패턴 보강
+- [x] 에이전트 핸드오프 프로토콜 정의 (architecture-expert → dev-assistant)
+- [x] 에러 핸들링 / API Route 패턴 보강
 
 ## Phase 6: 확장
 
@@ -98,3 +98,4 @@ Phase 1~4 완료 시 릴리즈 가능
 - [x] Phase 3-A: 테스트 스킬 + /enf:test 커맨드 + 5개 문서 업데이트 (2026-02-25)
 - [x] Phase 3-B: TROUBLESHOOTING.md 작성 — 롤백/hooks 우회/MCP 수동 대체 (2026-02-25)
 - [x] Phase 4: COMPATIBILITY.md + tested-with 메타데이터 + /enf:health 커맨드 (2026-02-25)
+- [x] Phase 5: error-handling 스킬 + Handoff Artifact 프로토콜 (2026-02-25)

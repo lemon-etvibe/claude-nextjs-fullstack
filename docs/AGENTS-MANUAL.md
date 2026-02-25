@@ -424,14 +424,17 @@ export default async function CustomersPage() {
 
 ## 협업 패턴
 
-### 복잡한 기능 개발
+### 복잡한 기능 개발 (Handoff Protocol)
 
 ```
 1. architecture-expert
-   └── 전체 구조 설계 (Route, 모델, API 패턴)
+   ├── 전체 구조 설계 (Route, 모델, API 패턴)
+   └── ✅ Handoff Artifact 출력
+       (요구사항, 데이터 모델, 파일 구조, 에러 케이스, 구현 순서)
 
 2. dev-assistant
-   └── 설계 기반 구현
+   ├── Handoff Artifact의 구현 순서에 따라 작업
+   └── 각 단계 완료 시 체크
 
 3. performance-expert
    └── 성능 검토 및 최적화
@@ -439,6 +442,8 @@ export default async function CustomersPage() {
 4. docs-writer
    └── 문서화
 ```
+
+> **Handoff Artifact**는 architecture-expert가 `/enf:design-feature` 실행 시 출력하는 구조화된 설계 문서입니다. 상세 형식은 architecture-expert 에이전트 문서를 참조하세요.
 
 ### 패턴별 추천 흐름
 
@@ -469,11 +474,11 @@ docs-writer (단독)
 ### 호출 예시: 복잡한 기능 개발
 
 ```bash
-# Step 1: 설계
-> @architecture-expert 캠페인 관리 기능을 설계해줘
+# Step 1: 설계 → Handoff Artifact 출력
+> /enf:design-feature "캠페인 관리 기능"
 
-# Step 2: 구현
-> @dev-assistant 위 설계대로 구현해줘
+# Step 2: Handoff Artifact 기반 구현
+> @dev-assistant 위 Handoff Artifact 기반으로 구현해줘. 구현 순서 1번부터.
 
 # Step 3: 성능 검토
 > @performance-expert 구현된 코드의 성능을 검토해줘
