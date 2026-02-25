@@ -17,7 +17,7 @@ etvibe-nextjs-fullstack 플러그인 로드맵
 - [x] 권한 설정 축소 (`--force`, `-D` 등 destructive 명령 제외)
 - [x] `claude:*` 와일드카드 → 명시적 allowlist
 - [x] MCP 버전 고정 (`npx -y @latest` → `@x.y.z`)
-- [x] Better Auth proxy.ts → middleware.ts 패턴 업데이트
+- [x] Better Auth proxy.ts 패턴을 Next.js 16 표준으로 업데이트
 
 ## Phase 3: 기능 완결 (병렬)
 
@@ -94,4 +94,4 @@ Phase 1~4 완료 시 릴리즈 가능
 - [x] code-review MCP/스킬 연동 (2026-02-25)
 - [x] 브랜치 워크플로우 문서 강화 (2026-02-25)
 - [x] Phase 1 P0: hooks 3→1 통합, .env exit 2 방어, 영문 병기 (2026-02-25)
-- [x] Phase 2 P1: 권한 축소, claude:* 제거, MCP 버전 고정, proxy.ts→middleware.ts (2026-02-25)
+- [x] Phase 2 P1: 권한 축소, claude:* 제거, MCP 버전 고정, proxy.ts Next.js 16 표준 업데이트 (2026-02-25)
