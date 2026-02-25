@@ -24,6 +24,7 @@
 - **i18n**: frontmatter description 영문 전환 (skills/agents/commands 전체)
 
 ### Fixed
+- **i18n**: translate Korean inline example and document translation rules (#16)
 - (버그 수정 시 여기에 기록)
 
 ---
