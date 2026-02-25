@@ -8,6 +8,7 @@
 ## [Unreleased]
 
 ### Added
+- **i18n**: Phase 6-A 영문화 — skills/agents/commands 영문 전환 (#15)
 - **workflow**: Phase 5 워크플로우 고도화 (#14)
 - **compatibility**: Phase 4 유통기한 관리 (#13)
 - **testing**: Phase 3-A 테스트 패턴 스킬 및 커맨드 추가 (#11)
