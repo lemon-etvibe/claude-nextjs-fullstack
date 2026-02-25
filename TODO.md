@@ -5,12 +5,12 @@ etvibe-nextjs-fullstack 플러그인 로드맵
 
 ---
 
-## Phase 1: P0 즉시 수정
+## Phase 1: P0 즉시 수정 ✅
 
-- [ ] `--no-turbo` 플래그 제거 (`.claude/settings.local.json`)
-- [ ] hooks 패턴을 `src/**/*.{ts,tsx}`, `prisma/schema.prisma`로 제한
-- [ ] `.env` 커밋 방어 hook 추가
-- [ ] `plugin.json` description 영문 병기
+- [x] `--no-turbo` 플래그 제거 — 로컬 설정 수정 완료 (플러그인 범위 밖, gitignore 대상)
+- [x] hooks 3개 → 1개 통합 (`post-write-check.sh`), 비관련 파일 즉시 exit 0
+- [x] `.env` 커밋 방어 hook 추가 (exit 2 — 작업 중단)
+- [x] `plugin.json` + `marketplace.json` description 영문 병기
 
 ## Phase 2: P1 보안/안정성
 
@@ -62,13 +62,13 @@ Phase 1~4 완료 시 릴리즈 가능
 
 | 조건 | 필수 |
 |------|:----:|
-| P0 해결 (--no-turbo, hooks) | O |
+| P0 해결 (hooks 통합, .env 방어) | ✅ |
 | P1 해결 (권한 축소, proxy.ts) | O |
 | 보안 (.env 방어, MCP 고정) | O |
 | /enf:test 커맨드 | O |
 | TROUBLESHOOTING.md | O |
 | COMPATIBILITY.md | O |
-| plugin.json 영문 description | O |
+| plugin.json 영문 description | ✅ |
 
 ---
 
@@ -93,3 +93,4 @@ Phase 1~4 완료 시 릴리즈 가능
 - [x] PR 타겟 --base dev 기본 명시 (2026-02-25)
 - [x] code-review MCP/스킬 연동 (2026-02-25)
 - [x] 브랜치 워크플로우 문서 강화 (2026-02-25)
+- [x] Phase 1 P0: hooks 3→1 통합, .env exit 2 방어, 영문 병기 (2026-02-25)
