@@ -33,17 +33,13 @@ Namespace:   /enf:command (e.g. /enf:commit, /enf:code-review)
 ## Quick Start
 
 ```bash
-# 1. Clone (one-time)
-git clone https://github.com/lemon-etvibe/claude-nextjs-fullstack.git ~/plugins/enf
+# 1. Add marketplace (one-time)
+claude plugin marketplace add https://github.com/lemon-etvibe/claude-nextjs-fullstack
 
-# 2. Setup (run in the plugin directory)
-cd ~/plugins/enf
-chmod +x scripts/setup.sh
-./scripts/setup.sh              # Interactive mode (Tab completion supported)
-# or
-./scripts/setup.sh ~/projects/my-app  # Specify path directly
+# 2. Install plugin
+claude plugin install enf@enf
 
-# 3. Use
+# 3. Use in your project
 cd ~/projects/my-app && claude
 ```
 
@@ -52,18 +48,6 @@ cd ~/projects/my-app && claude
 /agents      # List agents
 /enf:init    # Plugin guide
 ```
-
-<details>
-<summary><b>Windows (PowerShell)</b></summary>
-
-```powershell
-git clone https://github.com/lemon-etvibe/claude-nextjs-fullstack.git C:\plugins\enf
-cd C:\plugins\enf
-.\scripts\setup.ps1 C:\projects\my-app   # Direct path recommended (Tab completion supported)
-# or
-.\scripts\setup.ps1                      # Interactive mode (no Tab completion)
-```
-</details>
 
 ---
 
@@ -202,9 +186,7 @@ Verified plugins automatically installed by the setup script.
 ## Update
 
 ```bash
-cd ~/plugins/enf
-git pull origin main
-./scripts/setup.sh
+claude plugin update enf@enf
 ```
 
 ---

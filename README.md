@@ -36,17 +36,13 @@ Namespace:   /enf:command (예: /enf:commit, /enf:code-review)
 ## Quick Start
 
 ```bash
-# 1. Clone (최초 1회)
-git clone https://github.com/lemon-etvibe/claude-nextjs-fullstack.git ~/plugins/enf
+# 1. 마켓플레이스 등록 (최초 1회)
+claude plugin marketplace add https://github.com/lemon-etvibe/claude-nextjs-fullstack
 
-# 2. Setup (플러그인 디렉토리에서 실행)
-cd ~/plugins/enf
-chmod +x scripts/setup.sh
-./scripts/setup.sh              # 인터랙티브 모드 (Tab 자동완성 지원)
-# 또는
-./scripts/setup.sh ~/projects/my-app  # 직접 경로 지정
+# 2. 플러그인 설치
+claude plugin install enf@enf
 
-# 3. Use
+# 3. 프로젝트에서 사용
 cd ~/projects/my-app && claude
 ```
 
@@ -55,18 +51,6 @@ cd ~/projects/my-app && claude
 /agents      # 에이전트 목록
 /enf:init    # 플러그인 가이드
 ```
-
-<details>
-<summary><b>Windows (PowerShell)</b></summary>
-
-```powershell
-git clone https://github.com/lemon-etvibe/claude-nextjs-fullstack.git C:\plugins\enf
-cd C:\plugins\enf
-.\scripts\setup.ps1 C:\projects\my-app   # 직접 경로 지정 권장 (Tab 완성 지원)
-# 또는
-.\scripts\setup.ps1                      # 인터랙티브 모드 (Tab 완성 미지원)
-```
-</details>
 
 ---
 
@@ -205,9 +189,7 @@ cd C:\plugins\enf
 ## Update
 
 ```bash
-cd ~/plugins/enf
-git pull origin main
-./scripts/setup.sh
+claude plugin update enf@enf
 ```
 
 ---
