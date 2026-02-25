@@ -7,8 +7,44 @@
 
 ## [Unreleased]
 
+
+### Changed
+- v1.0.0 준비 — 버전 업데이트, 딜리버리 워크플로우, 문의처 추가 (#17)
+## [1.0.0] - 2026-02-25
+
 ### Added
-- (예정된 기능 추가 시 여기에 기록)
+- **i18n**: Phase 6-A 영문화 — Skills 6개, Agents 4개, Commands 17개 영문 전환
+- **i18n**: README.md 상단 한국어 안내 문구 추가
+- **i18n**: triggers에 영문 키워드 추가 (한글 키워드 유지)
+- **i18n**: README.EN.md 영문 README 추가
+- **testing**: 테스트 패턴 스킬 (Vitest, Testing Library, Playwright, Server Action)
+- **testing**: `/enf:test` 커맨드 추가
+- **troubleshooting**: TROUBLESHOOTING.md — 스킬 롤백, hooks 우회, MCP 수동 대체
+- **compatibility**: COMPATIBILITY.md — 버전 매트릭스, tested-with 메타데이터, `/enf:health` 커맨드
+- **error-handling**: 에러 핸들링 스킬 — Server Action, API Route, Prisma, Error Boundary 패턴
+- **workflow**: 에이전트 핸드오프 프로토콜 — Handoff Artifact 형식
+- **docs**: CONTRIBUTING.md에 i18n 리뷰 체크리스트 추가
+- **license**: MIT 라이선스 추가
+- **contact**: README/README.EN에 문의처 추가
+
+### Changed
+- **hooks**: 3개 → 1개 통합 (`post-write-check.sh`), 비관련 파일 즉시 exit 0
+- **security**: `.env` 커밋 방어 hook 추가 (exit 2 — 작업 중단)
+- **security**: 권한 설정 축소 (`--force`, `-D` 등 destructive 명령 제외)
+- **security**: `claude:*` 와일드카드 → 명시적 allowlist
+- **security**: MCP 버전 고정 (`npx -y @latest` → `@x.y.z`)
+- **auth**: Better Auth proxy.ts 패턴을 Next.js 16 표준으로 업데이트
+- **i18n**: frontmatter description 영문 전환 (skills/agents/commands 전체)
+- **version**: 0.9.1 → 1.0.0
+
+### Fixed
+- **i18n**: design-feature.md 한글 인라인 예시 영문 전환
+
+---
+
+## [0.9.1] - 2026-02-25
+
+Phase 1 P0 + Phase 2 P1 보안/안정성 수정.
 
 ### Changed
 - (변경된 기능 있을 시 여기에 기록)
@@ -51,10 +87,13 @@
 
 ### Changed
 - 문서 구조 개선 및 COMMANDS-REFERENCE 추가 (#5)
-- (변경된 기능 있을 시 여기에 기록)
+- **better-auth**: proxy.ts 패턴을 Next.js 16 표준으로 업데이트 — `middleware()` → `proxy()`, Edge → Node.js Runtime (#10)
+- **docs**: DEVELOPMENT.md에 권장 권한 설정 가이드 추가 (#10)
 
 ### Fixed
-- (버그 수정 시 여기에 기록)
+- **hooks**: P0 — hooks 3개→1개 통합, .env 커밋 방어 (exit 2), 영문 설명 추가 (#9)
+- **mcp**: 패키지명 수정 및 버전 고정 — `@upstash/context7-mcp@2.1.2`, `next-devtools-mcp@0.3.10` (기존 패키지명 npm 미존재) (#10)
+- **security**: 권한 설정 축소 — `claude:*` 와일드카드 제거, `git branch -D`/`git push --force` 차단 (#10)
 
 ---
 

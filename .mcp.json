@@ -2,12 +2,12 @@
   "mcpServers": {
     "context7": {
       "command": "npx",
-      "args": ["-y", "@anthropic-ai/context7-mcp@latest"],
+      "args": ["-y", "@upstash/context7-mcp@2.1.2"],
       "env": {}
     },
     "next-devtools": {
       "command": "npx",
-      "args": ["-y", "@anthropic-ai/next-devtools-mcp@latest"],
+      "args": ["-y", "next-devtools-mcp@0.3.10"],
       "env": {}
     },
     "prisma-local": {

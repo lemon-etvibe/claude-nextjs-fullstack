@@ -1,6 +1,10 @@
 ---
 name: coding-conventions
-description: 코딩 컨벤션 가이드 - 컴포넌트, 함수, 변수 작성 시 참조. 코드 작성, 리팩토링, 코드 리뷰 작업에서 사용
+description: Coding conventions guide - reference for components, functions, and variables. Used for code writing, refactoring, and code review.
+tested-with:
+  enf: "1.0.0"
+  next: "16.x"
+  typescript: "5.x"
 triggers:
   - 컨벤션
   - 네이밍
@@ -8,34 +12,39 @@ triggers:
   - import
   - 커밋
   - 주석
+  - convention
+  - naming
+  - code style
+  - commit
+  - comment
 ---
 
-# 코딩 컨벤션
+# Coding Conventions
 
-## 1. 네이밍 규칙
+## 1. Naming Rules
 
-### 파일/폴더
+### Files/Folders
 
-| 대상          | 규칙       | 예시                |
-| ------------- | ---------- | ------------------- |
-| 컴포넌트      | PascalCase | `CustomerTable.tsx` |
-| 유틸/훅       | camelCase  | `useCustomer.ts`    |
-| 폴더          | kebab-case | `customer-form/`    |
-| Server Action | camelCase  | `updateCustomer.ts` |
+| Target         | Rule       | Example             |
+| -------------- | ---------- | ------------------- |
+| Component      | PascalCase | `CustomerTable.tsx` |
+| Utility/Hook   | camelCase  | `useCustomer.ts`    |
+| Folder         | kebab-case | `customer-form/`    |
+| Server Action  | camelCase  | `updateCustomer.ts` |
 
-### 변수/함수
+### Variables/Functions
 
-| 대상     | 규칙                | 예시             |
-| -------- | ------------------- | ---------------- |
-| 변수     | camelCase           | `customerList`   |
-| 상수     | SCREAMING_SNAKE     | `API_BASE_URL`   |
-| 함수     | camelCase + 동사    | `getCustomers()` |
-| 컴포넌트 | PascalCase          | `CustomerCard`   |
-| 훅       | use 접두사          | `useCustomers()` |
-| 타입     | PascalCase (I 금지) | `Customer`       |
-| Boolean  | is/has/should       | `isActive`       |
+| Target    | Rule                | Example          |
+| --------- | ------------------- | ---------------- |
+| Variable  | camelCase           | `customerList`   |
+| Constant  | SCREAMING_SNAKE     | `API_BASE_URL`   |
+| Function  | camelCase + verb    | `getCustomers()` |
+| Component | PascalCase          | `CustomerCard`   |
+| Hook      | use prefix          | `useCustomers()` |
+| Type      | PascalCase (no I)   | `Customer`       |
+| Boolean   | is/has/should       | `isActive`       |
 
-## 2. 주석 패턴
+## 2. Comment Patterns
 
 ```typescript
 // 단순 설명 (한글)
@@ -51,7 +60,7 @@ triggers:
 // FIXME: 버그 수정 필요
 ```
 
-## 3. Import 순서
+## 3. Import Order
 
 ```typescript
 // 1. React/Next.js
@@ -77,11 +86,11 @@ import type { Customer } from "@/generated/prisma"
 
 ## 4. TypeScript
 
-- `any` 금지 → `unknown` 사용
-- `as` 단언보다 타입 가드 선호
-- 객체는 `interface`, 유니온은 `type`
+- No `any` — use `unknown` instead
+- Prefer type guards over `as` assertions
+- Use `interface` for objects, `type` for unions
 
-## 5. Server Action 패턴
+## 5. Server Action Pattern
 
 ```typescript
 // src/app/(admin)/_actions/customer.ts
@@ -106,7 +115,7 @@ export async function updateCustomer(id: string, prevState: unknown, formData: F
 }
 ```
 
-## 6. Git 커밋
+## 6. Git Commits
 
 ```
 <type>: <한글 설명>
@@ -120,7 +129,9 @@ style: 포맷팅
 chore: 빌드/설정
 ```
 
-## 7. 에러 핸들링
+## 7. Error Handling
+
+> **Detailed patterns**: See `error-handling` skill — covers Server Action, API Route, Prisma, and Error Boundary error handling
 
 ```typescript
 // 서버 - 유효성 검증
@@ -136,6 +147,6 @@ try { await fetch(); } finally { cleanup(); }
 ## 8. ESLint/Prettier
 
 - `no-explicit-any`: error
-- `consistent-type-imports`: 강제
+- `consistent-type-imports`: enforced
 - `printWidth`: 100
 - `singleQuote`: true

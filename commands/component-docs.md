@@ -1,5 +1,5 @@
 ---
-description: React 컴포넌트 Props 문서 자동 생성
+description: Auto-generate React component Props documentation
 allowed-tools:
   - Read
   - Write
@@ -7,19 +7,19 @@ allowed-tools:
   - Grep
 ---
 
-# /component-docs 명령어
+# /component-docs Command
 
-React 컴포넌트의 Props와 사용법을 문서화합니다.
+Documents React component Props and usage.
 
-## 사용법
+## Usage
 
 ```
-/component-docs <파일경로>
+/component-docs <file-path>
 /component-docs src/components/ui/Button.tsx
 /component-docs src/app/(admin)/_components/CustomerTable.tsx
 ```
 
-## 컴포넌트 문서 템플릿
+## Component Documentation Template
 
 ```markdown
 # {ComponentName}
@@ -98,9 +98,9 @@ import Plus from 'lucide-react/dist/esm/icons/plus'
 - `LoadingButton` - 로딩 상태 버튼
 ```
 
-## 문서화 프로세스
+## Documentation Process
 
-### 1. 코드 분석
+### 1. Code Analysis
 
 ```typescript
 // 분석 대상
@@ -113,34 +113,34 @@ interface ButtonProps {
 }
 ```
 
-### 2. 추출 항목
+### 2. Extracted Items
 
-- Props 인터페이스/타입
-- 기본값 (defaultProps 또는 구조분해 기본값)
-- JSDoc 주석
-- 사용된 스타일 (Tailwind 클래스)
+- Props interface/types
+- Default values (defaultProps or destructuring defaults)
+- JSDoc comments
+- Styles used (Tailwind classes)
 
-### 3. 문서 생성
+### 3. Document Generation
 
-- Props 테이블 생성
-- 사용 예시 생성
-- 변형 설명 추가
+- Generate Props table
+- Generate usage examples
+- Add variant descriptions
 
-## Props 타입별 문서화
+## Props Documentation by Type
 
-### Union 타입
+### Union Types
 
 ```markdown
 | variant | 'primary' \| 'secondary' \| 'destructive' | X | 'primary' | 버튼 스타일 |
 ```
 
-### 함수 타입
+### Function Types
 
 ```markdown
 | onChange | (value: string) => void | O | - | 값 변경 시 호출 |
 ```
 
-### 복잡한 객체
+### Complex Objects
 
 ```markdown
 | config | `CustomerConfig` | O | - | 설정 객체 (하단 참조) |
@@ -156,7 +156,7 @@ interface CustomerConfig {
 \`\`\`
 ```
 
-## 출력 위치
+## Output Location
 
 ```
 docs/
@@ -168,11 +168,11 @@ docs/
         └── CustomerTable.md
 ```
 
-## 연계 에이전트
+## Related Agents
 
-이 명령어는 `docs-writer` 에이전트의 컴포넌트 문서 템플릿을 기반으로 합니다.
+This command is based on the `docs-writer` agent's component documentation template.
 
-## 연계 명령어
+## Related Commands
 
-- `/generate-docs` - API/Action 문서 생성
-- `/update-changelog` - CHANGELOG 업데이트
+- `/generate-docs` - Generate API/Action documentation
+- `/update-changelog` - Update CHANGELOG

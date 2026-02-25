@@ -219,6 +219,7 @@ claude
 - [ ] `/agents` 명령어로 4개 에이전트 확인
 - [ ] `/mcp` 명령어로 MCP 서버 상태 확인
 - [ ] `/enf:init` 실행 및 가이드 확인
+- [ ] `/enf:health` 실행하여 프로젝트 호환성 확인
 
 ### 첫 작업 완료
 
@@ -287,7 +288,6 @@ pnpm dev
 ## 도움 요청
 
 - GitHub Issues: https://github.com/lemon-etvibe/etvibe-nextjs-fullstack/issues
-- 팀 슬랙: #claude-code 채널
 
 ---
 

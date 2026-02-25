@@ -1,6 +1,10 @@
 ---
 name: prisma-7
-description: Prisma 7 Breaking Changes 및 마이그레이션 가이드
+description: Prisma 7 Breaking Changes and Migration Guide
+tested-with:
+  enf: "1.0.0"
+  prisma: "7.x"
+  typescript: "5.x"
 triggers:
   - prisma
   - 스키마
@@ -8,13 +12,16 @@ triggers:
   - 데이터베이스
   - ORM
   - pg adapter
+  - schema
+  - migration
+  - database
 ---
 
-# Prisma 7 가이드
+# Prisma 7 Guide
 
 ## Breaking Changes (v6 → v7)
 
-### 1. 설정 파일 변경
+### 1. Configuration File Changes
 
 ```
 프로젝트 루트/
@@ -25,7 +32,7 @@ triggers:
 └── .env.local          # Next.js용 (자동 로드)
 ```
 
-#### prisma.config.ts (필수)
+#### prisma.config.ts (Required)
 
 ```typescript
 import "dotenv/config"
@@ -37,7 +44,7 @@ export default defineConfig({
 })
 ```
 
-### 2. pg Adapter 필수
+### 2. pg Adapter Required
 
 ```typescript
 // src/lib/prisma.ts
@@ -65,14 +72,14 @@ export const prisma =
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma
 ```
 
-### 3. 패키지 설치
+### 3. Package Installation
 
 ```bash
 pnpm add @prisma/client @prisma/adapter-pg pg
 pnpm add -D prisma
 ```
 
-### 4. Generator 설정
+### 4. Generator Setup
 
 ```prisma
 // prisma/schema.prisma
@@ -91,9 +98,9 @@ datasource db {
 
 ---
 
-## 스키마 설계 패턴
+## Schema Design Patterns
 
-### Enum 정의
+### Enum Definition
 
 ```prisma
 enum CustomerStatus {
@@ -111,7 +118,7 @@ enum CampaignStatus {
 }
 ```
 
-### 1:N 관계
+### 1:N Relationship
 
 ```prisma
 model Customer {
@@ -146,7 +153,7 @@ model Campaign {
 }
 ```
 
-### N:M 관계 (중간 테이블)
+### N:M Relationship (Join Table)
 
 ```prisma
 model CampaignInfluencer {
@@ -172,9 +179,9 @@ model CampaignInfluencer {
 
 ---
 
-## 쿼리 패턴
+## Query Patterns
 
-### Select로 필요한 필드만
+### Select Only Required Fields
 
 ```typescript
 // ✅ GOOD: 필요한 필드만 선택
@@ -193,7 +200,7 @@ const customers = await prisma.customer.findMany({
 const customers = await prisma.customer.findMany()
 ```
 
-### Include로 관계 로드
+### Load Relations with Include
 
 ```typescript
 const customer = await prisma.customer.findUnique({
@@ -212,7 +219,7 @@ const customer = await prisma.customer.findUnique({
 })
 ```
 
-### 집계 쿼리
+### Aggregation Queries
 
 ```typescript
 const stats = await prisma.customer.findUnique({
@@ -231,7 +238,7 @@ const stats = await prisma.customer.findUnique({
 // 결과: { id, name, _count: { campaigns: 5, inquiries: 2 } }
 ```
 
-### 트랜잭션
+### Transactions
 
 ```typescript
 const result = await prisma.$transaction(async (tx) => {
@@ -256,7 +263,7 @@ const result = await prisma.$transaction(async (tx) => {
 })
 ```
 
-### 페이지네이션
+### Pagination
 
 ```typescript
 // 커서 기반 (대용량 추천)
@@ -280,7 +287,7 @@ const [customers, total] = await Promise.all([
 
 ---
 
-## 마이그레이션 명령어
+## Migration Commands
 
 ```bash
 # 스키마 변경 후 DB 동기화 (개발용)
@@ -301,7 +308,7 @@ pnpm prisma studio
 
 ---
 
-## N+1 쿼리 방지
+## Preventing N+1 Queries
 
 ```typescript
 // ❌ BAD: N+1 문제 발생
@@ -333,7 +340,7 @@ const customers = await prisma.customer.findMany({
 
 ---
 
-## 환경 변수 설정
+## Environment Variable Setup
 
 ```env
 # .env (Prisma CLI용)
@@ -344,7 +351,7 @@ DIRECT_URL="postgresql://user:pass@host:5432/db"
 DATABASE_URL="postgresql://user:pass@host:5432/db?pgbouncer=true"
 ```
 
-### Supabase 사용 시
+### When Using Supabase
 
 ```env
 # Pooler (앱용 - pgbouncer)
@@ -356,10 +363,10 @@ DIRECT_URL="postgresql://postgres.[ref]:[password]@aws-0-ap-northeast-2.pooler.s
 
 ---
 
-## 주의사항
+## Important Notes
 
-1. **prisma.config.ts는 프로젝트 루트에 위치해야 함**
-2. **pg adapter 사용 시 connection pool 설정 필수**
-3. **`@map()` 디렉티브로 테이블명 snake_case 유지**
-4. **인덱스는 자주 검색하는 필드에 `@@index()` 추가**
-5. **`onDelete: Cascade` 주의 - 연쇄 삭제 발생**
+1. **prisma.config.ts must be placed at the project root**
+2. **Connection pool setup is required when using the pg adapter**
+3. **Use `@map()` directive to keep table names in snake_case**
+4. **Add `@@index()` on frequently queried fields**
+5. **Use `onDelete: Cascade` with caution -- triggers cascading deletes**

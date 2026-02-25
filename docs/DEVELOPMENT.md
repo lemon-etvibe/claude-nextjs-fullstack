@@ -297,6 +297,53 @@ shellcheck scripts/*.sh
 
 ---
 
+## 권장 권한 설정
+
+`.claude/settings.local.json`은 gitignore 대상이므로 각 개발자가 직접 설정해야 합니다.
+
+### 보안 원칙
+
+1. **Destructive 명령 차단**: `git push --force`, `git branch -D`, `git reset --hard` 등
+2. **와일드카드 최소화**: `claude:*` 같은 포괄 와일드카드 대신 명시적 allowlist 사용
+3. **prefix-matching 한계 인지**: `Bash(git push origin:*)`은 `git push origin --force`도 매칭 가능 — Claude Code 내장 안전장치가 2차 방어
+
+### 권장 git 권한
+
+```json
+{
+  "permissions": {
+    "allow": [
+      "Bash(git checkout:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git branch)",
+      "Bash(git branch -a)",
+      "Bash(git branch -d:*)",
+      "Bash(git branch --show-current)",
+      "Bash(git branch -v)",
+      "Bash(git branch --list:*)",
+      "Bash(git push)",
+      "Bash(git push -u origin:*)",
+      "Bash(git push origin:*)",
+      "Bash(git stash:*)",
+      "Bash(git ls-files:*)",
+      "Bash(git check-ignore:*)"
+    ]
+  }
+}
+```
+
+### 차단되는 위험 명령
+
+| 명령 | 위험도 | 차단 방법 |
+|------|--------|----------|
+| `git push --force` | 높음 | `git push:*` 대신 명시적 패턴 |
+| `git branch -D` | 높음 | `git branch -d:*`만 허용 (소문자 d) |
+| `git reset --hard` | 높음 | allowlist에 미포함 |
+| `claude:*` | 높음 | 명시적 `claude plugin` 명령만 허용 |
+
+---
+
 ## 다음 단계
 
 - [커스터마이징 가이드](./CUSTOMIZATION.md) - Hooks, Commands, Agents 확장

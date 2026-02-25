@@ -1,6 +1,6 @@
 # 스킬 활성화 가이드
 
-etvibe-nextjs-fullstack (enf) 플러그인의 4개 스킬 상세 가이드입니다.
+etvibe-nextjs-fullstack (enf) 플러그인의 6개 스킬 상세 가이드입니다.
 
 ---
 
@@ -11,6 +11,8 @@ etvibe-nextjs-fullstack (enf) 플러그인의 4개 스킬 상세 가이드입니
 - [better-auth](#better-auth)
 - [prisma-7](#prisma-7)
 - [tailwind-v4-shadcn](#tailwind-v4-shadcn)
+- [testing](#testing)
+- [error-handling](#error-handling)
 - [스킬 활용 팁](#스킬-활용-팁)
 
 ---
@@ -29,6 +31,8 @@ etvibe-nextjs-fullstack (enf) 플러그인의 4개 스킬 상세 가이드입니
 | `better-auth` | 인증, 세션, 로그인, Better Auth | 인증 구현 |
 | `prisma-7` | Prisma, 스키마, 마이그레이션 | DB 작업 |
 | `tailwind-v4-shadcn` | Tailwind, shadcn, 폼, 스타일 | UI 스타일링 |
+| `testing` | 테스트, vitest, playwright, E2E | 테스트 작성 |
+| `error-handling` | 에러, API Route, Error Boundary | 에러 처리 패턴 |
 
 ### 활성화 방식
 
@@ -40,6 +44,12 @@ etvibe-nextjs-fullstack (enf) 플러그인의 4개 스킬 상세 가이드입니
 # 명시적 활성화
 > better-auth 패턴으로 세션 관리를 구현해줘
 ```
+
+### 검증 버전 (tested-with)
+
+각 스킬의 frontmatter에는 `tested-with` 메타데이터가 포함되어 있어, 해당 스킬 내용이 검증된 기술 스택 버전을 명시합니다. `/enf:health` 커맨드로 프로젝트와의 호환성을 자동 확인할 수 있습니다.
+
+> **상세 정보**: [COMPATIBILITY.md](./COMPATIBILITY.md) — 지원 버전 매트릭스
 
 ---
 
@@ -504,6 +514,118 @@ export function CustomerDialog() {
 
 ---
 
+## testing
+
+### 활성화 조건
+
+- 키워드: `테스트`, `test`, `vitest`, `playwright`, `testing library`, `E2E`
+- 테스트 작성, 테스트 실행, 커버리지 분석 시
+
+### 핵심 내용
+
+#### 1. Server Action 테스트 패턴
+
+```typescript
+// 중앙 mock (src/test/mocks.ts) import 후 사용
+import { mockGetSession, mockPrisma } from "@/test/mocks"
+import { createFormData, mockSession } from "@/test/helpers"
+
+it("인증 실패 → 에러 반환", async () => {
+  mockGetSession.mockResolvedValue(null)
+  const result = await updateCustomer("id-1", undefined, createFormData({ name: "홍길동" }))
+  expect(result).toEqual({ error: "인증이 필요합니다." })
+})
+```
+
+#### 2. 컴포넌트 테스트 패턴
+
+```tsx
+import { render, screen } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
+
+it("폼 제출", async () => {
+  const user = userEvent.setup()
+  render(<CustomerForm action={vi.fn()} />)
+  await user.type(screen.getByLabelText("이름"), "홍길동")
+  await user.click(screen.getByRole("button", { name: "저장" }))
+})
+```
+
+#### 3. E2E 테스트 패턴
+
+```typescript
+// Page Object + Playwright
+const loginPage = new LoginPage(page)
+await loginPage.goto()
+await loginPage.login("admin@test.com", "password123")
+await expect(page).toHaveURL("/admin/dashboard")
+```
+
+#### 4. 테스트 파일 규칙
+
+| 파일 유형 | 패턴 | 위치 |
+|-----------|------|------|
+| 단위 테스트 | `*.test.ts` | 소스 옆 `__tests__/` |
+| 컴포넌트 테스트 | `*.test.tsx` | 소스 옆 `__tests__/` |
+| E2E 테스트 | `*.spec.ts` | `e2e/` 최상위 |
+
+---
+
+## error-handling
+
+### 활성화 조건
+
+- 키워드: `에러`, `error`, `에러 처리`, `API Route`, `Error Boundary`, `404`, `500`
+- 에러 처리 구현, API Route 작성, Error Boundary 설정 시
+
+### 핵심 내용
+
+#### 1. Server Action 에러 응답
+
+```typescript
+type ActionResult<T = void> =
+  | { success: true; data?: T }
+  | { error: string; fieldErrors?: Record<string, string[]> }
+```
+
+#### 2. API Route 에러 패턴 (4가지)
+
+| 패턴 | HTTP 상태 코드 | 사용처 |
+|------|:-------------:|--------|
+| 파일 업로드 | 400, 401, 500 | multipart/form-data |
+| 외부 웹훅 | 401, 403, 500 | 서명 검증 |
+| 외부 API 프록시 | 401, 502, 504 | 타임아웃, 프록시 에러 |
+| SSE | 401 | 스트리밍 이벤트 |
+
+#### 3. Prisma 에러 코드
+
+| 코드 | 설명 | Server Action | API Route |
+|------|------|:------------:|:---------:|
+| P2002 | Unique 위반 | `{ error: "중복" }` | 409 |
+| P2025 | Not found | `{ error: "없음" }` | 404 |
+| P2003 | FK 위반 | `{ error: "참조 없음" }` | 400 |
+
+#### 4. Error Boundary
+
+- `error.tsx` — Route segment 에러 (가장 많이 사용)
+- `global-error.tsx` — Root layout 에러
+- `not-found.tsx` — 404 페이지
+
+### 사용 예시
+
+```bash
+# API Route 에러 처리
+> 파일 업로드 API Route를 만들어줘
+
+# Prisma 에러 처리
+> Server Action에 Prisma 에러 처리를 추가해줘
+
+# Error Boundary
+> 고객 상세 페이지에 error.tsx와 not-found.tsx를 추가해줘
+```
+
+---
+
 ## 스킬 활용 팁
 
 ### 1. 복합 스킬 활용
@@ -535,6 +657,8 @@ export function CustomerDialog() {
 | better-auth | `await headers()` 필수, 권한 체크 패턴 |
 | prisma-7 | pg adapter, select/include, 마이그레이션 |
 | tailwind-v4-shadcn | @theme 디렉티브, Form 패턴, useActionState |
+| testing | Server Action mock, 컴포넌트 render, Playwright Page Object |
+| error-handling | ActionResult 타입, Prisma 에러 코드, Error Boundary |
 
 ---
 

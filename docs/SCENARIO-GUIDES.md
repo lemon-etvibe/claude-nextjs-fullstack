@@ -158,6 +158,44 @@ etvibe-nextjs-fullstack (enf) 플러그인을 사용한 상황별 워크플로�
 
 ---
 
+### 5. 테스트 작성
+
+#### 시나리오
+"고객 관리 기능에 테스트를 추가해야 해요"
+
+#### 워크플로우
+
+```bash
+# 1. (최초 1회) 테스트 환경 설정
+> /enf:test --setup
+
+# 2. Server Action 테스트 생성
+> /enf:test src/app/(admin)/_actions/customer.ts
+
+# 3. 컴포넌트 테스트 생성
+> /enf:test src/app/(admin)/_components/CustomerTable.tsx
+
+# 4. 테스트 실행
+> /enf:test
+
+# 5. 커버리지 확인
+> /enf:test --coverage
+
+# 6. 커밋
+> /enf:commit
+```
+
+#### 테스트 유형별 선택 기준
+
+| 대상 | 테스트 유형 | 도구 |
+|------|-----------|------|
+| Server Action 로직 | 단위 테스트 | Vitest |
+| Zod 스키마 검증 | 단위 테스트 | Vitest |
+| React 클라이언트 컴포넌트 | 컴포넌트 테스트 | Testing Library |
+| 전체 사용자 플로우 (로그인 등) | E2E 테스트 | Playwright |
+
+---
+
 ## 문제 해결
 
 ### 1. 페이지가 느려요
@@ -286,7 +324,7 @@ export async function updateCustomer(...) {
 
 ## 고급 시나리오
 
-### 1. 복잡한 기능 설계
+### 1. 복잡한 기능 설계 (Handoff Protocol)
 
 #### 시나리오
 "캠페인-인플루언서 매칭 시스템을 설계해야 해요"
@@ -294,26 +332,28 @@ export async function updateCustomer(...) {
 #### 워크플로우
 
 ```bash
-# 1. 설계 요청 (architecture-expert)
+# 1. 설계 요청 → Handoff Artifact 출력
 > /enf:design-feature "캠페인-인플루언서 매칭 시스템"
 # 요구사항:
 # - 캠페인에 여러 인플루언서 지원
 # - 상태 관리 (지원 → 매칭 → 진행 → 완료)
 # - 각 단계별 알림
 
-# 2. 설계 검토 후 데이터 모델 구체화
-> /enf:schema-design
-# CampaignInfluencer 중간 테이블 필요
+# 2. Handoff Artifact 확인 후 구현 시작
+> @dev-assistant 위 Handoff Artifact 기반으로 구현해줘. 구현 순서 1번(Prisma 스키마)부터.
 
-# 3. 구현 (dev-assistant)
-> 위 설계대로 구현해줘. 먼저 Prisma 스키마부터.
+# 3. 구현 순서대로 진행
+> 다음 단계(Server Actions)를 구현해줘
 
-# 4. 성능 검토 (performance-expert)
+# 4. 성능 검토
 > /enf:perf-audit
 
-# 5. 문서화 (docs-writer)
+# 5. 문서화
 > 캠페인-인플루언서 매칭 시스템 문서를 작성해줘
 ```
+
+#### Handoff Artifact란?
+architecture-expert가 `/enf:design-feature` 실행 시 출력하는 구조화된 설계 문서입니다. 구현에 필요한 모든 정보(데이터 모델, 파일 구조, 에러 케이스, 구현 순서)를 포함합니다.
 
 ---
 
@@ -440,6 +480,8 @@ claude plugin validate ~/plugins/enf
 claude plugin install enf@enf-local --scope local
 ```
 
+> 심층 진단이 필요하면 [TROUBLESHOOTING.md](./TROUBLESHOOTING.md#hooks-문제-해결)를 참조하세요.
+
 #### Q: 코드 리뷰 결과가 너무 엄격해요
 
 코드 리뷰는 팀 표준을 따릅니다. 특정 규칙을 완화하려면:
@@ -459,4 +501,5 @@ claude plugin install enf@enf-local --scope local
 | [GUIDELINES](./GUIDELINES.md) | 플러그인 철학 |
 | [AGENTS-MANUAL](./AGENTS-MANUAL.md) | 에이전트 상세 |
 | [SKILLS-ACTIVATION](./SKILLS-ACTIVATION.md) | 스킬 활성화 |
+| [TROUBLESHOOTING](./TROUBLESHOOTING.md) | 심층 문제 해결 |
 | [TEAM-ONBOARDING](./TEAM-ONBOARDING.md) | 팀 온보딩 |

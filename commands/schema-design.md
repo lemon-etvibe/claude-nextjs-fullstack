@@ -1,5 +1,5 @@
 ---
-description: Prisma 스키마 설계 및 리뷰 - 데이터 모델, 관계, 인덱스 최적화
+description: Prisma schema design and review - data model, relationships, and index optimization
 allowed-tools:
   - Read
   - Glob
@@ -8,21 +8,21 @@ allowed-tools:
   - mcp__context7__resolve-library-id
 ---
 
-# /schema-design 명령어
+# /schema-design Command
 
-Prisma 스키마를 설계하거나 기존 스키마를 리뷰합니다.
+Designs a Prisma schema or reviews an existing schema.
 
-## 사용법
+## Usage
 
 ```
-/schema-design "<요구사항>"
+/schema-design "<requirements>"
 /schema-design "캠페인과 인플루언서 N:M 관계 설계"
 /schema-design review           # 기존 스키마 리뷰
 ```
 
-## 스키마 설계 원칙
+## Schema Design Principles
 
-### 1. 기본 모델 구조
+### 1. Base Model Structure
 
 ```prisma
 model ModelName {
@@ -46,9 +46,9 @@ model ModelName {
 }
 ```
 
-### 2. 관계 패턴
+### 2. Relationship Patterns
 
-#### 1:N 관계
+#### 1:N Relationship
 
 ```prisma
 model Customer {
@@ -65,7 +65,7 @@ model Campaign {
 }
 ```
 
-#### N:M 관계 (명시적 중간 테이블)
+#### N:M Relationship (explicit join table)
 
 ```prisma
 model Campaign {
@@ -92,7 +92,7 @@ model CampaignInfluencer {
 }
 ```
 
-### 3. Enum 정의
+### 3. Enum Definitions
 
 ```prisma
 enum CustomerStatus {
@@ -109,7 +109,7 @@ enum CampaignStatus {
 }
 ```
 
-### 4. 인덱스 전략
+### 4. Index Strategy
 
 ```prisma
 model Campaign {
@@ -126,7 +126,7 @@ model Campaign {
 }
 ```
 
-### 5. 소프트 삭제 패턴
+### 5. Soft Delete Pattern
 
 ```prisma
 model Customer {
@@ -142,35 +142,35 @@ const customers = await prisma.customer.findMany({
 })
 ```
 
-## 스키마 리뷰 체크리스트
+## Schema Review Checklist
 
-### 기본 품질
+### Basic Quality
 
-- [ ] 모든 모델에 id, createdAt, updatedAt 존재
-- [ ] 적절한 @unique 제약 조건
-- [ ] 외래키에 @@index 적용
+- [ ] All models have id, createdAt, updatedAt
+- [ ] Appropriate @unique constraints
+- [ ] @@index applied to foreign keys
 
-### 관계 설계
+### Relationship Design
 
-- [ ] 1:N 관계 올바른 방향
-- [ ] N:M은 명시적 중간 테이블 사용
-- [ ] onDelete 동작 명시 (필요 시)
+- [ ] 1:N relationship direction is correct
+- [ ] N:M uses explicit join table
+- [ ] onDelete behavior specified (when needed)
 
-### 성능 최적화
+### Performance Optimization
 
-- [ ] 검색 패턴 기반 인덱스
-- [ ] 복합 인덱스 순서 최적화
-- [ ] 불필요한 인덱스 제거
+- [ ] Indexes based on search patterns
+- [ ] Composite index order optimized
+- [ ] Unnecessary indexes removed
 
-### 일관성
+### Consistency
 
-- [ ] 필드명 camelCase
-- [ ] 모델명 PascalCase
-- [ ] Enum명 PascalCase, 값은 UPPER_SNAKE_CASE
+- [ ] Field names in camelCase
+- [ ] Model names in PascalCase
+- [ ] Enum names in PascalCase, values in UPPER_SNAKE_CASE
 
-## 출력 형식
+## Output Format
 
-### 신규 설계 시
+### For New Design
 
 ```markdown
 ## 스키마 설계: {기능명}
@@ -197,7 +197,7 @@ Customer 1--* Campaign *--* Influencer
 1. ...
 ```
 
-### 리뷰 시
+### For Review
 
 ```markdown
 ## 스키마 리뷰 결과
@@ -217,13 +217,13 @@ Customer 1--* Campaign *--* Influencer
 - ...
 ```
 
-## 연계 에이전트
+## Related Agents
 
-이 명령어는 `architecture-expert` 에이전트의 데이터 모델링 가이드라인을 기반으로 합니다.
+This command is based on the `architecture-expert` agent's data modeling guidelines.
 
-## 후속 작업
+## Follow-up Tasks
 
-스키마 변경 후:
-1. `pnpm prisma validate` - 스키마 검증
-2. `pnpm prisma migrate dev --name <name>` - 마이그레이션
-3. `pnpm prisma generate` - 클라이언트 재생성
+After schema changes:
+1. `pnpm prisma validate` - Validate schema
+2. `pnpm prisma migrate dev --name <name>` - Run migration
+3. `pnpm prisma generate` - Regenerate client

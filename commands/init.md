@@ -1,29 +1,29 @@
 ---
-description: 프로젝트 구조 및 개발 가이드 안내
+description: Project structure and development guide overview
 allowed-tools:
   - Read
   - Glob
   - Grep
 ---
 
-# /init 명령어
+# /init Command
 
-etvibe-nextjs-fullstack 프로젝트의 구조와 개발 가이드를 안내합니다.
+Provides an overview of the etvibe-nextjs-fullstack project structure and development guide.
 
-## 사용법
+## Usage
 
 ```
 /init                   # 전체 프로젝트 가이드
-/init <영역>            # 특정 영역 가이드
+/init <area>            # 특정 영역 가이드
 /init admin             # 관리자 영역
 /init site              # 고객 영역
 /init auth              # 인증 시스템
 /init prisma            # 데이터베이스
 ```
 
-## 기술 스택
+## Tech Stack
 
-| 카테고리 | 기술 | 버전 |
+| Category | Technology | Version |
 | -------- | ---- | ---- |
 | Framework | Next.js | 16.x |
 | Runtime | React | 19.x |
@@ -33,7 +33,7 @@ etvibe-nextjs-fullstack 프로젝트의 구조와 개발 가이드를 안내합�
 | UI | shadcn/ui | latest |
 | Language | TypeScript | 5.x |
 
-## 프로젝트 구조
+## Project Structure
 
 ```
 src/
@@ -69,9 +69,9 @@ src/
     └── prisma/               # Prisma Client (생성됨)
 ```
 
-## 핵심 패턴
+## Core Patterns
 
-### 1. Co-location 원칙
+### 1. Co-location Principle
 
 ```
 src/app/(admin)/
@@ -81,7 +81,7 @@ src/app/(admin)/
 └── admin/            # 실제 라우트
 ```
 
-### 2. Server Action 패턴
+### 2. Server Action Pattern
 
 ```typescript
 "use server"
@@ -109,14 +109,14 @@ export async function updateCustomer(
 }
 ```
 
-### 3. 컴포넌트 구분
+### 3. Component Classification
 
-| 위치 | 용도 |
+| Location | Purpose |
 | ---- | ---- |
-| `_components/` | Route Group 전용 |
-| `components/ui/` | 전역 공유 (shadcn) |
+| `_components/` | Route Group specific |
+| `components/ui/` | Global shared (shadcn) |
 
-## 개발 워크플로우
+## Development Workflow
 
 ```
 /enf:task "기능 설명"        # 1. 브랜치 생성
@@ -128,54 +128,60 @@ export async function updateCustomer(
 /enf:pr                      # 7. PR 생성
 ```
 
-> **참고**: 모든 Commands는 `/enf:` 네임스페이스 사용
+> **Note**: All Commands use the `/enf:` namespace
 
-## 사용 가능한 Commands
+## Available Commands
 
-### 핵심
+### Core
 
-| 명령어 | 설명 |
+| Command | Description |
 | ------ | ---- |
-| `/enf:code-review` | 코드 품질 검사 |
-| `/enf:design-feature` | 기능 아키텍처 설계 |
-| `/enf:schema-design` | Prisma 스키마 설계 |
-| `/enf:perf-audit` | 성능 분석 |
+| `/enf:code-review` | Code quality review |
+| `/enf:design-feature` | Feature architecture design |
+| `/enf:schema-design` | Prisma schema design |
+| `/enf:perf-audit` | Performance analysis |
 
-### 개발 워크플로우
+### Development Workflow
 
-| 명령어 | 설명 |
+| Command | Description |
 | ------ | ---- |
-| `/enf:refactor` | 코드 최적화 제안 |
-| `/enf:type-check` | TypeScript 검증 |
-| `/enf:waterfall-check` | Promise.all 최적화 검사 |
+| `/enf:refactor` | Code optimization suggestions |
+| `/enf:type-check` | TypeScript verification |
+| `/enf:waterfall-check` | Promise.all optimization check |
 
-### Git 워크플로우
+### Testing
 
-| 명령어 | 설명 |
+| Command | Description |
 | ------ | ---- |
-| `/enf:task` | 업무 정의 → 브랜치 생성 |
-| `/enf:commit` | 커밋 생성 |
-| `/enf:push` | 원격 푸시 |
-| `/enf:pr` | PR 생성 |
+| `/enf:test` | Run and generate tests |
 
-### 문서화
+### Git Workflow
 
-| 명령어 | 설명 |
+| Command | Description |
 | ------ | ---- |
-| `/enf:generate-docs` | API/Action 문서 생성 |
-| `/enf:component-docs` | 컴포넌트 Props 문서 |
-| `/enf:update-changelog` | CHANGELOG 업데이트 |
+| `/enf:task` | Define task and create branch |
+| `/enf:commit` | Create commit |
+| `/enf:push` | Push to remote |
+| `/enf:pr` | Create PR |
 
-## 에이전트
+### Documentation
 
-| 에이전트 | 역할 |
+| Command | Description |
+| ------ | ---- |
+| `/enf:generate-docs` | Generate API/Action documentation |
+| `/enf:component-docs` | Component Props documentation |
+| `/enf:update-changelog` | Update CHANGELOG |
+
+## Agents
+
+| Agent | Role |
 | -------- | ---- |
-| `dev-assistant` | 코드 리뷰, 리팩토링, 구현 |
-| `architecture-expert` | 시스템 설계, 데이터 모델링 |
-| `performance-expert` | 성능 최적화, 번들 분석 |
-| `docs-writer` | 기술 문서 작성 |
+| `dev-assistant` | Code review, refactoring, implementation |
+| `architecture-expert` | System design, data modeling |
+| `performance-expert` | Performance optimization, bundle analysis |
+| `docs-writer` | Technical documentation |
 
-## 시작하기
+## Getting Started
 
 ```bash
 # 의존성 설치
@@ -191,6 +197,6 @@ pnpm prisma migrate dev
 pnpm dev
 ```
 
-## 추가 정보
+## Additional Information
 
-자세한 내용은 README.md를 참조하세요.
+See README.md for more details.

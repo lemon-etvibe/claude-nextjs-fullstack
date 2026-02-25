@@ -1,5 +1,5 @@
 ---
-description: GitHub Pull Request 생성 - 자동 템플릿 적용
+description: GitHub Pull Request creation - automatic template application
 allowed-tools:
   - Bash
   - Read
@@ -7,11 +7,11 @@ allowed-tools:
   - Grep
 ---
 
-# /pr 명령어
+# /pr Command
 
-현재 브랜치로 GitHub Pull Request를 생성합니다.
+Creates a GitHub Pull Request from the current branch.
 
-## 사용법
+## Usage
 
 ```
 /pr                             # 자동 PR 생성 (→ dev)
@@ -21,9 +21,9 @@ allowed-tools:
 /pr --base <branch>             # 타겟 브랜치 수동 지정
 ```
 
-## 워크플로우
+## Workflow
 
-### 1. 사전 체크
+### 1. Pre-checks
 
 ```bash
 # 현재 브랜치 확인
@@ -43,7 +43,7 @@ git log origin/$CURRENT_BRANCH..HEAD --oneline 2>/dev/null
 gh pr list --head $CURRENT_BRANCH
 ```
 
-### 2. 변경사항 분석
+### 2. Change Analysis
 
 ```bash
 # dev와의 차이 확인 (기본)
@@ -53,9 +53,9 @@ git log dev..HEAD --oneline
 git diff dev...HEAD --stat
 ```
 
-### 3. PR 생성
+### 3. PR Creation
 
-> **중요**: 기본 타겟은 항상 `dev` 브랜치입니다. `--base main`은 릴리스 PR에서만 사용합니다.
+> **Important**: The default target is always the `dev` branch. `--base main` is only used for release PRs.
 
 ```bash
 # ⚠️ --base dev 필수 명시 (기본 브랜치가 main이므로)
@@ -92,7 +92,7 @@ EOF
 )"
 ```
 
-## PR 템플릿
+## PR Template
 
 ```markdown
 ## 개요
@@ -126,9 +126,9 @@ EOF
 - [ ] lint 에러 없음
 ```
 
-## PR 제목 규칙
+## PR Title Convention
 
-Conventional Commits 형식을 따릅니다:
+Follows Conventional Commits format:
 
 ```
 <type>(<scope>): <description>
@@ -139,16 +139,16 @@ fix(auth): 세션 만료 처리 수정
 refactor(campaign): 캠페인 테이블 컴포넌트 분리
 ```
 
-## 릴리스 PR (--release)
+## Release PR (--release)
 
-`--release` 플래그를 사용하면 dev → main 릴리스 PR을 생성합니다.
+Using the `--release` flag creates a release PR from dev to main.
 
-### 사전 조건
+### Prerequisites
 
-- 현재 브랜치가 `dev`여야 함
-- dev 브랜치가 최신 상태여야 함
+- Current branch must be `dev`
+- The dev branch must be up to date
 
-### 실행 흐름
+### Execution Flow
 
 ```bash
 # 현재 브랜치 확인
@@ -187,7 +187,7 @@ EOF
 )"
 ```
 
-### 릴리스 PR 템플릿
+### Release PR Template
 
 ```markdown
 ## 릴리스 v{version}
@@ -204,25 +204,25 @@ EOF
 - [ ] 팀 리뷰어 승인
 ```
 
-## 타겟 브랜치 규칙
+## Target Branch Rules
 
-| 상황 | 타겟 브랜치 | 명령어 |
+| Scenario | Target Branch | Command |
 |------|------------|--------|
-| 일반 작업 | `dev` (기본) | `/pr` |
-| 릴리스 | `main` | `/pr --release` |
-| 수동 지정 | 지정 브랜치 | `/pr --base <branch>` |
+| Normal work | `dev` (default) | `/pr` |
+| Release | `main` | `/pr --release` |
+| Manual specification | Specified branch | `/pr --base <branch>` |
 
-> **⚠️ 주의**: `--base` 없이 `gh pr create` 실행 시 리포지토리 기본 브랜치(main)로 PR이 생성됩니다. 반드시 `--base dev`를 명시하세요.
+> **Warning**: Running `gh pr create` without `--base` will create a PR targeting the repository default branch (main). Always specify `--base dev`.
 
-## 자동 분석 내용
+## Automatic Analysis
 
-PR 생성 시 다음을 자동으로 분석합니다:
+The following are automatically analyzed during PR creation:
 
-1. **커밋 메시지 분석** - PR 제목과 본문 초안 생성
-2. **변경 파일 분석** - 변경사항 요약
-3. **영향 범위 파악** - 관련 기능 영역 식별
+1. **Commit message analysis** - Generates PR title and body draft
+2. **Changed file analysis** - Summarizes changes
+3. **Impact scope identification** - Identifies related feature areas
 
-## 출력 형식
+## Output Format
 
 ```markdown
 ## PR 생성 결과
@@ -250,13 +250,13 @@ PR 생성 시 다음을 자동으로 분석합니다:
 4. 머지
 ```
 
-## 연계 명령어
+## Related Commands
 
-- `/commit` - 커밋 생성
-- `/push` - 원격 푸시
-- `/code-review` - 코드 리뷰 (PR 전 자체 점검)
+- `/commit` - Create commit
+- `/push` - Push to remote
+- `/code-review` - Code review (self-check before PR)
 
-## 외부 플러그인 연계
+## External Plugin Integration
 
-PR 리뷰는 `pr-review-toolkit` 플러그인에 위임합니다:
-- `/review-pr` - PR 리뷰 수행
+PR review is delegated to the `pr-review-toolkit` plugin:
+- `/review-pr` - Perform PR review
