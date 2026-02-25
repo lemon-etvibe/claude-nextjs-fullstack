@@ -74,6 +74,7 @@ jobs:
 
           # Create matching tag on public repo (delete existing if re-releasing)
           git push public ":refs/tags/${VERSION}" 2>/dev/null || true
+          git tag -d "${VERSION}" 2>/dev/null || true
           git tag -a "${VERSION}" -m "Release ${VERSION}"
           git push public "${VERSION}"
 
