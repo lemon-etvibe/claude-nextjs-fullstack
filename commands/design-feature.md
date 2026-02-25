@@ -130,4 +130,4 @@ This command is based on the `architecture-expert` agent's design guidelines and
 After design completion, inform the user:
 
 > Pass the Handoff Artifact to dev-assistant to begin implementation.
-> Example: `@dev-assistant 위 Handoff Artifact 기반으로 구현해줘. 구현 순서 1번부터.`
+> Example: `@dev-assistant Implement based on the Handoff Artifact above. Start from implementation order #1.`

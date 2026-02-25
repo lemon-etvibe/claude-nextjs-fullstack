@@ -174,6 +174,14 @@ gh pr create \
 - [ ] 코드 예시가 정확한가?
 - [ ] 최신 버전 정보가 반영되었는가?
 
+### i18n (영문화 규칙)
+
+- [ ] Skills/Agents/Commands의 산문·헤더·테이블은 영문인가?
+- [ ] Output Format 템플릿과 docs-writer 템플릿은 한글을 유지하는가?
+  > Output Format templates and docs-writer templates remain in Korean — these are Claude→user outputs optimized for Korean developers.
+- [ ] 코드 블록 내 한글 주석·문자열·에러 메시지는 보존되었는가?
+- [ ] triggers에 한글 + 영문 키워드가 병행되는가?
+
 ### 문서
 
 - [ ] 문서가 정확하고 최신 상태인가?
