@@ -15,10 +15,13 @@
 - **compatibility**: Phase 4 유통기한 관리 — COMPATIBILITY.md, tested-with 메타데이터, /enf:health 커맨드
 - **error-handling**: Phase 5 에러 핸들링 스킬 추가 — Server Action, API Route, Prisma, Error Boundary 패턴
 - **workflow**: Phase 5 에이전트 핸드오프 프로토콜 정의 — Handoff Artifact 형식, design-feature 출력 강화
+- **i18n**: Phase 6-A 영문화 — Skills 6개, Agents 4개, Commands 17개 영문 전환 (#15)
+- **i18n**: README.md 상단 한국어 안내 문구 추가
+- **i18n**: triggers에 영문 키워드 추가 (한글 키워드 유지)
 
 ### Changed
 - **troubleshooting**: Phase 3-B 트러블슈팅 가이드 추가 (#12)
-- (변경된 기능 있을 시 여기에 기록)
+- **i18n**: frontmatter description 영문 전환 (skills/agents/commands 전체)
 
 ### Fixed
 - (버그 수정 시 여기에 기록)
