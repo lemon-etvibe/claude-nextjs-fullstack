@@ -430,7 +430,7 @@ chmod +x scripts/my-check.sh
 ┌─────────────────────────────────────────────────────┐
 │            post-write-check.sh (통합 스크립트)         │
 │                                                     │
-│  .env* → 경고 (exit 1)                               │
+│  .env* → 차단 (exit 2)                               │
 │  .ts/.tsx 아닌 파일 → 즉시 종료 (exit 0)               │
 │  schema.prisma → Prisma 안내                         │
 │  .ts/.tsx → TypeScript 안내                           │
