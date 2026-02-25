@@ -120,6 +120,9 @@ etvibe-nextjs-fullstack (enf) 플러그인의 철학, 역할 정의, 확장 가�
 /enf:code-review ─── 품질 검사
     │
     ▼
+/enf:test ─── 테스트 실행/생성
+    │
+    ▼
 /enf:commit ─── Conventional Commit
     │
     ▼
@@ -212,6 +215,12 @@ etvibe-nextjs-fullstack (enf) 플러그인의 철학, 역할 정의, 확장 가�
 - [ ] 무거운 컴포넌트 dynamic import (모달/에디터/차트)
 - [ ] RSC → CC 최소 데이터 전달
 - [ ] lucide-react 아이콘 개별 import
+
+#### 테스트
+
+- [ ] Server Action 테스트 작성 (인증, 검증, 성공, 에러)
+- [ ] 클라이언트 컴포넌트 테스트 작성 (렌더링, 인터랙션)
+- [ ] 중요 플로우 E2E 테스트 작성
 
 #### Prisma
 
