@@ -37,7 +37,7 @@ Namespace:   /enf:command (예: /enf:commit, /enf:code-review)
 
 ```bash
 # 1. 마켓플레이스 등록 (최초 1회)
-claude plugin marketplace add https://github.com/lemon-etvibe/etvibe-nextjs-fullstack
+claude plugin marketplace add https://github.com/lemon-etvibe/claude-nextjs-fullstack
 
 # 2. 플러그인 설치
 claude plugin install enf@enf
