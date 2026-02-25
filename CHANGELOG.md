@@ -11,6 +11,7 @@
 - **testing**: Phase 3-A 테스트 패턴 스킬 및 커맨드 추가 (#11)
 
 ### Changed
+- **troubleshooting**: Phase 3-B 트러블슈팅 가이드 추가 (#12)
 - (변경된 기능 있을 시 여기에 기록)
 
 ### Fixed
