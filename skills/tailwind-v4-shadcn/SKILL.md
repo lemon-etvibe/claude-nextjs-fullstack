@@ -1,6 +1,6 @@
 ---
 name: tailwind-v4-shadcn
-description: Tailwind CSS v4 + shadcn/ui 폼 패턴 및 스타일링 가이드
+description: Tailwind CSS v4 + shadcn/ui Form Patterns and Styling Guide
 tested-with:
   enf: "0.9.1"
   tailwind: "4.x"
@@ -14,13 +14,15 @@ triggers:
   - form
   - CSS
   - 테마
+  - style
+  - theme
 ---
 
-# Tailwind CSS v4 + shadcn/ui 가이드
+# Tailwind CSS v4 + shadcn/ui Guide
 
-## Tailwind CSS v4 주요 변경사항
+## Tailwind CSS v4 Key Changes
 
-### 1. CSS-first 설정
+### 1. CSS-first Configuration
 
 ```css
 /* globals.css - Tailwind v4 방식 */
@@ -39,9 +41,9 @@ triggers:
 }
 ```
 
-> `tailwind.config.js` 대신 CSS `@theme` 디렉티브 사용
+> Uses CSS `@theme` directive instead of `tailwind.config.js`
 
-### 2. 새로운 유틸리티
+### 2. New Utilities
 
 ```html
 <!-- 컨테이너 쿼리 -->
@@ -58,7 +60,7 @@ triggers:
 <div class="bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%">...</div>
 ```
 
-### 3. 변수 기반 색상
+### 3. Variable-based Colors
 
 ```html
 <!-- v3 -->
@@ -70,9 +72,9 @@ triggers:
 
 ---
 
-## shadcn/ui 패턴
+## shadcn/ui Patterns
 
-### 1. 설치 및 초기화
+### 1. Installation & Setup
 
 ```bash
 # shadcn/ui 초기화 (new-york 스타일)
@@ -82,7 +84,7 @@ pnpm dlx shadcn@latest init
 pnpm dlx shadcn@latest add button card form input
 ```
 
-### 2. 폼 패턴 (React Hook Form + Zod)
+### 2. Form Pattern (React Hook Form + Zod)
 
 ```tsx
 "use client"
@@ -158,7 +160,7 @@ export function CustomerForm() {
 }
 ```
 
-### 3. Server Action과 함께 사용
+### 3. Usage with Server Action
 
 ```tsx
 "use client"
@@ -200,7 +202,7 @@ export function CustomerEditForm({ customer }: { customer: Customer }) {
 }
 ```
 
-### 4. 다이얼로그/모달
+### 4. Dialog / Modal
 
 ```tsx
 import {
@@ -228,7 +230,7 @@ export function CustomerDialog() {
 }
 ```
 
-### 5. 데이터 테이블 (TanStack Table)
+### 5. Data Table (TanStack Table)
 
 ```tsx
 "use client"
@@ -291,9 +293,9 @@ export function CustomerTable({ data }) {
 
 ---
 
-## 테마 커스터마이징
+## Theme Customization
 
-### globals.css 구조
+### globals.css Structure
 
 ```css
 @import "tailwindcss";
@@ -323,7 +325,7 @@ export function CustomerTable({ data }) {
 }
 ```
 
-### 컴포넌트 확장
+### Component Extension
 
 ```tsx
 // components/ui/button.tsx 커스터마이징
@@ -352,9 +354,9 @@ const buttonVariants = cva(
 
 ---
 
-## 주의사항
+## Important Notes
 
-1. **Tailwind v4는 PostCSS 설정 불필요** - Lightning CSS 내장
-2. **JIT 모드 기본 활성화** - 별도 설정 불필요
-3. **다크 모드**: `@media (prefers-color-scheme: dark)` 또는 `.dark` 클래스
-4. **shadcn/ui 업데이트**: `pnpm dlx shadcn@latest diff` 로 변경사항 확인
+1. **Tailwind v4 does not require PostCSS configuration** -- Lightning CSS is built-in
+2. **JIT mode is enabled by default** -- no separate configuration needed
+3. **Dark mode**: `@media (prefers-color-scheme: dark)` or `.dark` class
+4. **shadcn/ui updates**: check changes with `pnpm dlx shadcn@latest diff`

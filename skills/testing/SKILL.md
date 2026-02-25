@@ -1,6 +1,6 @@
 ---
 name: testing
-description: 테스트 패턴 가이드 - Vitest 단위 테스트, Testing Library 컴포넌트 테스트, Playwright E2E, Server Action 테스트
+description: Testing Pattern Guide - Vitest Unit Tests, Testing Library Component Tests, Playwright E2E, Server Action Tests
 tested-with:
   enf: "0.9.1"
   next: "16.x"
@@ -16,25 +16,27 @@ triggers:
   - 단위 테스트
   - E2E
   - 컴포넌트 테스트
+  - unit test
+  - component test
 ---
 
-# 테스트 패턴
+# Testing Patterns
 
-## 1. 테스트 전략 개요
+## 1. Testing Strategy Overview
 
-### 테스팅 피라미드
+### Testing Pyramid
 
-| 레벨 | 도구 | 대상 | 속도 |
-|------|------|------|------|
-| Unit | Vitest | 유틸, Zod 스키마, Server Action | ⚡ 빠름 |
-| Component | Testing Library | React 클라이언트 컴포넌트 | 🔶 보통 |
-| E2E | Playwright | 전체 사용자 플로우 | 🐢 느림 |
+| Level | Tool | Target | Speed |
+|-------|------|--------|-------|
+| Unit | Vitest | Utilities, Zod schemas, Server Actions | Fast |
+| Component | Testing Library | React client components | Medium |
+| E2E | Playwright | Full user flows | Slow |
 
-> **원칙**: Unit 테스트를 가장 많이, E2E는 핵심 플로우만
+> **Principle**: Write the most unit tests; E2E only for critical flows
 
-### 파일 구조: Co-location
+### File Structure: Co-location
 
-프로젝트의 `_actions/`, `_components/` co-location 원칙에 따라 테스트 파일도 소스 옆에 배치:
+Following the project's `_actions/`, `_components/` co-location principle, test files are also placed next to their source:
 
 ```
 src/app/(admin)/
@@ -54,9 +56,9 @@ e2e/                              # E2E는 최상위 (여러 페이지 횡단)
 
 ---
 
-## 2. 환경 설정
+## 2. Environment Setup
 
-### 패키지 설치
+### Package Installation
 
 ```bash
 # Unit + Component 테스트
@@ -130,7 +132,7 @@ export default defineConfig({
 import "@testing-library/jest-dom/vitest"
 ```
 
-### package.json 스크립트
+### package.json Scripts
 
 ```json
 {
@@ -144,12 +146,12 @@ import "@testing-library/jest-dom/vitest"
 }
 ```
 
-### 테스트 파일 격리 (프로덕션 보호)
+### Test File Isolation (Production Protection)
 
-`src/test/` 디렉토리의 mock 파일이 프로덕션 빌드에 포함되지 않도록:
+To prevent mock files in `src/test/` from being included in the production build:
 
-1. **vitest.config.ts**의 `include`가 `src/**/*.test.{ts,tsx}`로 제한 (위 설정 참조)
-2. **tsconfig.json** — 프로덕션 빌드용 별도 설정이 필요한 경우:
+1. **vitest.config.ts** `include` is restricted to `src/**/*.test.{ts,tsx}` (see config above)
+2. **tsconfig.json** -- if a separate production build config is needed:
 
 ```json
 {
@@ -157,15 +159,15 @@ import "@testing-library/jest-dom/vitest"
 }
 ```
 
-> ⚠️ Next.js는 빌드 시 `src/test/` 내 파일을 라우트로 인식하지 않으므로 실질적 위험은 낮지만, 명시적 exclude가 안전합니다.
+> Note: Next.js does not recognize files in `src/test/` as routes during build, so the practical risk is low, but an explicit exclude is safer.
 
 ---
 
-## 3. Server Action 테스트 패턴
+## 3. Server Action Test Patterns
 
-프로젝트의 21개 Server Action이 동일한 패턴(auth → validation → DB → revalidate)을 따르므로 중앙 mock 설정을 사용합니다.
+Since the project's 21 Server Actions follow the same pattern (auth --> validation --> DB --> revalidate), a centralized mock setup is used.
 
-### 중앙 Mock 설정
+### Centralized Mock Setup
 
 ```typescript
 // src/test/mocks.ts
@@ -205,7 +207,7 @@ vi.mock("next/cache", () => ({
 }))
 ```
 
-### 테스트 헬퍼
+### Test Helpers
 
 ```typescript
 // src/test/helpers.ts
@@ -223,7 +225,7 @@ export function mockSession(overrides?: Record<string, unknown>) {
 }
 ```
 
-### Server Action 테스트 템플릿
+### Server Action Test Template
 
 ```typescript
 // src/app/(admin)/_actions/__tests__/customer.test.ts
@@ -288,9 +290,9 @@ describe("updateCustomer", () => {
 
 ---
 
-## 4. 단위 테스트 패턴
+## 4. Unit Test Patterns
 
-### 유틸 함수 테스트
+### Utility Function Tests
 
 ```typescript
 // src/lib/__tests__/format.test.ts
@@ -308,7 +310,7 @@ describe("formatCurrency", () => {
 })
 ```
 
-### Zod 스키마 테스트
+### Zod Schema Tests
 
 ```typescript
 // src/app/(admin)/_lib/__tests__/schemas.test.ts
@@ -327,21 +329,21 @@ describe("customerSchema", () => {
 })
 ```
 
-### 모킹 패턴
+### Mocking Patterns
 
-| 패턴 | 용도 | 예시 |
-|------|------|------|
-| `vi.mock("module")` | 모듈 전체 모킹 | `vi.mock("@/lib/prisma")` |
-| `vi.fn()` | 함수 모킹 | `const onClick = vi.fn()` |
-| `vi.spyOn(obj, "method")` | 기존 메서드 감시 | `vi.spyOn(console, "error")` |
+| Pattern | Usage | Example |
+|---------|-------|---------|
+| `vi.mock("module")` | Mock entire module | `vi.mock("@/lib/prisma")` |
+| `vi.fn()` | Mock function | `const onClick = vi.fn()` |
+| `vi.spyOn(obj, "method")` | Spy on existing method | `vi.spyOn(console, "error")` |
 
-> `vi.mock()`은 파일 최상위에서 호출해야 합니다 (호이스팅). 중앙 mock 파일(`src/test/mocks.ts`)을 import하면 자동 적용됩니다.
+> `vi.mock()` must be called at the top level of the file (hoisting). Importing the centralized mock file (`src/test/mocks.ts`) applies mocks automatically.
 
 ---
 
-## 5. Testing Library 컴포넌트 테스트
+## 5. Testing Library Component Tests
 
-### 기본 렌더링 테스트
+### Basic Rendering Test
 
 ```tsx
 // src/app/(admin)/_components/__tests__/CustomerCard.test.tsx
@@ -355,7 +357,7 @@ it("고객 이름과 이메일을 표시", () => {
 })
 ```
 
-### 폼 컴포넌트 테스트
+### Form Component Test
 
 ```tsx
 // src/app/(admin)/_components/__tests__/CustomerForm.test.tsx
@@ -390,7 +392,7 @@ describe("CustomerForm", () => {
 })
 ```
 
-### useActionState 컴포넌트 테스트
+### useActionState Component Test
 
 ```tsx
 // Server Action을 사용하는 폼 컴포넌트 테스트
@@ -428,21 +430,21 @@ describe("CustomerEditForm", () => {
 })
 ```
 
-### 쿼리 우선순위
+### Query Priority
 
-| 우선순위 | 쿼리 | 용도 |
-|----------|------|------|
-| 1 | `getByRole` | 버튼, 링크, 제목 등 |
-| 2 | `getByLabelText` | 폼 필드 |
-| 3 | `getByPlaceholderText` | placeholder 기반 |
-| 4 | `getByText` | 텍스트 내용 |
-| 5 | `getByTestId` | 최후 수단 (`data-testid`) |
+| Priority | Query | Usage |
+|----------|-------|-------|
+| 1 | `getByRole` | Buttons, links, headings, etc. |
+| 2 | `getByLabelText` | Form fields |
+| 3 | `getByPlaceholderText` | Placeholder-based |
+| 4 | `getByText` | Text content |
+| 5 | `getByTestId` | Last resort (`data-testid`) |
 
 ---
 
-## 6. Playwright E2E 테스트
+## 6. Playwright E2E Tests
 
-### Page Object 패턴
+### Page Object Pattern
 
 ```typescript
 // e2e/pages/login.page.ts
@@ -467,7 +469,7 @@ export class LoginPage {
 }
 ```
 
-### E2E 테스트 예시
+### E2E Test Example
 
 ```typescript
 // e2e/login.spec.ts
@@ -497,13 +499,13 @@ test.describe("관리자 로그인", () => {
 
 ---
 
-## 7. 고급 패턴: MSW (Mock Service Worker)
+## 7. Advanced Pattern: MSW (Mock Service Worker)
 
-외부 API를 호출하는 컴포넌트를 테스트할 때 사용합니다.
+Used when testing components that call external APIs.
 
-> **사용 시점**: Server Action은 `vi.mock()`으로 충분합니다. MSW는 `fetch`로 외부 API를 직접 호출하는 클라이언트 컴포넌트에 사용합니다.
+> **When to use**: `vi.mock()` is sufficient for Server Actions. MSW is used for client components that directly call external APIs via `fetch`.
 
-### 핸들러 정의
+### Handler Definition
 
 ```typescript
 // src/test/handlers.ts
@@ -524,7 +526,7 @@ export const handlers = [
 ]
 ```
 
-### Vitest 통합
+### Vitest Integration
 
 ```typescript
 // src/test/server.ts
@@ -541,7 +543,7 @@ afterEach(() => server.resetHandlers())
 afterAll(() => server.close())
 ```
 
-### 테스트 예시
+### Test Example
 
 ```tsx
 import { render, screen } from "@testing-library/react"
@@ -556,26 +558,26 @@ it("API에서 고객 목록을 가져와 표시", async () => {
 
 ---
 
-## 8. 주의사항
+## 8. Important Notes
 
-> 파일 구조는 섹션 1 "파일 구조: Co-location" 참조
+> For file structure, see Section 1 "File Structure: Co-location"
 
-### 네이밍 규칙
+### Naming Rules
 
-| 파일 유형 | 패턴 | 위치 |
-|-----------|------|------|
-| 단위 테스트 | `*.test.ts` | 소스 옆 `__tests__/` |
-| 컴포넌트 테스트 | `*.test.tsx` | 소스 옆 `__tests__/` |
-| E2E 테스트 | `*.spec.ts` | `e2e/` 최상위 |
+| File Type | Pattern | Location |
+|-----------|---------|----------|
+| Unit test | `*.test.ts` | `__tests__/` next to source |
+| Component test | `*.test.tsx` | `__tests__/` next to source |
+| E2E test | `*.spec.ts` | Top-level `e2e/` |
 | Page Object | `*.page.ts` | `e2e/pages/` |
-| 테스트 유틸 | `*.ts` | `src/test/` |
+| Test utilities | `*.ts` | `src/test/` |
 
-### 주의사항
+### Important Notes
 
-1. **Server Components(RSC)는 직접 테스트 불가** — Testing Library는 클라이언트 환경. RSC의 데이터 로직은 Server Action이나 유틸로 분리하여 단위 테스트
-2. **`vi.mock()`은 호이스팅됨** — 파일 최상위에서 호출 필수. 중앙 mock 파일을 import하면 자동 적용
-3. **`vi.clearAllMocks()`** — 각 테스트 전에 mock 상태 초기화 (`beforeEach` 사용)
-4. **FormData는 Node.js 18+ 내장** — Vitest 환경에서 별도 폴리필 불필요
-5. **Playwright는 dev 서버 필요** — `playwright.config.ts`의 `webServer` 설정으로 자동 시작
-6. **비동기 Server Action 테스트** — 항상 `await`으로 호출하고, `mockResolvedValue`/`mockRejectedValue` 사용
-7. **Mock 파일 격리** — `src/test/` 디렉토리는 프로덕션 빌드에서 자동 제외되지만, `vitest.config.ts`의 `include` 패턴과 `tsconfig` `exclude`로 명시적 격리 권장
+1. **Server Components (RSC) cannot be tested directly** -- Testing Library runs in a client environment. Extract RSC data logic into Server Actions or utilities for unit testing
+2. **`vi.mock()` is hoisted** -- must be called at the file top level. Importing the centralized mock file applies mocks automatically
+3. **`vi.clearAllMocks()`** -- reset mock state before each test (use `beforeEach`)
+4. **FormData is built into Node.js 18+** -- no separate polyfill needed in the Vitest environment
+5. **Playwright requires a dev server** -- auto-started via the `webServer` setting in `playwright.config.ts`
+6. **Async Server Action tests** -- always call with `await` and use `mockResolvedValue`/`mockRejectedValue`
+7. **Mock file isolation** -- `src/test/` is automatically excluded from production builds, but explicit isolation via `vitest.config.ts` `include` patterns and `tsconfig` `exclude` is recommended
