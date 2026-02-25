@@ -34,7 +34,7 @@ Namespace:   /enf:command (e.g. /enf:commit, /enf:code-review)
 
 ```bash
 # 1. Clone (one-time)
-git clone https://github.com/lemon-etvibe/etvibe-nextjs-fullstack.git ~/plugins/enf
+git clone https://github.com/lemon-etvibe/claude-nextjs-fullstack.git ~/plugins/enf
 
 # 2. Setup (run in the plugin directory)
 cd ~/plugins/enf
@@ -57,7 +57,7 @@ cd ~/projects/my-app && claude
 <summary><b>Windows (PowerShell)</b></summary>
 
 ```powershell
-git clone https://github.com/lemon-etvibe/etvibe-nextjs-fullstack.git C:\plugins\enf
+git clone https://github.com/lemon-etvibe/claude-nextjs-fullstack.git C:\plugins\enf
 cd C:\plugins\enf
 .\scripts\setup.ps1 C:\projects\my-app   # Direct path recommended (Tab completion supported)
 # or

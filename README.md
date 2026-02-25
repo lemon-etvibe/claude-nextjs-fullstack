@@ -37,7 +37,7 @@ Namespace:   /enf:command (예: /enf:commit, /enf:code-review)
 
 ```bash
 # 1. Clone (최초 1회)
-git clone https://github.com/lemon-etvibe/etvibe-nextjs-fullstack.git ~/plugins/enf
+git clone https://github.com/lemon-etvibe/claude-nextjs-fullstack.git ~/plugins/enf
 
 # 2. Setup (플러그인 디렉토리에서 실행)
 cd ~/plugins/enf
@@ -60,7 +60,7 @@ cd ~/projects/my-app && claude
 <summary><b>Windows (PowerShell)</b></summary>
 
 ```powershell
-git clone https://github.com/lemon-etvibe/etvibe-nextjs-fullstack.git C:\plugins\enf
+git clone https://github.com/lemon-etvibe/claude-nextjs-fullstack.git C:\plugins\enf
 cd C:\plugins\enf
 .\scripts\setup.ps1 C:\projects\my-app   # 직접 경로 지정 권장 (Tab 완성 지원)
 # 또는

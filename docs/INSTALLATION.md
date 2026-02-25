@@ -15,7 +15,7 @@ etvibe-nextjs-fullstack (enf) 플러그인 상세 설치 가이드입니다.
 
 ```bash
 # 1. 플러그인 클론
-git clone https://github.com/lemon-etvibe/etvibe-nextjs-fullstack.git ~/plugins/enf
+git clone https://github.com/lemon-etvibe/claude-nextjs-fullstack.git ~/plugins/enf
 
 # 2. 셋업 스크립트 실행
 cd ~/plugins/enf
@@ -32,7 +32,7 @@ cd ~/projects/my-app && claude
 
 ```powershell
 # 1. 플러그인 클론
-git clone https://github.com/lemon-etvibe/etvibe-nextjs-fullstack.git C:\plugins\enf
+git clone https://github.com/lemon-etvibe/claude-nextjs-fullstack.git C:\plugins\enf
 
 # 2. 셋업 스크립트 실행
 cd C:\plugins\enf
