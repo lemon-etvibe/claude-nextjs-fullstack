@@ -72,7 +72,8 @@ jobs:
           git remote add public "https://x-access-token:${DEPLOY_TOKEN}@github.com/lemon-etvibe/claude-nextjs-fullstack.git"
           git push public HEAD:main --force
 
-          # Create matching tag on public repo
+          # Create matching tag on public repo (delete existing if re-releasing)
+          git push public ":refs/tags/${VERSION}" 2>/dev/null || true
           git tag -a "${VERSION}" -m "Release ${VERSION}"
           git push public "${VERSION}"
 
