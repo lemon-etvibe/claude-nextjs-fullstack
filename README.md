@@ -7,6 +7,8 @@
 
 # etvibe-nextjs-fullstack
 
+> 🇺🇸 [English README](./README.EN.md)
+
 > 🇰🇷 이 플러그인은 한국어 환경에 최적화되어 있습니다.
 > 스킬/에이전트/커맨드 문서는 영문이지만, Claude와의 대화는 한국어로 진행됩니다.
 
