@@ -345,7 +345,7 @@ export const useCounterStore = create<CounterStore>((set) => ({
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/check-typescript.sh \"$TOOL_INPUT_file_path\""
+            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/post-write-check.sh \"$TOOL_INPUT_file_path\""
           }
         ]
       }
@@ -355,6 +355,7 @@ export const useCounterStore = create<CounterStore>((set) => ({
 ```
 
 > **중요**: 스크립트 경로는 반드시 `${CLAUDE_PLUGIN_ROOT}`를 사용해야 다른 프로젝트에서 정상 동작합니다.
+> **참고**: 기존 3개 스크립트(check-typescript, check-server-action, check-prisma-schema)는 `post-write-check.sh`로 통합되었습니다.
 
 ### 대안: plugin.json 인라인
 
@@ -422,14 +423,19 @@ chmod +x scripts/my-check.sh
                          │
                          ▼
 ┌─────────────────────────────────────────────────────┐
-│              PostToolUse Hook 트리거                  │
+│         PostToolUse Hook 트리거 (Write|Edit)          │
 └─────────────────────────────────────────────────────┘
                          │
-         ┌───────────────┼───────────────┐
-         ▼               ▼               ▼
-  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐
-  │ check-ts.sh │ │ check-sa.sh │ │ my-check.sh │
-  └─────────────┘ └─────────────┘ └─────────────┘
+                         ▼
+┌─────────────────────────────────────────────────────┐
+│            post-write-check.sh (통합 스크립트)         │
+│                                                     │
+│  .env* → 경고 (exit 1)                               │
+│  .ts/.tsx 아닌 파일 → 즉시 종료 (exit 0)               │
+│  schema.prisma → Prisma 안내                         │
+│  .ts/.tsx → TypeScript 안내                           │
+│  _actions/*.ts → Server Action 추가 검사              │
+└─────────────────────────────────────────────────────┘
                          │
                          ▼
 ┌─────────────────────────────────────────────────────┐

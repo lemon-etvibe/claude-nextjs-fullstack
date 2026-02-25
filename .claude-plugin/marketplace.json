@@ -7,7 +7,7 @@
     {
       "name": "enf",
       "source": "./",
-      "description": "Next.js 16 + Prisma 7 + Better Auth 풀스택 개발을 위한 Claude Code 플러그인"
+      "description": "Claude Code plugin for Next.js 16 + Prisma 7 + Better Auth full-stack development / 풀스택 개발 플러그인"
     }
   ]
 }
