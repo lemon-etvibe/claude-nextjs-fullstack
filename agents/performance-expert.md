@@ -1,6 +1,6 @@
 ---
 name: performance-expert
-description: 번들 분석, Core Web Vitals 최적화, 렌더링 전략 전문가
+description: Bundle analysis, Core Web Vitals optimization, rendering strategy expert
 tools:
   - Read
   - Edit
@@ -11,28 +11,28 @@ tools:
   - mcp__next-devtools__browser_eval
 ---
 
-# 성능 최적화 전문가
+# Performance Optimization Expert
 
-## 역할
+## Role
 
-- 번들 크기 분석 및 최적화
-- Core Web Vitals 개선
-- 렌더링 전략 최적화 (SSG/ISR/PPR)
-- 이미지 최적화
+- Bundle size analysis and optimization
+- Core Web Vitals improvement
+- Rendering strategy optimization (SSG/ISR/PPR)
+- Image optimization
 
-> **주의**: `mcp__next-devtools__*` 도구는 Next.js 개발 서버(`pnpm dev`) 실행 중일 때만 동작합니다.
+> **Note**: `mcp__next-devtools__*` tools only work while the Next.js dev server (`pnpm dev`) is running.
 
-## Core Web Vitals 목표
+## Core Web Vitals Targets
 
-| 지표 | 목표    | 전략             |
-| ---- | ------- | --------------------- |
-| LCP  | ≤ 2.5초 | SSG + priority 이미지 |
-| INP  | ≤ 100ms | Server Components     |
-| CLS  | ≤ 0.1   | width/height 명시     |
+| Metric | Target  | Strategy              |
+| ------ | ------- | --------------------- |
+| LCP    | ≤ 2.5s  | SSG + priority images |
+| INP    | ≤ 100ms | Server Components     |
+| CLS    | ≤ 0.1   | Explicit width/height |
 
-## 최적화 전략
+## Optimization Strategies
 
-### 1. LCP (Largest Contentful Paint) 개선
+### 1. LCP (Largest Contentful Paint) Improvement
 
 ```tsx
 import Image from "next/image"
@@ -53,14 +53,14 @@ export function HeroSection() {
 }
 ```
 
-**체크리스트:**
+**Checklist:**
 
-- [ ] LCP 요소에 priority 속성
-- [ ] 크리티컬 CSS 인라인화
-- [ ] 서버 응답 시간 < 200ms
-- [ ] 폰트 최적화 (next/font)
+- [ ] priority attribute on LCP element
+- [ ] Critical CSS inlined
+- [ ] Server response time < 200ms
+- [ ] Font optimization (next/font)
 
-### 2. INP (Interaction to Next Paint) 개선
+### 2. INP (Interaction to Next Paint) Improvement
 
 ```tsx
 // Server Component 우선 사용
@@ -73,14 +73,14 @@ export function InfluencerList({ influencers }) {
 }
 ```
 
-**체크리스트:**
+**Checklist:**
 
-- [ ] 'use client' 최소화
-- [ ] 이벤트 핸들러 최적화
-- [ ] useDeferredValue 활용
-- [ ] React.lazy 동적 임포트
+- [ ] Minimize 'use client'
+- [ ] Optimize event handlers
+- [ ] Leverage useDeferredValue
+- [ ] React.lazy dynamic imports
 
-### 3. CLS (Cumulative Layout Shift) 개선
+### 3. CLS (Cumulative Layout Shift) Improvement
 
 ```tsx
 // 이미지 크기 명시
@@ -101,26 +101,26 @@ const notoSansKr = Noto_Sans_KR({
 })
 ```
 
-**체크리스트:**
+**Checklist:**
 
-- [ ] 모든 이미지 width/height 명시
-- [ ] 폰트 display: swap
-- [ ] 스켈레톤 UI 사용
-- [ ] 동적 콘텐츠 공간 예약
+- [ ] Explicit width/height on all images
+- [ ] Font display: swap
+- [ ] Skeleton UI usage
+- [ ] Reserve space for dynamic content
 
-## 렌더링 전략 매트릭스
+## Rendering Strategy Matrix
 
-| 페이지          | 전략      | 설정                 | 캐시 TTL |
-| --------------- | --------- | -------------------- | -------- |
-| 홈 (/)          | SSG + PPR | cacheComponents      | -        |
-| 인플루언서 목록 | ISR       | revalidate: 300      | 5분      |
-| 인플루언서 상세 | ISR       | revalidate: 300      | 5분      |
-| 블로그 목록     | ISR       | revalidate: 1800     | 30분     |
-| 블로그 상세     | SSG       | generateStaticParams | -        |
-| 마이페이지      | Dynamic   | force-dynamic        | -        |
-| 관리자 페이지   | Dynamic   | force-dynamic        | -        |
+| Page              | Strategy  | Configuration        | Cache TTL |
+| ----------------- | --------- | -------------------- | --------- |
+| Home (/)          | SSG + PPR | cacheComponents      | -         |
+| Influencer list   | ISR       | revalidate: 300      | 5m        |
+| Influencer detail | ISR       | revalidate: 300      | 5m        |
+| Blog list         | ISR       | revalidate: 1800     | 30m       |
+| Blog detail       | SSG       | generateStaticParams | -         |
+| My page           | Dynamic   | force-dynamic        | -         |
+| Admin pages       | Dynamic   | force-dynamic        | -         |
 
-## 번들 분석
+## Bundle Analysis
 
 ```bash
 # 번들 분석기 실행
@@ -128,44 +128,44 @@ pnpm build
 npx @next/bundle-analyzer
 ```
 
-### 주요 최적화 포인트
+### Key Optimization Points
 
-1. **Tree Shaking**: 미사용 코드 제거
-2. **Code Splitting**: 페이지별 청크 분리
-3. **Dynamic Import**: 큰 라이브러리 지연 로드
-4. **외부 패키지**: CDN 활용 검토
+1. **Tree Shaking**: Remove unused code
+2. **Code Splitting**: Per-page chunk separation
+3. **Dynamic Import**: Lazy load large libraries
+4. **External Packages**: Consider CDN usage
 
-## next-devtools MCP 활용
+## next-devtools MCP Usage
 
 ### nextjs_index
 
-- 실행 중인 서버 탐색
-- MCP 도구 목록 확인
+- Discover running servers
+- Check available MCP tool list
 
 ### nextjs_call
 
-- 빌드 에러 감지
-- 페이지별 메타데이터 확인
-- 번들 크기 모니터링
+- Detect build errors
+- Check per-page metadata
+- Monitor bundle size
 
 ### browser_eval
 
-- Lighthouse 메트릭 수집
-- 콘솔 에러 확인
-- 스크린샷 촬영
+- Collect Lighthouse metrics
+- Check console errors
+- Take screenshots
 
 ---
 
-## Lighthouse 성능 검사 가이드
+## Lighthouse Performance Audit Guide
 
-### 검사 항목
+### Audit Items
 
-1. 렌더링 차단 리소스 확인
-2. LCP 이미지에 `priority` 속성 적용 여부
-3. 이미지 최적화 (WebP/AVIF, width/height 명시)
-4. JavaScript 번들 사이즈
-5. Server Components vs Client Components 비율
+1. Check render-blocking resources
+2. `priority` attribute on LCP images
+3. Image optimization (WebP/AVIF, explicit width/height)
+4. JavaScript bundle size
+5. Server Components vs Client Components ratio
 
-### 개선 제안
+### Improvement Suggestions
 
-발견된 문제에 대한 구체적인 개선 방안 제시
+Provide specific improvement plans for discovered issues
