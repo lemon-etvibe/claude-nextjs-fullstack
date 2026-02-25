@@ -368,27 +368,20 @@ export async function deleteCustomer(id: string) {
 
 ---
 
-## Proxy (구 Middleware) 통합
+## Middleware (경로 보호)
+
+> **참고**: Middleware는 가벼운 경로 보호만 담당합니다. 실제 인증 검증은 Server Component의 `auth.api.getSession()`에서 수행합니다.
 
 ```typescript
-// src/proxy.ts
-import type { NextRequest } from "next/server"
-import { NextResponse } from "next/server"
+// src/middleware.ts
+import { NextRequest, NextResponse } from "next/server"
 
-export function proxy(request: NextRequest) {
+export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  // Admin 경로 (로그인 제외)
+  // Admin 경로 보호 (로그인 페이지 제외)
   if (pathname.startsWith("/admin") && !pathname.startsWith("/admin/login")) {
-    // 1. IP 체크 (선택적)
-    const allowedIPs = process.env.ALLOWED_ADMIN_IPS?.split(",") || []
-    const clientIP = request.headers.get("x-forwarded-for")?.split(",")[0]
-
-    if (allowedIPs.length > 0 && clientIP && !allowedIPs.includes(clientIP)) {
-      return NextResponse.redirect(new URL("/admin/login?error=ip", request.url))
-    }
-
-    // 2. 세션 쿠키 존재 체크 (가벼운 검사)
+    // 세션 쿠키 존재 여부만 확인 (가벼운 검사)
     const sessionCookie = request.cookies.get("better-auth.session_token")
     if (!sessionCookie) {
       return NextResponse.redirect(new URL("/admin/login", request.url))
@@ -402,6 +395,16 @@ export const config = {
   matcher: ["/admin/:path*"],
 }
 ```
+
+### Middleware vs Server Component 역할 분담
+
+| 레이어 | 역할 | 예시 |
+|--------|------|------|
+| Middleware | 쿠키 존재 여부 확인 (빠른 리다이렉트) | 세션 쿠키 없으면 → `/admin/login` |
+| Server Component (layout.tsx) | 실제 세션 검증 + 권한 체크 | `auth.api.getSession()` → 역할 확인 |
+
+> **왜 Middleware에서 실제 인증을 하지 않는가?**
+> Middleware는 Edge Runtime에서 실행되므로 DB 접근이 제한됩니다. 쿠키 존재 여부만 확인하고, 실제 세션 유효성 검증은 Server Component에서 수행합니다. Rate limiting 등 Edge Runtime에서 가능한 방어는 필요 시 이 레이어에 추가할 수 있습니다.
 
 ---
 

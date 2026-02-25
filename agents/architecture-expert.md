@@ -124,10 +124,10 @@ model CampaignInfluencer {
 ### 5. 인증/권한 아키텍처
 
 ```
-[요청] → [proxy.ts] → [layout.tsx] → [Page/Action]
-            │              │
-            │              └── 실제 세션 검증
-            └── IP 체크 + 쿠키 존재 여부 (가벼운 검사)
+[요청] → [middleware.ts] → [layout.tsx] → [Page/Action]
+              │                  │
+              │                  └── 실제 세션 검증 (auth.api.getSession)
+              └── 쿠키 존재 여부 (가벼운 검사, Edge Runtime)
 ```
 
 ---
