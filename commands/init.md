@@ -149,6 +149,12 @@ export async function updateCustomer(
 | `/enf:type-check` | TypeScript 검증 |
 | `/enf:waterfall-check` | Promise.all 최적화 검사 |
 
+### 테스트
+
+| 명령어 | 설명 |
+| ------ | ---- |
+| `/enf:test` | 테스트 실행 및 생성 |
+
 ### Git 워크플로우
 
 | 명령어 | 설명 |

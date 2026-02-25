@@ -31,6 +31,7 @@
 | `/enf:refactor` | 리팩토링 제안 | `<파일경로>` |
 | `/enf:type-check` | TypeScript 검증 | - |
 | `/enf:waterfall-check` | 순차 await 검출 | `[경로]` |
+| `/enf:test` | 테스트 실행/생성 | `[파일경로]` `[--e2e]` `[--coverage]` `[--setup]` |
 | `/enf:generate-docs` | API 문서 생성 | - |
 | `/enf:component-docs` | 컴포넌트 문서 생성 | - |
 | `/enf:update-changelog` | CHANGELOG 업데이트 | - |
@@ -66,6 +67,16 @@
 /enf:perf-audit                      # 번들/성능 분석
 /enf:waterfall-check                 # 전체 프로젝트 검사
 /enf:waterfall-check src/app/        # 특정 디렉토리 검사
+```
+
+#### 테스트
+
+```bash
+/enf:test                                    # 전체 테스트 실행
+/enf:test src/app/(admin)/_actions/customer.ts  # 테스트 생성
+/enf:test --e2e                              # E2E 테스트 실행
+/enf:test --coverage                         # 커버리지 포함
+/enf:test --setup                            # 초기 설정
 ```
 
 #### 문서화
@@ -456,6 +467,25 @@ Prisma 스키마를 리뷰합니다.
 - 불필요한 'use client' 검출
 - dynamic import 제안
 - Core Web Vitals 영향 분석
+
+### `/enf:test`
+
+테스트를 실행하거나 테스트 코드를 생성합니다.
+
+```bash
+/enf:test                     # 전체 테스트 실행
+/enf:test <파일경로>          # 해당 파일의 테스트 생성
+/enf:test --e2e               # Playwright E2E 실행
+/enf:test --coverage          # 커버리지 리포트
+/enf:test --setup             # 테스트 환경 초기 설정
+```
+
+**테스트 유형**:
+- 단위 테스트 (Vitest) — Server Action, 유틸, Zod 스키마
+- 컴포넌트 테스트 (Testing Library) — React 클라이언트 컴포넌트
+- E2E 테스트 (Playwright) — 전체 사용자 플로우
+
+**파일 분류**: 경로 패턴 우선 (`_actions/` → Server Action), 불명확 시 파일 내용 분석
 
 ---
 

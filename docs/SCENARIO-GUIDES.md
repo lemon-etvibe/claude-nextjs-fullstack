@@ -158,6 +158,44 @@ etvibe-nextjs-fullstack (enf) 플러그인을 사용한 상황별 워크플로�
 
 ---
 
+### 5. 테스트 작성
+
+#### 시나리오
+"고객 관리 기능에 테스트를 추가해야 해요"
+
+#### 워크플로우
+
+```bash
+# 1. (최초 1회) 테스트 환경 설정
+> /enf:test --setup
+
+# 2. Server Action 테스트 생성
+> /enf:test src/app/(admin)/_actions/customer.ts
+
+# 3. 컴포넌트 테스트 생성
+> /enf:test src/app/(admin)/_components/CustomerTable.tsx
+
+# 4. 테스트 실행
+> /enf:test
+
+# 5. 커버리지 확인
+> /enf:test --coverage
+
+# 6. 커밋
+> /enf:commit
+```
+
+#### 테스트 유형별 선택 기준
+
+| 대상 | 테스트 유형 | 도구 |
+|------|-----------|------|
+| Server Action 로직 | 단위 테스트 | Vitest |
+| Zod 스키마 검증 | 단위 테스트 | Vitest |
+| React 클라이언트 컴포넌트 | 컴포넌트 테스트 | Testing Library |
+| 전체 사용자 플로우 (로그인 등) | E2E 테스트 | Playwright |
+
+---
+
 ## 문제 해결
 
 ### 1. 페이지가 느려요
