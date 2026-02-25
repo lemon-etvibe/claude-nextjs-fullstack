@@ -17,6 +17,7 @@ etvibe-nextjs-fullstack 플러그인 로드맵
 - [ ] 권한 설정 축소 (`--force`, `-D` 등 destructive 명령 제외)
 - [ ] `claude:*` 와일드카드 → 명시적 allowlist
 - [ ] MCP 버전 고정 (`npx -y @latest` → `@x.y.z`)
+- [ ] Better Auth proxy.ts → API Route handler 업데이트
 
 ## Phase 3: 기능 완결 (병렬)
 
@@ -46,7 +47,6 @@ etvibe-nextjs-fullstack 플러그인 로드맵
 
 - [ ] 에이전트 핸드오프 프로토콜 정의 (architecture-expert → dev-assistant)
 - [ ] 에러 핸들링 / API Route 패턴 보강
-- [ ] Better Auth proxy.ts → API Route handler 업데이트
 
 ## Phase 6: 확장
 
