@@ -1,39 +1,39 @@
 ---
-description: 업무 정의 및 Git 브랜치 생성 - 작업 시작 워크플로우
+description: Task definition and Git branch creation - task start workflow
 allowed-tools:
   - Bash
   - Read
   - Glob
 ---
 
-# /task 명령어
+# /task Command
 
-새로운 작업을 시작할 때 업무를 정의하고 Git 브랜치를 생성합니다.
+Defines a new task and creates a Git branch when starting work.
 
-## 사용법
+## Usage
 
 ```
-/task "<작업 설명>"
+/task "<task description>"
 /task "로그인 페이지 구현"
 /task "고객 목록 필터 기능 추가"
 /task "버그 수정: 이메일 유효성 검사"
 ```
 
-## 워크플로우
+## Workflow
 
-### 1. 작업 유형 분류
+### 1. Task Type Classification
 
-| 접두어 | 유형 | 설명 |
+| Prefix | Type | Description |
 | ------ | ---- | ---- |
-| `feat/` | Feature | 새로운 기능 |
-| `fix/` | Bug Fix | 버그 수정 |
-| `refactor/` | Refactor | 코드 개선 (기능 변경 없음) |
-| `docs/` | Documentation | 문서 작성/수정 |
-| `style/` | Style | 코드 스타일 변경 |
-| `test/` | Test | 테스트 추가/수정 |
-| `chore/` | Chore | 빌드, 설정 등 기타 |
+| `feat/` | Feature | New feature |
+| `fix/` | Bug Fix | Bug fix |
+| `refactor/` | Refactor | Code improvement (no functional changes) |
+| `docs/` | Documentation | Documentation creation/modification |
+| `style/` | Style | Code style changes |
+| `test/` | Test | Add/modify tests |
+| `chore/` | Chore | Build, configuration, and other miscellaneous |
 
-### 2. 브랜치명 생성 규칙
+### 2. Branch Naming Rules
 
 ```
 <type>/<short-description>
@@ -45,13 +45,13 @@ refactor/campaign-table
 docs/api-readme
 ```
 
-### 3. 실행 단계
+### 3. Execution Steps
 
-1. 현재 브랜치 상태 확인
-2. **⚠️ dev 브랜치 기반 여부 확인 (경고)**
-3. 작업 유형 분류
-4. 브랜치명 생성
-5. dev 브랜치에서 새 브랜치 생성
+1. Check current branch status
+2. **Warning: Check if based on dev branch**
+3. Classify task type
+4. Generate branch name
+5. Create new branch from dev
 
 ```bash
 # 현재 상태 확인
@@ -86,33 +86,33 @@ git pull origin dev
 git checkout -b feat/customer-login
 ```
 
-> **중요**: 모든 작업 브랜치는 `dev`에서 분리해야 합니다. `main`에서 직접 분리하면 PR 타겟이 꼬일 수 있습니다.
+> **Important**: All work branches must be created from `dev`. Creating branches directly from `main` can cause PR target conflicts.
 
-### 4. 작업 컨텍스트 설정
+### 4. Task Context Setup
 
-브랜치 생성 후 다음을 확인/안내합니다:
+After branch creation, verify/inform the following:
 
-- 관련 파일 위치 (Route Group, 컴포넌트 등)
-- 필요한 데이터 모델
-- 참고할 기존 패턴
+- Related file locations (Route Group, components, etc.)
+- Required data models
+- Existing patterns to reference
 
-## 브랜치 명명 규칙
+## Branch Naming Convention
 
 ### DO
 
-- 소문자 사용
-- 하이픈으로 단어 구분
-- 간결하고 명확한 설명
-- 영문 사용
+- Use lowercase
+- Separate words with hyphens
+- Keep descriptions concise and clear
+- Use English
 
 ### DON'T
 
-- 한글 사용
-- 너무 긴 이름 (3-4 단어 이내)
-- 특수문자 사용 (하이픈 제외)
-- 이슈 번호만 사용
+- Use Korean characters
+- Use overly long names (keep within 3-4 words)
+- Use special characters (except hyphens)
+- Use only issue numbers
 
-## 출력 형식
+## Output Format
 
 ```markdown
 ## 작업 시작: {작업 설명}
@@ -142,9 +142,9 @@ git checkout -b feat/customer-login
 4. `/pr` - PR 생성 (→ dev 브랜치로 머지)
 ```
 
-## 연계 명령어
+## Related Commands
 
-- `/design-feature` - 기능 설계 (복잡한 작업 시)
-- `/commit` - 변경사항 커밋
-- `/push` - 원격 푸시
-- `/pr` - PR 생성
+- `/design-feature` - Feature design (for complex tasks)
+- `/commit` - Create commit
+- `/push` - Push to remote
+- `/pr` - Create PR

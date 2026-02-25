@@ -1,5 +1,5 @@
 ---
-description: 버전 호환성 자동 검증 - 프로젝트 기술 스택과 플러그인 지원 범위 비교
+description: Automatic version compatibility verification - comparing project tech stack against plugin support range
 allowed-tools:
   - Read
   - Glob
@@ -7,53 +7,53 @@ allowed-tools:
   - Bash
 ---
 
-# /health 명령어
+# /health Command
 
-프로젝트의 package.json을 분석하여 enf 플러그인과의 버전 호환성을 검증합니다.
+Analyzes the project's package.json to verify version compatibility with the enf plugin.
 
-## 사용법
+## Usage
 
 ```
 /health                  # 전체 호환성 검사
 ```
 
-## 지원 버전 매트릭스
+## Supported Version Matrix
 
-| 기술 | 지원 범위 | 최소 버전 | package.json 키 |
+| Technology | Support Range | Minimum Version | package.json Key |
 |------|----------|----------|-----------------|
 | Next.js | 16.x | 16.0.0 | `next` |
 | React | 19.x | 19.0.0 | `react` |
-| Prisma | 7.x | 7.0.0 | `prisma` (devDependencies) 또는 `@prisma/client` (dependencies) |
+| Prisma | 7.x | 7.0.0 | `prisma` (devDependencies) or `@prisma/client` (dependencies) |
 | Better Auth | ^1.4.0 | 1.4.0 | `better-auth` |
-| Tailwind CSS | 4.x | 4.0.0 | `tailwindcss` (dependencies 또는 devDependencies) |
+| Tailwind CSS | 4.x | 4.0.0 | `tailwindcss` (dependencies or devDependencies) |
 | TypeScript | ^5.0.0 | 5.0.0 | `typescript` (devDependencies) |
 
-## 검사 단계
+## Check Steps
 
-### 1. Setup — package.json 탐색
+### 1. Setup -- package.json Discovery
 
-프로젝트 루트에서 `package.json`을 찾아 읽습니다.
+Finds and reads `package.json` from the project root.
 
 ```bash
 # package.json 존재 확인
 ls package.json
 ```
 
-package.json이 없으면 에러를 보고하고 종료합니다:
+If package.json is not found, report an error and exit:
 
 ```
 ❌ package.json을 찾을 수 없습니다. 프로젝트 루트에서 실행하세요.
 ```
 
-### 2. Detection — 버전 추출
+### 2. Detection -- Version Extraction
 
-package.json의 `dependencies`와 `devDependencies`에서 각 패키지의 버전을 추출합니다.
+Extracts each package version from `dependencies` and `devDependencies` in package.json.
 
-**추출 대상**:
+**Extraction targets**:
 - `dependencies`: `next`, `react`, `@prisma/client`, `better-auth`, `tailwindcss`
 - `devDependencies`: `prisma`, `typescript`, `tailwindcss`
 
-**실제 설치 버전 확인** (node_modules가 있는 경우, 더 정확함):
+**Actual installed version check** (more accurate when node_modules exists):
 
 ```bash
 node -e "console.log(require('next/package.json').version)" 2>/dev/null
@@ -63,44 +63,44 @@ node -e "console.log(require('better-auth/package.json').version)" 2>/dev/null
 node -e "console.log(require('typescript/package.json').version)" 2>/dev/null
 ```
 
-node_modules가 없으면 package.json의 버전 범위를 사용하고 다음 안내를 출력합니다:
+If node_modules does not exist, use the version ranges from package.json and output the following notice:
 
 ```
 ℹ️ node_modules가 없어 package.json 선언 버전을 사용합니다.
    정확한 검사를 위해 의존성 설치 후 다시 실행하세요.
 ```
 
-### 3. Analysis — 호환성 판정
+### 3. Analysis -- Compatibility Verdict
 
-각 패키지에 대해 다음 3단계로 판정합니다:
+Each package is evaluated in 3 tiers:
 
-| 상태 | 조건 | 표시 |
+| Status | Condition | Symbol |
 |------|------|------|
-| **PASS** | 지원 범위 내 (메이저 버전 일치) | ✅ |
-| **WARN** | 버전 파싱 불가 또는 패키지 미설치 | ⚠️ |
-| **FAIL** | 지원 범위 밖 (메이저 버전 불일치) | ❌ |
+| **PASS** | Within support range (major version matches) | ✅ |
+| **WARN** | Version unparseable or package not installed | ⚠️ |
+| **FAIL** | Outside support range (major version mismatch) | ❌ |
 
-**판정 로직**:
+**Verdict logic**:
 
-1. **패키지가 package.json에 없음**:
-   - 필수 패키지 (`next`, `react`, `typescript`): ⚠️ WARN
-   - 선택 패키지 (`better-auth`, `prisma`, `tailwindcss`): ✅ PASS (미사용)
+1. **Package not in package.json**:
+   - Required packages (`next`, `react`, `typescript`): ⚠️ WARN
+   - Optional packages (`better-auth`, `prisma`, `tailwindcss`): ✅ PASS (unused)
 
-2. **메이저 버전 불일치**: ❌ FAIL
-   - 예: next@15.x → ❌ (16.x 필요)
+2. **Major version mismatch**: ❌ FAIL
+   - Example: next@15.x -> ❌ (16.x required)
 
-3. **메이저 버전 일치**: ✅ PASS
-   - 예: next@16.3.0 → ✅
+3. **Major version matches**: ✅ PASS
+   - Example: next@16.3.0 -> ✅
 
-4. **Better Auth 특수 케이스**:
-   - 1.4.x 이상 → ✅ PASS
-   - 1.3.x 이하 → ❌ FAIL
+4. **Better Auth special case**:
+   - 1.4.x or above -> ✅ PASS
+   - 1.3.x or below -> ❌ FAIL
 
-5. **버전 범위 문자열 처리**:
-   - `^`, `~`, `>=`, `<`, `<=` 접두사를 제거하고 메이저 버전 추출
-   - `*`, `latest` → ⚠️ WARN (정확한 버전 파악 불가)
+5. **Version range string handling**:
+   - Strip `^`, `~`, `>=`, `<`, `<=` prefixes and extract major version
+   - `*`, `latest` -> ⚠️ WARN (exact version cannot be determined)
 
-### 4. Report — 결과 출력
+### 4. Report -- Output Results
 
 ```markdown
 ## 프로젝트 호환성 검사 결과
@@ -153,9 +153,9 @@ node_modules가 없으면 package.json의 버전 범위를 사용하고 다음 �
 **결과**: 모든 의존성이 호환됩니다.
 ```
 
-### FAIL 시 추가 출력
+### Additional Output on FAIL
 
-FAIL 항목이 있으면 각 항목에 대해 상세 정보를 제공합니다:
+If there are FAIL items, provide detailed information for each:
 
 ```markdown
 ### ❌ 비호환 항목 상세
@@ -174,11 +174,11 @@ pnpm add next@16
 **참고**: [COMPATIBILITY.md](../docs/COMPATIBILITY.md) 업그레이드 노트 참조
 ```
 
-## 엣지 케이스
+## Edge Cases
 
-### monorepo 감지
+### Monorepo Detection
 
-package.json에 `workspaces` 필드가 있으면 다음을 안내합니다:
+If package.json contains a `workspaces` field, display the following notice:
 
 ```
 ℹ️ 모노레포 구조가 감지되었습니다.
@@ -187,14 +187,14 @@ package.json에 `workspaces` 필드가 있으면 다음을 안내합니다:
 
 ### shadcn/ui
 
-shadcn/ui는 npm 패키지가 아니므로 버전 검사에서 제외합니다. `components.json` 파일의 존재 여부만 확인합니다.
+shadcn/ui is not an npm package, so it is excluded from version checks. Only the existence of the `components.json` file is verified.
 
-## 연계 명령어
+## Related Commands
 
-- `/enf:init` — 프로젝트 구조 가이드
-- `/enf:code-review` — 코드 품질 검사
+- `/enf:init` -- Project Structure guide
+- `/enf:code-review` -- Code quality review
 
-## 연계 문서
+## Related Documentation
 
-- `docs/COMPATIBILITY.md` — 지원 버전 매트릭스 상세
-- `docs/TROUBLESHOOTING.md` — 호환성 문제 해결
+- `docs/COMPATIBILITY.md` -- Detailed supported version matrix
+- `docs/TROUBLESHOOTING.md` -- Compatibility issue resolution

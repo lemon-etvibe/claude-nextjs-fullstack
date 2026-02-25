@@ -1,5 +1,5 @@
 ---
-description: 코드 품질 검사 - TypeScript, 성능, 보안, 베스트 프랙티스 점검
+description: Code quality review - TypeScript, performance, security, and best practices audit
 allowed-tools:
   - Read
   - Glob
@@ -10,74 +10,74 @@ skills:
   - vercel-react-best-practices
 ---
 
-# /code-review 명령어
+# /code-review Command
 
-지정된 파일 또는 디렉토리의 코드를 리뷰합니다.
+Reviews code in the specified file or directory.
 
-> **활용 도구**: context7 MCP로 최신 Next.js/React 문서 참조, `vercel-react-best-practices` 스킬로 성능 패턴 검증
+> **Tools used**: References latest Next.js/React docs via context7 MCP, validates performance patterns with the `vercel-react-best-practices` skill
 
-## 사용법
+## Usage
 
 ```
-/code-review <파일경로|디렉토리>
+/code-review <file-path|directory>
 /code-review src/app/(admin)/_actions/customer.ts
 /code-review src/components/ui
 ```
 
-## 리뷰 체크리스트
+## Review Checklist
 
-### 1. TypeScript 품질
+### 1. TypeScript Quality
 
-- [ ] `any` 타입 사용 여부 (unknown 또는 구체적 타입으로 대체)
-- [ ] strict 모드 준수 여부
-- [ ] 타입 추론 가능한 곳의 불필요한 타입 선언
-- [ ] 제네릭 활용 적절성
+- [ ] Usage of `any` type (replace with unknown or specific types)
+- [ ] Strict mode compliance
+- [ ] Unnecessary type declarations where type inference is possible
+- [ ] Appropriate use of generics
 
-### 2. React/Next.js 패턴
+### 2. React/Next.js Patterns
 
-- [ ] 불필요한 'use client' 지시문
-- [ ] Server Components 우선 사용 여부
-- [ ] 적절한 Suspense 경계 설정
-- [ ] metadata export (페이지의 경우)
+- [ ] Unnecessary 'use client' directives
+- [ ] Server Components used by default
+- [ ] Proper Suspense boundary placement
+- [ ] metadata export (for pages)
 
-### 3. 성능 최적화
+### 3. Performance Optimization
 
-- [ ] **순차 await waterfall** - Promise.all() 병렬화 검토
-- [ ] **무거운 컴포넌트 dynamic import** - 모달, 에디터, 차트
-- [ ] **RSC → CC 경계 최소 데이터 전달**
-- [ ] **lucide-react 개별 파일 import**
-- [ ] **useState 초기값 lazy init 검토**
+- [ ] **Sequential await waterfall** - Consider parallelizing with Promise.all()
+- [ ] **Dynamic import for heavy components** - Modals, editors, charts
+- [ ] **Minimal data passing at RSC to CC boundary**
+- [ ] **Individual file imports for lucide-react**
+- [ ] **Lazy init for useState initial values**
 
-### 4. Server Action 패턴 (해당 시)
+### 4. Server Action Patterns (when applicable)
 
-- [ ] 'use server' 지시문 존재
-- [ ] Better Auth 인증 검사
-- [ ] Zod 스키마 검증
-- [ ] revalidatePath 캐시 무효화
-- [ ] 적절한 에러 반환 형식
+- [ ] 'use server' directive present
+- [ ] Better Auth authentication check
+- [ ] Zod schema validation
+- [ ] revalidatePath cache invalidation
+- [ ] Proper error return format
 
-### 5. Prisma 쿼리 (해당 시)
+### 5. Prisma Queries (when applicable)
 
-- [ ] select로 필요한 필드만 조회
-- [ ] N+1 쿼리 방지 (include 사용)
-- [ ] 적절한 인덱스 활용
+- [ ] Use select to query only necessary fields
+- [ ] N+1 query prevention (use include)
+- [ ] Proper index utilization
 
-### 6. 보안
+### 6. Security
 
-- [ ] 사용자 입력 검증
-- [ ] SQL 인젝션 방지 (Prisma 사용)
-- [ ] XSS 방지
-- [ ] 민감 정보 노출 없음
+- [ ] User input validation
+- [ ] SQL injection prevention (using Prisma)
+- [ ] XSS prevention
+- [ ] No sensitive information exposure
 
-### 7. 코드 스타일
+### 7. Code Style
 
-- [ ] Import 순서 규칙 (React/Next → 외부 → 내부 → 타입)
-- [ ] 컴포넌트 PascalCase, 유틸 camelCase
-- [ ] 접근성 (a11y) 속성
+- [ ] Import order convention (React/Next > external > internal > types)
+- [ ] Components PascalCase, utilities camelCase
+- [ ] Accessibility (a11y) attributes
 
-## 출력 형식
+## Output Format
 
-리뷰 결과를 다음 형식으로 제공하세요:
+Provide review results in the following format:
 
 ```markdown
 ## 코드 리뷰 결과: {파일명}
@@ -102,21 +102,21 @@ skills:
 전체적인 코드 품질 평가
 ```
 
-## 연계 에이전트 및 스킬
+## Related Agents and Skills
 
-- **dev-assistant** 에이전트의 코드 리뷰 체크리스트 기반
-- **vercel-react-best-practices** 스킬로 React/Next.js 성능 최적화 패턴 검증
-- **context7 MCP**로 최신 공식 문서 기반 검증
+- Based on the **dev-assistant** agent's code review checklist
+- Validates React/Next.js performance optimization patterns with the **vercel-react-best-practices** skill
+- Verifies against latest official documentation via **context7 MCP**
 
-## Vercel Best Practices 체크 항목
+## Vercel Best Practices Check Items
 
-코드 리뷰 시 다음 Vercel 권장 패턴을 함께 검증합니다:
+The following Vercel recommended patterns are also verified during code review:
 
-- [ ] Server Components 기본 사용 (필요시만 'use client')
-- [ ] 데이터 페칭 최적화 (fetch 캐싱, revalidate)
-- [ ] 이미지 최적화 (next/image, priority, sizes)
-- [ ] 폰트 최적화 (next/font)
-- [ ] 메타데이터 설정 (generateMetadata)
-- [ ] 스트리밍 및 Suspense 경계
-- [ ] Route Handlers vs Server Actions 선택
-- [ ] 번들 사이즈 최적화 (dynamic import, tree-shaking)
+- [ ] Server Components used by default (use 'use client' only when necessary)
+- [ ] Data fetching optimization (fetch caching, revalidate)
+- [ ] Image optimization (next/image, priority, sizes)
+- [ ] Font optimization (next/font)
+- [ ] Metadata configuration (generateMetadata)
+- [ ] Streaming and Suspense boundaries
+- [ ] Route Handlers vs Server Actions selection
+- [ ] Bundle size optimization (dynamic import, tree-shaking)

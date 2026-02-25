@@ -1,14 +1,14 @@
 ---
-description: Git 원격 저장소 푸시 - 안전한 푸시 워크플로우
+description: Git remote push - safe push workflow
 allowed-tools:
   - Bash
 ---
 
-# /push 명령어
+# /push Command
 
-현재 브랜치를 원격 저장소에 푸시합니다.
+Pushes the current branch to the remote repository.
 
-## 사용법
+## Usage
 
 ```
 /push                   # 현재 브랜치 푸시
@@ -16,9 +16,9 @@ allowed-tools:
 /push -u                # upstream 설정 후 푸시
 ```
 
-## 워크플로우
+## Workflow
 
-### 1. 사전 체크
+### 1. Pre-checks
 
 ```bash
 # 현재 브랜치 확인
@@ -43,44 +43,44 @@ git status
 git log origin/$BRANCH..HEAD --oneline 2>/dev/null || echo "(새 브랜치)"
 ```
 
-### 2. 푸시 실행
+### 2. Execute Push
 
-#### 첫 푸시 (upstream 설정)
+#### First Push (set upstream)
 
 ```bash
 git push -u origin $(git branch --show-current)
 ```
 
-#### 이후 푸시
+#### Subsequent Pushes
 
 ```bash
 git push
 ```
 
-### 3. 푸시 후 확인
+### 3. Post-push Verification
 
 ```bash
 git log origin/$(git branch --show-current) --oneline -3
 ```
 
-## 안전 체크리스트
+## Safety Checklist
 
-### 푸시 전 확인
+### Pre-push Verification
 
-- [ ] 올바른 브랜치인가?
-- [ ] 커밋되지 않은 변경사항이 없는가?
-- [ ] 로컬 커밋이 의도한 것인가?
-- [ ] main/dev 브랜치가 아닌가? (보호 브랜치)
+- [ ] Is it the correct branch?
+- [ ] Are there no uncommitted changes?
+- [ ] Are the local commits intended?
+- [ ] Is this not main/dev? (protected branches)
 
-### 보호 브랜치 정책
+### Protected Branch Policy
 
-| 브랜치 | 직접 푸시 | PR 필요 | 설명 |
+| Branch | Direct Push | PR Required | Description |
 |--------|:---------:|:-------:|------|
-| `main` | ❌ | ✅ | 프로덕션 릴리스 |
-| `dev` | ❌ | ✅ | 개발 통합 브랜치 |
-| `feat/*`, `fix/*` 등 | ✅ | - | 기능 브랜치 |
+| `main` | ❌ | ✅ | Production release |
+| `dev` | ❌ | ✅ | Development integration branch |
+| `feat/*`, `fix/*`, etc. | ✅ | - | Feature branches |
 
-### 강제 푸시 경고
+### Force Push Warning
 
 ```
 ⚠️  경고: --force 옵션은 원격 히스토리를 덮어씁니다!
@@ -95,9 +95,9 @@ git log origin/$(git branch --show-current) --oneline -3
 - 다른 팀원이 작업 중인 브랜치
 ```
 
-## 일반적인 문제 해결
+## Common Troubleshooting
 
-### 1. 원격에 변경사항이 있는 경우
+### 1. Remote Has Changes
 
 ```bash
 # 먼저 pull
@@ -107,13 +107,13 @@ git pull --rebase origin $(git branch --show-current)
 git push
 ```
 
-### 2. upstream이 설정되지 않은 경우
+### 2. Upstream Not Set
 
 ```bash
 git push -u origin $(git branch --show-current)
 ```
 
-### 3. 권한 오류
+### 3. Permission Error
 
 ```bash
 # SSH 키 확인
@@ -122,7 +122,7 @@ ssh -T git@github.com
 # 또는 HTTPS 토큰 확인
 ```
 
-## 출력 형식
+## Output Format
 
 ```markdown
 ## 푸시 결과
@@ -151,7 +151,7 @@ git push -u origin feat/customer-login
 - `/pr` - Pull Request 생성
 ```
 
-## 연계 명령어
+## Related Commands
 
-- `/commit` - 커밋 생성
-- `/pr` - PR 생성
+- `/commit` - Create commit
+- `/pr` - Create PR

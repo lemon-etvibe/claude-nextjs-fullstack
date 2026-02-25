@@ -1,5 +1,5 @@
 ---
-description: 성능 분석 - 번들 크기, Core Web Vitals, 렌더링 전략 점검
+description: Performance analysis - bundle size, Core Web Vitals, and rendering strategy audit
 allowed-tools:
   - Read
   - Glob
@@ -7,23 +7,23 @@ allowed-tools:
   - Bash
 ---
 
-# /perf-audit 명령어
+# /perf-audit Command
 
-애플리케이션의 성능을 분석하고 최적화 방안을 제시합니다.
+Analyzes application performance and provides optimization recommendations.
 
-## 사용법
+## Usage
 
 ```
 /perf-audit                     # 전체 분석
-/perf-audit <파일경로>          # 특정 파일 분석
+/perf-audit <file-path>         # 특정 파일 분석
 /perf-audit src/app/(site)      # 특정 디렉토리 분석
 ```
 
-## 분석 영역
+## Analysis Areas
 
-### 1. Waterfall 패턴 검사 (CRITICAL)
+### 1. Waterfall Pattern Detection (CRITICAL)
 
-순차적 데이터 요청을 찾아 병렬화를 제안합니다.
+Finds sequential data requests and suggests parallelization.
 
 ```typescript
 // BAD: 순차 실행 (650ms = 200 + 250 + 200)
@@ -39,7 +39,7 @@ const [customer, campaigns, stats] = await Promise.all([
 ])
 ```
 
-### 2. Bundle Size 분석
+### 2. Bundle Size Analysis
 
 ```bash
 # 번들 분석 명령어
@@ -47,14 +47,14 @@ pnpm build
 npx @next/bundle-analyzer
 ```
 
-#### 주요 검사 항목
+#### Key Check Items
 
-- [ ] lucide-react 전체 import 여부
-- [ ] 무거운 라이브러리 (moment, lodash 등) 사용
-- [ ] 불필요한 클라이언트 컴포넌트
-- [ ] dynamic import 미적용 대형 컴포넌트
+- [ ] Full import of lucide-react
+- [ ] Usage of heavy libraries (moment, lodash, etc.)
+- [ ] Unnecessary client components
+- [ ] Large components without dynamic import
 
-### 3. Dynamic Import 적용 대상
+### 3. Dynamic Import Candidates
 
 ```typescript
 import dynamic from "next/dynamic"
@@ -72,39 +72,39 @@ const StatsChart = dynamic(() => import("./StatsChart"), { ssr: false })
 const CodeBlock = dynamic(() => import("./CodeBlock"), { ssr: false })
 ```
 
-### 4. Core Web Vitals 체크리스트
+### 4. Core Web Vitals Checklist
 
-#### LCP (Largest Contentful Paint) ≤ 2.5초
+#### LCP (Largest Contentful Paint) <= 2.5s
 
-- [ ] LCP 요소에 `priority` 속성
-- [ ] 이미지에 `fetchPriority="high"`
-- [ ] 크리티컬 CSS 인라인화
-- [ ] 서버 응답 시간 < 200ms
+- [ ] `priority` attribute on LCP element
+- [ ] `fetchPriority="high"` on images
+- [ ] Critical CSS inlined
+- [ ] Server response time < 200ms
 
-#### INP (Interaction to Next Paint) ≤ 100ms
+#### INP (Interaction to Next Paint) <= 100ms
 
-- [ ] Server Components 우선 사용
-- [ ] 'use client' 최소화
-- [ ] 이벤트 핸들러 최적화
-- [ ] useDeferredValue 활용
+- [ ] Server Components used by default
+- [ ] Minimize 'use client'
+- [ ] Optimize event handlers
+- [ ] Leverage useDeferredValue
 
-#### CLS (Cumulative Layout Shift) ≤ 0.1
+#### CLS (Cumulative Layout Shift) <= 0.1
 
-- [ ] 모든 이미지 width/height 명시
-- [ ] 폰트 display: swap
-- [ ] 스켈레톤 UI 사용
-- [ ] 동적 콘텐츠 공간 예약
+- [ ] All images specify width/height
+- [ ] Font display: swap
+- [ ] Skeleton UI used
+- [ ] Space reserved for dynamic content
 
-### 5. 렌더링 전략 검토
+### 5. Rendering Strategy Review
 
-| 페이지 유형      | 권장 전략   | 설정                 |
+| Page Type | Recommended Strategy | Configuration |
 | --------------- | ---------- | -------------------- |
-| 정적 콘텐츠     | SSG        | generateStaticParams |
-| 자주 변경       | ISR        | revalidate: 300      |
-| 실시간 데이터   | Dynamic    | force-dynamic        |
-| 부분 동적       | PPR        | experimental_ppr     |
+| Static content | SSG | generateStaticParams |
+| Frequently changing | ISR | revalidate: 300 |
+| Real-time data | Dynamic | force-dynamic |
+| Partially dynamic | PPR | experimental_ppr |
 
-### 6. 이미지 최적화
+### 6. Image Optimization
 
 ```tsx
 import Image from "next/image"
@@ -121,7 +121,7 @@ import Image from "next/image"
 />
 ```
 
-## 분석 출력 형식
+## Analysis Output Format
 
 ```markdown
 ## 성능 분석 결과
@@ -156,6 +156,6 @@ import Image from "next/image"
 3. [낮음] ...
 ```
 
-## 연계 에이전트
+## Related Agents
 
-이 명령어는 `performance-expert` 에이전트의 최적화 가이드라인을 기반으로 합니다.
+This command is based on the `performance-expert` agent's optimization guidelines.

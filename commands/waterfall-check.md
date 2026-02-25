@@ -1,26 +1,26 @@
 ---
-description: Promise.all 최적화 검사 - 순차 await 패턴 찾아 병렬화 제안
+description: Promise.all optimization check - find sequential await patterns and suggest parallelization
 allowed-tools:
   - Read
   - Glob
   - Grep
 ---
 
-# /waterfall-check 명령어
+# /waterfall-check Command
 
-코드에서 순차적 await 패턴(waterfall)을 찾아 Promise.all() 병렬화를 제안합니다.
+Finds sequential await patterns (waterfall) in code and suggests Promise.all() parallelization.
 
-## 사용법
+## Usage
 
 ```
 /waterfall-check                    # 전체 프로젝트 검사
-/waterfall-check <파일경로>         # 특정 파일 검사
+/waterfall-check <file-path>        # 특정 파일 검사
 /waterfall-check src/app/(admin)    # 특정 디렉토리 검사
 ```
 
-## Waterfall 문제란?
+## What is the Waterfall Problem?
 
-순차적으로 실행되는 독립적인 비동기 작업은 총 실행 시간을 불필요하게 증가시킵니다.
+Independent async operations executed sequentially unnecessarily increase total execution time.
 
 ```typescript
 // BAD: Waterfall (총 650ms = 200 + 250 + 200)
@@ -36,9 +36,9 @@ const [customer, campaigns, stats] = await Promise.all([
 ])
 ```
 
-## 검사 기준
+## Check Criteria
 
-### 1. 연속된 await 문 (3개 이상)
+### 1. Consecutive await Statements (3 or more)
 
 ```typescript
 // DETECTED: 3개 이상 연속 await
@@ -47,7 +47,7 @@ const b = await fetchB()
 const c = await fetchC()
 ```
 
-### 2. 독립적인 요청인지 분석
+### 2. Independence Analysis
 
 ```typescript
 // 독립적 (병렬화 가능)
@@ -59,7 +59,7 @@ const user = await fetchUser(id)
 const profile = await fetchProfile(user.profileId) // user 필요
 ```
 
-### 3. Server Component 데이터 페칭
+### 3. Server Component Data Fetching
 
 ```typescript
 // Page 또는 Server Component의 async 함수
@@ -72,9 +72,9 @@ async function CustomerPage({ params }) {
 }
 ```
 
-## 최적화 패턴
+## Optimization Patterns
 
-### 1. Promise.all (모두 성공 필요)
+### 1. Promise.all (all must succeed)
 
 ```typescript
 const [customer, campaigns, stats] = await Promise.all([
@@ -84,7 +84,7 @@ const [customer, campaigns, stats] = await Promise.all([
 ])
 ```
 
-### 2. Promise.allSettled (일부 실패 허용)
+### 2. Promise.allSettled (partial failure allowed)
 
 ```typescript
 const results = await Promise.allSettled([
@@ -98,7 +98,7 @@ const [customer, campaigns, optional] = results.map(r =>
 )
 ```
 
-### 3. 부분 병렬화 (의존성 있는 경우)
+### 3. Partial Parallelization (with dependencies)
 
 ```typescript
 // 먼저 병렬 실행
@@ -111,7 +111,7 @@ const [customer, campaigns] = await Promise.all([
 const orders = await fetchOrders(customer.customerId)
 ```
 
-### 4. Suspense 경계 활용 (RSC)
+### 4. Suspense Boundary Utilization (RSC)
 
 ```tsx
 // 각 섹션이 독립적으로 스트리밍
@@ -129,7 +129,7 @@ export default function CustomerPage({ params }) {
 }
 ```
 
-## 출력 형식
+## Output Format
 
 ```markdown
 ## Waterfall 검사 결과
@@ -170,7 +170,7 @@ const [a, b, c] = await Promise.all([
 ### 총 발견: N개 패턴
 ```
 
-## 연계 명령어
+## Related Commands
 
-- `/perf-audit` - 전체 성능 분석
-- `/code-review` - 종합 코드 리뷰
+- `/perf-audit` - Full performance analysis
+- `/code-review` - Comprehensive code review
