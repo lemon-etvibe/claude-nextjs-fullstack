@@ -38,9 +38,9 @@
 > **상세 설치 가이드**: [INSTALLATION.md](./INSTALLATION.md)
 
 ```bash
-# 빠른 설치 (macOS/Linux)
-git clone https://github.com/lemon-etvibe/etvibe-nextjs-fullstack.git ~/plugins/enf
-cd ~/plugins/enf && chmod +x scripts/setup.sh && ./scripts/setup.sh
+# 마켓플레이스 등록 및 설치
+claude plugin marketplace add https://github.com/lemon-etvibe/etvibe-nextjs-fullstack
+claude plugin install enf@enf
 ```
 
 설치 완료 후 확인:
@@ -248,7 +248,7 @@ claude
 
 ```bash
 # 플러그인 재설치
-claude plugin install enf@enf-local --scope local
+claude plugin install enf@enf
 
 # Claude 재시작
 claude
