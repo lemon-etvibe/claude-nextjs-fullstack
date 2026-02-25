@@ -7,25 +7,35 @@
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-02-25
+
 ### Added
-- **i18n**: Phase 6-A 영문화 — skills/agents/commands 영문 전환 (#15)
-- **workflow**: Phase 5 워크플로우 고도화 (#14)
-- **compatibility**: Phase 4 유통기한 관리 (#13)
-- **testing**: Phase 3-A 테스트 패턴 스킬 및 커맨드 추가 (#11)
-- **compatibility**: Phase 4 유통기한 관리 — COMPATIBILITY.md, tested-with 메타데이터, /enf:health 커맨드
-- **error-handling**: Phase 5 에러 핸들링 스킬 추가 — Server Action, API Route, Prisma, Error Boundary 패턴
-- **workflow**: Phase 5 에이전트 핸드오프 프로토콜 정의 — Handoff Artifact 형식, design-feature 출력 강화
-- **i18n**: Phase 6-A 영문화 — Skills 6개, Agents 4개, Commands 17개 영문 전환 (#15)
+- **i18n**: Phase 6-A 영문화 — Skills 6개, Agents 4개, Commands 17개 영문 전환
 - **i18n**: README.md 상단 한국어 안내 문구 추가
 - **i18n**: triggers에 영문 키워드 추가 (한글 키워드 유지)
+- **i18n**: README.EN.md 영문 README 추가
+- **testing**: 테스트 패턴 스킬 (Vitest, Testing Library, Playwright, Server Action)
+- **testing**: `/enf:test` 커맨드 추가
+- **troubleshooting**: TROUBLESHOOTING.md — 스킬 롤백, hooks 우회, MCP 수동 대체
+- **compatibility**: COMPATIBILITY.md — 버전 매트릭스, tested-with 메타데이터, `/enf:health` 커맨드
+- **error-handling**: 에러 핸들링 스킬 — Server Action, API Route, Prisma, Error Boundary 패턴
+- **workflow**: 에이전트 핸드오프 프로토콜 — Handoff Artifact 형식
+- **docs**: CONTRIBUTING.md에 i18n 리뷰 체크리스트 추가
+- **license**: MIT 라이선스 추가
+- **contact**: README/README.EN에 문의처 추가
 
 ### Changed
-- **troubleshooting**: Phase 3-B 트러블슈팅 가이드 추가 (#12)
+- **hooks**: 3개 → 1개 통합 (`post-write-check.sh`), 비관련 파일 즉시 exit 0
+- **security**: `.env` 커밋 방어 hook 추가 (exit 2 — 작업 중단)
+- **security**: 권한 설정 축소 (`--force`, `-D` 등 destructive 명령 제외)
+- **security**: `claude:*` 와일드카드 → 명시적 allowlist
+- **security**: MCP 버전 고정 (`npx -y @latest` → `@x.y.z`)
+- **auth**: Better Auth proxy.ts 패턴을 Next.js 16 표준으로 업데이트
 - **i18n**: frontmatter description 영문 전환 (skills/agents/commands 전체)
+- **version**: 0.9.1 → 1.0.0
 
 ### Fixed
-- **i18n**: design-feature.md 한글 인라인 예시 영문 전환 (#16)
-- **docs**: CONTRIBUTING.md에 i18n 리뷰 체크리스트 추가 — Output Format/docs-writer 템플릿 한글 유지 규칙 문서화 (#16)
+- **i18n**: design-feature.md 한글 인라인 예시 영문 전환
 
 ---
 

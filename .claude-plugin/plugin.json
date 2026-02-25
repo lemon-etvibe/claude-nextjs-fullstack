@@ -1,11 +1,11 @@
 {
   "name": "enf",
   "description": "Claude Code plugin for Next.js 16 + Prisma 7 + Better Auth full-stack development / 풀스택 개발 플러그인",
-  "version": "0.9.1",
+  "version": "1.0.0",
   "author": {
     "name": "lemon-etvibe"
   },
-  "repository": "https://github.com/lemon-etvibe/etvibe-nextjs-fullstack",
+  "repository": "https://github.com/lemon-etvibe/claude-nextjs-fullstack",
   "license": "MIT",
   "keywords": [
     "nextjs",

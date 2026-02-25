@@ -2,7 +2,7 @@
 name: better-auth
 description: Better Auth Authentication Pattern Guide - Session Management, Role-based Access Control, Server Action Integration
 tested-with:
-  enf: "0.9.1"
+  enf: "1.0.0"
   next: "16.x"
   better-auth: "^1.4.0"
   typescript: "5.x"

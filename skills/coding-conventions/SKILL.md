@@ -2,7 +2,7 @@
 name: coding-conventions
 description: Coding conventions guide - reference for components, functions, and variables. Used for code writing, refactoring, and code review.
 tested-with:
-  enf: "0.9.1"
+  enf: "1.0.0"
   next: "16.x"
   typescript: "5.x"
 triggers:

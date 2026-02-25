@@ -2,7 +2,7 @@
 name: testing
 description: Testing Pattern Guide - Vitest Unit Tests, Testing Library Component Tests, Playwright E2E, Server Action Tests
 tested-with:
-  enf: "0.9.1"
+  enf: "1.0.0"
   next: "16.x"
   react: "19.x"
   prisma: "7.x"

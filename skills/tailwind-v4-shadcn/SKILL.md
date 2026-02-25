@@ -2,7 +2,7 @@
 name: tailwind-v4-shadcn
 description: Tailwind CSS v4 + shadcn/ui Form Patterns and Styling Guide
 tested-with:
-  enf: "0.9.1"
+  enf: "1.0.0"
   tailwind: "4.x"
   react: "19.x"
   typescript: "5.x"

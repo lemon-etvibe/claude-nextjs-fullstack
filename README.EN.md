@@ -213,6 +213,11 @@ git pull origin main
   <sub>Built with Claude Code by <b>etvibe</b> AI Team</sub>
 </p>
 
+## Contact
+
+- **Issues**: [GitHub Issues](https://github.com/lemon-etvibe/claude-nextjs-fullstack/issues)
+- **Email**: won4519@etribe.co.kr
+
 ## License
 
 MIT

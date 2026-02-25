@@ -106,7 +106,7 @@ Each package is evaluated in 3 tiers:
 ## 프로젝트 호환성 검사 결과
 
 ### 환경 정보
-- **플러그인 버전**: enf v0.9.1
+- **플러그인 버전**: enf v1.0.0
 - **프로젝트**: {package.json name 필드}
 
 ### 버전 호환성

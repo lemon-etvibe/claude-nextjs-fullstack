@@ -2,7 +2,7 @@
 name: error-handling
 description: Error Handling Pattern Guide - Server Action, API Route, Prisma, and Error Boundary Error Handling
 tested-with:
-  enf: "0.9.1"
+  enf: "1.0.0"
   next: "16.x"
   react: "19.x"
   prisma: "7.x"

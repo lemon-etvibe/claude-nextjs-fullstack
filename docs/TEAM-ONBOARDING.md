@@ -288,7 +288,6 @@ pnpm dev
 ## 도움 요청
 
 - GitHub Issues: https://github.com/lemon-etvibe/etvibe-nextjs-fullstack/issues
-- 팀 슬랙: #claude-code 채널
 
 ---
 

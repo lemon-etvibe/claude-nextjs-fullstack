@@ -2,7 +2,7 @@
 name: prisma-7
 description: Prisma 7 Breaking Changes and Migration Guide
 tested-with:
-  enf: "0.9.1"
+  enf: "1.0.0"
   prisma: "7.x"
   typescript: "5.x"
 triggers:
