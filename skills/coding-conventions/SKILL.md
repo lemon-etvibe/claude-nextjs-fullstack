@@ -1,6 +1,10 @@
 ---
 name: coding-conventions
 description: 코딩 컨벤션 가이드 - 컴포넌트, 함수, 변수 작성 시 참조. 코드 작성, 리팩토링, 코드 리뷰 작업에서 사용
+tested-with:
+  enf: "0.9.1"
+  next: "16.x"
+  typescript: "5.x"
 triggers:
   - 컨벤션
   - 네이밍

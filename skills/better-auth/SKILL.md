@@ -1,6 +1,11 @@
 ---
 name: better-auth
 description: Better Auth 인증 패턴 가이드 - 세션 관리, 역할 기반 접근 제어, Server Action 통합
+tested-with:
+  enf: "0.9.1"
+  next: "16.x"
+  better-auth: "^1.4.0"
+  typescript: "5.x"
 triggers:
   - 인증
   - 로그인

@@ -37,11 +37,11 @@ etvibe-nextjs-fullstack 플러그인 로드맵
 - [x] hooks 실패 시 우회 방법
 - [x] MCP 연결 실패 시 수동 대체 방법
 
-## Phase 4: 유통기한 관리
+## Phase 4: 유통기한 관리 ✅
 
-- [ ] `COMPATIBILITY.md` — 지원 버전 매트릭스 (Next.js 16.x, Prisma 7.x, Better Auth ^1.4.0)
-- [ ] 각 스킬 상단에 `tested-with` 메타데이터 추가
-- [ ] `/enf:health` 커맨드 — 버전 호환성 자동 검증
+- [x] `COMPATIBILITY.md` — 지원 버전 매트릭스 (Next.js 16.x, Prisma 7.x, Better Auth ^1.4.0)
+- [x] 각 스킬 상단에 `tested-with` 메타데이터 추가
+- [x] `/enf:health` 커맨드 — 버전 호환성 자동 검증
 
 ## Phase 5: 워크플로우 고도화
 
@@ -97,3 +97,4 @@ Phase 1~4 완료 시 릴리즈 가능
 - [x] Phase 2 P1: 권한 축소, claude:* 제거, MCP 버전 고정, proxy.ts Next.js 16 표준 업데이트 (2026-02-25)
 - [x] Phase 3-A: 테스트 스킬 + /enf:test 커맨드 + 5개 문서 업데이트 (2026-02-25)
 - [x] Phase 3-B: TROUBLESHOOTING.md 작성 — 롤백/hooks 우회/MCP 수동 대체 (2026-02-25)
+- [x] Phase 4: COMPATIBILITY.md + tested-with 메타데이터 + /enf:health 커맨드 (2026-02-25)
