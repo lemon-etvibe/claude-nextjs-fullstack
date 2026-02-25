@@ -48,27 +48,84 @@ etvibe-nextjs-fullstack 플러그인 로드맵
 - [x] 에이전트 핸드오프 프로토콜 정의 (architecture-expert → dev-assistant)
 - [x] 에러 핸들링 / API Route 패턴 보강
 
-## Phase 6: 확장
+## Phase 6-A: 영문화 (1.0 릴리즈용)
 
-- [ ] 영문화 (README, SKILL 4개, COMMANDS-REFERENCE)
-- [ ] 배포/모니터링 가이드 (Vercel, Sentry)
-- [ ] 모노레포 가이드 (필요 시)
+Claude가 로드하는 파일을 영문 전환. 사용자 대면 문서(docs/, README 본문)는 한글 유지.
+
+### Skills (6개)
+
+- [ ] `skills/prisma-7/SKILL.md`
+- [ ] `skills/better-auth/SKILL.md`
+- [ ] `skills/tailwind-v4-shadcn/SKILL.md`
+- [ ] `skills/coding-conventions/SKILL.md`
+- [ ] `skills/testing/SKILL.md`
+- [ ] `skills/error-handling/SKILL.md`
+
+### Agents (4개)
+
+- [ ] `agents/dev-assistant.md`
+- [ ] `agents/architecture-expert.md` (Handoff Artifact 템플릿 포함)
+- [ ] `agents/performance-expert.md`
+- [ ] `agents/docs-writer.md`
+
+### Commands (17개)
+
+- [ ] `commands/commit.md`
+- [ ] `commands/component-docs.md`
+- [ ] `commands/design-feature.md`
+- [ ] `commands/generate-docs.md`
+- [ ] `commands/health.md`
+- [ ] `commands/init.md`
+- [ ] `commands/perf-audit.md`
+- [ ] `commands/pr.md`
+- [ ] `commands/push.md`
+- [ ] `commands/refactor.md`
+- [ ] `commands/schema-design.md`
+- [ ] `commands/task.md`
+- [ ] `commands/test.md`
+- [ ] `commands/type-check.md`
+- [ ] `commands/update-changelog.md`
+- [ ] `commands/code-review.md`
+- [ ] `commands/waterfall-check.md`
+
+### 기타
+
+- [ ] README.md 상단 한국어 안내 문구 추가
+- [ ] 영문화 검증 — frontmatter 무결성, triggers 한글+영문 병행, 코드 주석 한글 유지 확인
+
+### 영문화 규칙
+
+- frontmatter (name, description, triggers) → 영문 전환
+- triggers: 한글 키워드 유지 + 영문 키워드 추가
+- tested-with 메타데이터 → 변경 없음
+- 코드 예시 내 한글 주석/문자열 → 유지
+- plugin.json description → 유지 (이미 영문 병기)
+
+## Phase 6-B: 배포/모니터링 가이드 (1.1)
+
+- [ ] Vercel 배포 가이드
+- [ ] Sentry 모니터링 가이드
+
+## Phase 6-C: 모노레포 가이드 (1.2+ 필요 시)
+
+- [ ] 모노레포 가이드
 
 ---
 
 ## 1.0 릴리즈 게이트
 
-Phase 1~4 완료 시 릴리즈 가능
+Phase 1~5 + 6-A 완료 시 릴리즈 가능
 
 | 조건 | 필수 |
 |------|:----:|
 | P0 해결 (hooks 통합, .env 방어) | ✅ |
 | P1 해결 (권한 축소, proxy.ts) | ✅ |
 | 보안 (.env 방어, MCP 고정) | ✅ |
-| /enf:test 커맨드 | O |
-| TROUBLESHOOTING.md | O |
-| COMPATIBILITY.md | O |
+| /enf:test 커맨드 | ✅ |
+| TROUBLESHOOTING.md | ✅ |
+| COMPATIBILITY.md | ✅ |
 | plugin.json 영문 description | ✅ |
+| Phase 6-A 영문화 (skills/agents/commands) | O |
 
 ---
 
