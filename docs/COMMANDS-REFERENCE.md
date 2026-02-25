@@ -35,6 +35,7 @@
 | `/enf:generate-docs` | API 문서 생성 | - |
 | `/enf:component-docs` | 컴포넌트 문서 생성 | - |
 | `/enf:update-changelog` | CHANGELOG 업데이트 | - |
+| `/enf:health` | 버전 호환성 검사 | - |
 
 ### 분류별 정리
 
@@ -77,6 +78,12 @@
 /enf:test --e2e                              # E2E 테스트 실행
 /enf:test --coverage                         # 커버리지 포함
 /enf:test --setup                            # 초기 설정
+```
+
+#### 진단
+
+```bash
+/enf:health              # 프로젝트 버전 호환성 검사
 ```
 
 #### 문서화
@@ -467,6 +474,28 @@ Prisma 스키마를 리뷰합니다.
 - 불필요한 'use client' 검출
 - dynamic import 제안
 - Core Web Vitals 영향 분석
+
+### `/enf:health`
+
+프로젝트의 버전 호환성을 검증합니다.
+
+```bash
+/enf:health              # 전체 호환성 검사
+```
+
+**검사 항목**:
+- package.json 의존성 버전 (Next.js, React, Prisma, Better Auth, Tailwind, TypeScript)
+- MCP 서버 버전 (.mcp.json)
+- 스킬별 tested-with 메타데이터 호환성
+
+**판정 기준**:
+| 상태 | 의미 |
+|------|------|
+| ✅ PASS | 지원 범위 내 |
+| ⚠️ WARN | 미설치 또는 파싱 불가 |
+| ❌ FAIL | 메이저 버전 불일치 |
+
+**참고**: [COMPATIBILITY.md](./COMPATIBILITY.md) — 지원 버전 매트릭스 상세
 
 ### `/enf:test`
 

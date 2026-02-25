@@ -1,6 +1,11 @@
 ---
 name: tailwind-v4-shadcn
 description: Tailwind CSS v4 + shadcn/ui 폼 패턴 및 스타일링 가이드
+tested-with:
+  enf: "0.9.1"
+  tailwind: "4.x"
+  react: "19.x"
+  typescript: "5.x"
 triggers:
   - tailwind
   - 스타일

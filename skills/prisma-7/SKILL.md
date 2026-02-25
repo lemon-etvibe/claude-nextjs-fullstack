@@ -1,6 +1,10 @@
 ---
 name: prisma-7
 description: Prisma 7 Breaking Changes 및 마이그레이션 가이드
+tested-with:
+  enf: "0.9.1"
+  prisma: "7.x"
+  typescript: "5.x"
 triggers:
   - prisma
   - 스키마

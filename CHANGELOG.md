@@ -9,6 +9,7 @@
 
 ### Added
 - **testing**: Phase 3-A 테스트 패턴 스킬 및 커맨드 추가 (#11)
+- **compatibility**: Phase 4 유통기한 관리 — COMPATIBILITY.md, tested-with 메타데이터, /enf:health 커맨드
 
 ### Changed
 - **troubleshooting**: Phase 3-B 트러블슈팅 가이드 추가 (#12)

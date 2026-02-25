@@ -277,6 +277,7 @@ triggers:
 |------|:----:|------|
 | `name` | O | 스킬 고유 이름 |
 | `description` | O | 짧은 설명 |
+| `tested-with` | - | 검증된 기술 스택 버전 (YAML map) |
 | `triggers` | - | 자동 활성화 키워드 목록 |
 
 ### 자동 활성화

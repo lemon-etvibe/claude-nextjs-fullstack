@@ -43,6 +43,12 @@ etvibe-nextjs-fullstack (enf) 플러그인의 5개 스킬 상세 가이드입니
 > better-auth 패턴으로 세션 관리를 구현해줘
 ```
 
+### 검증 버전 (tested-with)
+
+각 스킬의 frontmatter에는 `tested-with` 메타데이터가 포함되어 있어, 해당 스킬 내용이 검증된 기술 스택 버전을 명시합니다. `/enf:health` 커맨드로 프로젝트와의 호환성을 자동 확인할 수 있습니다.
+
+> **상세 정보**: [COMPATIBILITY.md](./COMPATIBILITY.md) — 지원 버전 매트릭스
+
 ---
 
 ## coding-conventions

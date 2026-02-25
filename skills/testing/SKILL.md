@@ -1,6 +1,12 @@
 ---
 name: testing
 description: 테스트 패턴 가이드 - Vitest 단위 테스트, Testing Library 컴포넌트 테스트, Playwright E2E, Server Action 테스트
+tested-with:
+  enf: "0.9.1"
+  next: "16.x"
+  react: "19.x"
+  prisma: "7.x"
+  typescript: "5.x"
 triggers:
   - 테스트
   - test
