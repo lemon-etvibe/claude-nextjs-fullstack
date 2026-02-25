@@ -274,4 +274,5 @@ etvibe-nextjs-fullstack (enf) 플러그인의 철학, 역할 정의, 확장 가�
 | [CUSTOMIZATION](./CUSTOMIZATION.md) | 플러그인 확장 가이드 |
 | [AGENTS-MANUAL](./AGENTS-MANUAL.md) | 에이전트 상세 매뉴얼 |
 | [SCENARIO-GUIDES](./SCENARIO-GUIDES.md) | 시나리오별 가이드 |
+| [TROUBLESHOOTING](./TROUBLESHOOTING.md) | 문제 해결 가이드 |
 | [CHANGELOG](../CHANGELOG.md) | 버전 이력 |

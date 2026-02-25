@@ -478,6 +478,8 @@ claude plugin validate ~/plugins/enf
 claude plugin install enf@enf-local --scope local
 ```
 
+> 심층 진단이 필요하면 [TROUBLESHOOTING.md](./TROUBLESHOOTING.md#hooks-문제-해결)를 참조하세요.
+
 #### Q: 코드 리뷰 결과가 너무 엄격해요
 
 코드 리뷰는 팀 표준을 따릅니다. 특정 규칙을 완화하려면:
@@ -497,4 +499,5 @@ claude plugin install enf@enf-local --scope local
 | [GUIDELINES](./GUIDELINES.md) | 플러그인 철학 |
 | [AGENTS-MANUAL](./AGENTS-MANUAL.md) | 에이전트 상세 |
 | [SKILLS-ACTIVATION](./SKILLS-ACTIVATION.md) | 스킬 활성화 |
+| [TROUBLESHOOTING](./TROUBLESHOOTING.md) | 심층 문제 해결 |
 | [TEAM-ONBOARDING](./TEAM-ONBOARDING.md) | 팀 온보딩 |
