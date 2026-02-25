@@ -1,7 +1,7 @@
 {
   "name": "enf",
   "description": "Claude Code plugin for Next.js 16 + Prisma 7 + Better Auth full-stack development / 풀스택 개발 플러그인",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "author": {
     "name": "lemon-etvibe"
   },

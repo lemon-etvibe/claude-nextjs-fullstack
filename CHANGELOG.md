@@ -11,13 +11,26 @@
 - (예정된 기능 추가 시 여기에 기록)
 
 ### Changed
-- 문서 구조 개선 및 COMMANDS-REFERENCE 추가 (#5)
 - (변경된 기능 있을 시 여기에 기록)
 
 ### Fixed
-- **security**: Phase 2 P1 보안/안정성 — MCP 수정, 권한 축소, proxy.ts 업데이트 (#10)
-- **hooks**: P0 — hooks 통합, .env 방어, 영문 설명 추가 (#9)
 - (버그 수정 시 여기에 기록)
+
+---
+
+## [0.9.1] - 2026-02-25
+
+Phase 1 P0 + Phase 2 P1 보안/안정성 수정.
+
+### Changed
+- 문서 구조 개선 및 COMMANDS-REFERENCE 추가 (#5)
+- **better-auth**: proxy.ts 패턴을 Next.js 16 표준으로 업데이트 — `middleware()` → `proxy()`, Edge → Node.js Runtime (#10)
+- **docs**: DEVELOPMENT.md에 권장 권한 설정 가이드 추가 (#10)
+
+### Fixed
+- **hooks**: P0 — hooks 3개→1개 통합, .env 커밋 방어 (exit 2), 영문 설명 추가 (#9)
+- **mcp**: 패키지명 수정 및 버전 고정 — `@upstash/context7-mcp@2.1.2`, `next-devtools-mcp@0.3.10` (기존 패키지명 npm 미존재) (#10)
+- **security**: 권한 설정 축소 — `claude:*` 와일드카드 제거, `git branch -D`/`git push --force` 차단 (#10)
 
 ---
 
