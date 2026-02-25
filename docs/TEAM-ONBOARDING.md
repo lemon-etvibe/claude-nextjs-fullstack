@@ -39,7 +39,7 @@
 
 ```bash
 # 마켓플레이스 등록 및 설치
-claude plugin marketplace add https://github.com/lemon-etvibe/etvibe-nextjs-fullstack
+claude plugin marketplace add https://github.com/lemon-etvibe/claude-nextjs-fullstack
 claude plugin install enf@enf
 ```
 
@@ -287,7 +287,7 @@ pnpm dev
 
 ## 도움 요청
 
-- GitHub Issues: https://github.com/lemon-etvibe/etvibe-nextjs-fullstack/issues
+- GitHub Issues: https://github.com/lemon-etvibe/claude-nextjs-fullstack/issues
 
 ---
 

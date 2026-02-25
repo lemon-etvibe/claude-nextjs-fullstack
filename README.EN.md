@@ -34,7 +34,7 @@ Namespace:   /enf:command (e.g. /enf:commit, /enf:code-review)
 
 ```bash
 # 1. Add marketplace (one-time)
-claude plugin marketplace add https://github.com/lemon-etvibe/etvibe-nextjs-fullstack
+claude plugin marketplace add https://github.com/lemon-etvibe/claude-nextjs-fullstack
 
 # 2. Install plugin
 claude plugin install enf@enf
