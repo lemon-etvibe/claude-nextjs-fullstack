@@ -17,6 +17,8 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
+          # IMPORTANT: must be false so checkout doesn't set GITHUB_TOKEN as git credential,
+          # which would override our DEPLOY_TOKEN (PAT) when pushing to the public repo
           persist-credentials: false
 
       - name: Remove private files
