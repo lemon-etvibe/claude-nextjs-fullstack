@@ -27,7 +27,6 @@ jobs:
           rm -rf reports/
 
           # Internal team documents
-          rm -f docs/TEAM-ONBOARDING.md
           rm -f .github/BRANCH_PROTECTION.md
 
           # Internal roadmap
