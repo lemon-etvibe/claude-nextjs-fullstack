@@ -17,7 +17,7 @@
 
 ```bash
 # 레포지토리 클론
-git clone https://github.com/lemon-etvibe/etvibe-nextjs-fullstack.git
+git clone https://github.com/lemon-etvibe/claude-nextjs-fullstack.git
 cd etvibe-nextjs-fullstack
 
 # 로컬 플러그인으로 Claude 실행
