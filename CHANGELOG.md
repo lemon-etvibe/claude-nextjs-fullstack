@@ -7,6 +7,10 @@
 
 ## [Unreleased]
 
+---
+
+## [1.1.0] - 2026-03-10
+
 ### Changed
 - **db**: Prisma 7 → Drizzle ORM 0.45.x 전환 (#27)
 
