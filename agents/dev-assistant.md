@@ -27,7 +27,7 @@ skills:
 
 - Next.js 16.x App Router + Turbopack
 - React 19.x
-- Prisma 7.x (pg adapter)
+- Drizzle ORM 0.45.x
 - Better Auth 1.4.x
 - Tailwind CSS 4.x
 - strict TypeScript 5.x configuration
@@ -39,7 +39,8 @@ skills:
 - `(admin)/` - Admin area (`_actions/`, `_components/`, `_lib/`)
 - `(site)/` - Customer area (`_actions/`, `_components/`, `_lib/`)
 - `src/components/ui/` - Shared UI (shadcn/ui)
-- `src/lib/` - Shared utilities (prisma, auth)
+- `src/db/` - Database (Drizzle schema, connection)
+- `src/lib/` - Shared utilities (auth)
 - `_` prefixed folders are excluded from Next.js routing
 
 ## Server Action Patterns
@@ -49,7 +50,9 @@ skills:
 "use server"
 
 import { auth } from "@/lib/auth"
-import { prisma } from "@/lib/prisma"
+import { db } from "@/db"
+import { customers } from "@/db/schema"
+import { eq } from "drizzle-orm"
 import { revalidatePath } from "next/cache"
 import { headers } from "next/headers"
 
@@ -61,7 +64,7 @@ export async function updateCustomer(id: string, prevState: unknown, formData: F
   }
 
   // 2. 검증 (Zod)
-  // 3. DB 작업 (Prisma)
+  // 3. DB 작업 (Drizzle)
   // 4. 캐시 무효화
   revalidatePath("/admin/customers")
 
@@ -93,7 +96,7 @@ export async function updateCustomer(id: string, prevState: unknown, formData: F
 - [ ] No unnecessary 'use client'
 - [ ] Better Auth authentication checks applied
 - [ ] Proper Error Handling
-- [ ] Prisma query optimization (select/include)
+- [ ] Drizzle query optimization (columns/with)
 - [ ] revalidatePath cache invalidation
 - [ ] Accessibility (a11y) considerations
 
@@ -148,7 +151,7 @@ const StatsChart = dynamic(() => import("./StatsChart"), { ssr: false })
 
 ### context7 MCP
 - Query latest Next.js 16 API documentation
-- Reference Prisma 7 query syntax
+- Reference Drizzle ORM query syntax
 - Reference Better Auth configuration
 - Reference Tailwind CSS 4.x classes
 

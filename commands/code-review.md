@@ -56,16 +56,16 @@ Reviews code in the specified file or directory.
 - [ ] revalidatePath cache invalidation
 - [ ] Proper error return format
 
-### 5. Prisma Queries (when applicable)
+### 5. Drizzle Queries (when applicable)
 
-- [ ] Use select to query only necessary fields
-- [ ] N+1 query prevention (use include)
+- [ ] Use columns to query only necessary fields
+- [ ] N+1 query prevention (use `with` in query API)
 - [ ] Proper index utilization
 
 ### 6. Security
 
 - [ ] User input validation
-- [ ] SQL injection prevention (using Prisma)
+- [ ] SQL injection prevention (using Drizzle parameterized queries)
 - [ ] XSS prevention
 - [ ] No sensitive information exposure
 

@@ -18,7 +18,7 @@ Provides an overview of the etvibe-nextjs-fullstack project structure and develo
 /init admin             # 관리자 영역
 /init site              # 고객 영역
 /init auth              # 인증 시스템
-/init prisma            # 데이터베이스
+/init db                # 데이터베이스
 ```
 
 ## Tech Stack
@@ -27,7 +27,7 @@ Provides an overview of the etvibe-nextjs-fullstack project structure and develo
 | -------- | ---- | ---- |
 | Framework | Next.js | 16.x |
 | Runtime | React | 19.x |
-| ORM | Prisma | 7.x |
+| ORM | Drizzle ORM | 0.45.x |
 | Auth | Better Auth | 1.4.x |
 | Styling | Tailwind CSS | 4.x |
 | UI | shadcn/ui | latest |
@@ -61,12 +61,13 @@ src/
 ├── components/
 │   └── ui/                   # shadcn/ui 컴포넌트
 │
-├── lib/
-│   ├── prisma.ts             # Prisma 클라이언트
-│   └── auth.ts               # Better Auth 설정
+├── db/
+│   ├── index.ts              # Drizzle DB 연결 (싱글톤)
+│   ├── schema.ts             # Drizzle 스키마 정의
+│   └── migrations/           # drizzle-kit 마이그레이션
 │
-└── generated/
-    └── prisma/               # Prisma Client (생성됨)
+├── lib/
+│   └── auth.ts               # Better Auth 설정
 ```
 
 ## Core Patterns
@@ -87,7 +88,8 @@ src/app/(admin)/
 "use server"
 
 import { auth } from "@/lib/auth"
-import { prisma } from "@/lib/prisma"
+import { db } from "@/db"
+import { customers } from "@/db/schema"
 import { headers } from "next/headers"
 import { revalidatePath } from "next/cache"
 
@@ -138,7 +140,7 @@ export async function updateCustomer(
 | ------ | ---- |
 | `/enf:code-review` | Code quality review |
 | `/enf:design-feature` | Feature architecture design |
-| `/enf:schema-design` | Prisma schema design |
+| `/enf:schema-design` | Drizzle schema design |
 | `/enf:perf-audit` | Performance analysis |
 
 ### Development Workflow
@@ -191,7 +193,7 @@ pnpm install
 cp .env.example .env.local
 
 # DB 마이그레이션
-pnpm prisma migrate dev
+npx drizzle-kit migrate
 
 # 개발 서버 실행
 pnpm dev

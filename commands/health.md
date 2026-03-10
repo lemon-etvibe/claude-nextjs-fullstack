@@ -23,7 +23,7 @@ Analyzes the project's package.json to verify version compatibility with the enf
 |------|----------|----------|-----------------|
 | Next.js | 16.x | 16.0.0 | `next` |
 | React | 19.x | 19.0.0 | `react` |
-| Prisma | 7.x | 7.0.0 | `prisma` (devDependencies) or `@prisma/client` (dependencies) |
+| Drizzle ORM | 0.45.x | 0.45.0 | `drizzle-orm` (dependencies) |
 | Better Auth | ^1.4.0 | 1.4.0 | `better-auth` |
 | Tailwind CSS | 4.x | 4.0.0 | `tailwindcss` (dependencies or devDependencies) |
 | TypeScript | ^5.0.0 | 5.0.0 | `typescript` (devDependencies) |
@@ -50,15 +50,15 @@ If package.json is not found, report an error and exit:
 Extracts each package version from `dependencies` and `devDependencies` in package.json.
 
 **Extraction targets**:
-- `dependencies`: `next`, `react`, `@prisma/client`, `better-auth`, `tailwindcss`
-- `devDependencies`: `prisma`, `typescript`, `tailwindcss`
+- `dependencies`: `next`, `react`, `drizzle-orm`, `better-auth`, `tailwindcss`
+- `devDependencies`: `drizzle-kit`, `typescript`, `tailwindcss`
 
 **Actual installed version check** (more accurate when node_modules exists):
 
 ```bash
 node -e "console.log(require('next/package.json').version)" 2>/dev/null
 node -e "console.log(require('react/package.json').version)" 2>/dev/null
-node -e "console.log(require('@prisma/client/package.json').version)" 2>/dev/null
+node -e "console.log(require('drizzle-orm/package.json').version)" 2>/dev/null
 node -e "console.log(require('better-auth/package.json').version)" 2>/dev/null
 node -e "console.log(require('typescript/package.json').version)" 2>/dev/null
 ```
@@ -84,7 +84,7 @@ Each package is evaluated in 3 tiers:
 
 1. **Package not in package.json**:
    - Required packages (`next`, `react`, `typescript`): ⚠️ WARN
-   - Optional packages (`better-auth`, `prisma`, `tailwindcss`): ✅ PASS (unused)
+   - Optional packages (`better-auth`, `drizzle-orm`, `tailwindcss`): ✅ PASS (unused)
 
 2. **Major version mismatch**: ❌ FAIL
    - Example: next@15.x -> ❌ (16.x required)
@@ -115,7 +115,7 @@ Each package is evaluated in 3 tiers:
 |------|----------|----------|------|
 | Next.js | 16.3.0 | 16.x | ✅ PASS |
 | React | 19.1.0 | 19.x | ✅ PASS |
-| Prisma | 7.2.0 | 7.x | ✅ PASS |
+| Drizzle ORM | 0.45.1 | 0.45.x | ✅ PASS |
 | Better Auth | 1.4.2 | ^1.4.0 | ✅ PASS |
 | Tailwind CSS | 4.1.0 | 4.x | ✅ PASS |
 | TypeScript | 5.8.0 | ^5.0.0 | ✅ PASS |
@@ -128,7 +128,6 @@ Each package is evaluated in 3 tiers:
 |----------|----------|------|
 | context7 | @2.1.2 | ✅ 일치 / ⚠️ 불일치 |
 | next-devtools | @0.3.10 | ✅ 일치 / ⚠️ 불일치 |
-| prisma-local | (로컬) | ℹ️ prisma CLI 사용 |
 
 ### 스킬 호환성
 
@@ -136,7 +135,7 @@ Each package is evaluated in 3 tiers:
 
 | 스킬 | 핵심 의존성 | 상태 |
 |------|-----------|------|
-| prisma-7 | Prisma 7.x | ✅ 호환 / ❌ 비호환 / ⚠️ 미사용 |
+| drizzle | Drizzle ORM 0.45.x | ✅ 호환 / ❌ 비호환 / ⚠️ 미사용 |
 | better-auth | Better Auth ^1.4.0 | ✅ 호환 / ❌ 비호환 / ⚠️ 미사용 |
 | tailwind-v4-shadcn | Tailwind CSS 4.x | ✅ 호환 / ❌ 비호환 / ⚠️ 미사용 |
 | coding-conventions | TypeScript 5.x | ✅ 호환 |

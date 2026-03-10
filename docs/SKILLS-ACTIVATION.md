@@ -9,7 +9,7 @@ etvibe-nextjs-fullstack (enf) 플러그인의 6개 스킬 상세 가이드입니
 - [개요](#개요)
 - [coding-conventions](#coding-conventions)
 - [better-auth](#better-auth)
-- [prisma-7](#prisma-7)
+- [drizzle](#drizzle)
 - [tailwind-v4-shadcn](#tailwind-v4-shadcn)
 - [testing](#testing)
 - [error-handling](#error-handling)
@@ -29,7 +29,7 @@ etvibe-nextjs-fullstack (enf) 플러그인의 6개 스킬 상세 가이드입니
 |-------|--------------|------|
 | `coding-conventions` | 컨벤션, 네이밍, 코드 스타일 | 코드 작성 규칙 |
 | `better-auth` | 인증, 세션, 로그인, Better Auth | 인증 구현 |
-| `prisma-7` | Prisma, 스키마, 마이그레이션 | DB 작업 |
+| `drizzle` | Drizzle, 스키마, 마이그레이션, pgTable | DB 작업 |
 | `tailwind-v4-shadcn` | Tailwind, shadcn, 폼, 스타일 | UI 스타일링 |
 | `testing` | 테스트, vitest, playwright, E2E | 테스트 작성 |
 | `error-handling` | 에러, API Route, Error Boundary | 에러 처리 패턴 |
@@ -88,13 +88,13 @@ import { clsx } from "clsx"
 
 // 3. 내부 모듈 (절대 경로)
 import { Button } from "@/components/ui"
-import { prisma } from "@/lib/prisma"
+import { db } from "@/db"
 
 // 4. 내부 모듈 (상대 경로)
 import { CustomerTable } from "./_components/CustomerTable"
 
 // 5. 타입 (type-only)
-import type { Customer } from "@/generated/prisma"
+import type { Customer } from "@/db/schema"
 ```
 
 #### 3. TypeScript 규칙
@@ -250,120 +250,108 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
 ---
 
-## prisma-7
+## drizzle
 
 ### 활성화 조건
 
-- 키워드: `Prisma`, `스키마`, `마이그레이션`, `데이터베이스`, `DB`
+- 키워드: `Drizzle`, `스키마`, `마이그레이션`, `데이터베이스`, `DB`, `pgTable`
 - 데이터 모델링, 쿼리 작성 시
 
 ### 핵심 내용
 
-#### 1. Prisma 7 필수 설정
+#### 1. 프로젝트 구조
 
 ```
 프로젝트 루트/
-├── prisma.config.ts    # 필수! CLI 설정
-├── prisma/
-│   └── schema.prisma
+├── drizzle.config.ts    # drizzle-kit 설정
+├── src/db/
+│   ├── index.ts         # DB 연결 (싱글톤)
+│   ├── schema.ts        # 스키마 정의
+│   └── migrations/      # 마이그레이션 파일
 └── .env
 ```
 
 ```typescript
-// prisma.config.ts
-import "dotenv/config"
-import { defineConfig } from "prisma/config"
+// src/db/index.ts
+import { drizzle } from 'drizzle-orm/postgres-js'
+import postgres from 'postgres'
+import * as schema from './schema'
 
-export default defineConfig({
-  earlyAccess: true,
-  schema: "prisma/schema.prisma",
-})
+const globalForDb = globalThis as unknown as { db: ReturnType<typeof drizzle> }
+
+export const db =
+  globalForDb.db ||
+  drizzle(postgres(process.env.DATABASE_URL!), { schema })
+
+if (process.env.NODE_ENV !== 'production') globalForDb.db = db
 ```
 
-#### 2. pg Adapter 설정
+#### 2. 스키마 패턴
 
 ```typescript
-// src/lib/prisma.ts
-import { Pool } from "pg"
-import { PrismaPg } from "@prisma/adapter-pg"
-import { PrismaClient } from "@/generated/prisma"
+// src/db/schema.ts
+import { pgTable, text, timestamp, index } from 'drizzle-orm/pg-core'
+import { relations } from 'drizzle-orm'
+import { createId } from '@paralleldrive/cuid2'
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+// 1:N 관계
+export const customers = pgTable('customers', {
+  id: text('id').primaryKey().$defaultFn(() => createId()),
+  name: text('name').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 })
 
-const adapter = new PrismaPg(pool)
+export const campaigns = pgTable('campaigns', {
+  id: text('id').primaryKey().$defaultFn(() => createId()),
+  customerId: text('customer_id').notNull().references(() => customers.id),
+}, (table) => [
+  index('campaigns_customer_id_idx').on(table.customerId),
+])
 
-export const prisma = new PrismaClient({ adapter })
+// relations 정의 (query API용)
+export const customersRelations = relations(customers, ({ many }) => ({
+  campaigns: many(campaigns),
+}))
+
+export const campaignsRelations = relations(campaigns, ({ one }) => ({
+  customer: one(customers, {
+    fields: [campaigns.customerId],
+    references: [customers.id],
+  }),
+}))
 ```
 
-#### 3. 스키마 패턴
-
-```prisma
-// 1:N 관계
-model Customer {
-  id        String     @id @default(cuid())
-  campaigns Campaign[]
-  @@map("customers")
-}
-
-model Campaign {
-  id         String   @id @default(cuid())
-  customerId String
-  customer   Customer @relation(fields: [customerId], references: [id])
-  @@index([customerId])
-  @@map("campaigns")
-}
-
-// N:M 관계 (중간 테이블)
-model CampaignInfluencer {
-  campaignId   String
-  influencerId String
-  campaign     Campaign   @relation(...)
-  influencer   Influencer @relation(...)
-  @@id([campaignId, influencerId])
-}
-```
-
-#### 4. 쿼리 패턴
+#### 3. 쿼리 패턴
 
 ```typescript
 // ✅ 필요한 필드만 선택
-const customers = await prisma.customer.findMany({
-  select: {
-    id: true,
-    name: true,
-    _count: { select: { campaigns: true } },
-  },
+const customerList = await db.query.customers.findMany({
+  columns: { id: true, name: true },
+  with: { campaigns: { columns: { id: true, name: true } } },
 })
 
-// ✅ 관계 로드
-const customer = await prisma.customer.findUnique({
-  where: { id },
-  include: {
-    campaigns: {
-      select: { id: true, name: true },
-      orderBy: { createdAt: "desc" },
-      take: 5,
-    },
-  },
+// ✅ 조건 검색
+import { eq } from 'drizzle-orm'
+const customer = await db.query.customers.findFirst({
+  where: eq(customers.id, id),
+  with: { campaigns: { limit: 5, orderBy: (c, { desc }) => [desc(c.createdAt)] } },
 })
 ```
 
-#### 5. 마이그레이션 명령어
+#### 4. 마이그레이션 명령어
 
 ```bash
-# 개발용 (스키마 동기화)
-pnpm prisma db push
+# 마이그레이션 파일 생성
+npx drizzle-kit generate
 
-# 프로덕션용 (마이그레이션 생성)
-pnpm prisma migrate dev --name add_feature
+# 마이그레이션 적용
+npx drizzle-kit migrate
 
-# Client 재생성
-pnpm prisma generate
+# 빠른 프로토타이핑 (마이그레이션 없이)
+npx drizzle-kit push
 
 # DB 브라우저
-pnpm prisma studio
+npx drizzle-kit studio
 ```
 
 ---
@@ -527,7 +515,7 @@ export function CustomerDialog() {
 
 ```typescript
 // 중앙 mock (src/test/mocks.ts) import 후 사용
-import { mockGetSession, mockPrisma } from "@/test/mocks"
+import { mockGetSession, mockDb } from "@/test/mocks"
 import { createFormData, mockSession } from "@/test/helpers"
 
 it("인증 실패 → 에러 반환", async () => {
@@ -597,13 +585,13 @@ type ActionResult<T = void> =
 | 외부 API 프록시 | 401, 502, 504 | 타임아웃, 프록시 에러 |
 | SSE | 401 | 스트리밍 이벤트 |
 
-#### 3. Prisma 에러 코드
+#### 3. Database 에러 코드 (PostgreSQL)
 
 | 코드 | 설명 | Server Action | API Route |
 |------|------|:------------:|:---------:|
-| P2002 | Unique 위반 | `{ error: "중복" }` | 409 |
-| P2025 | Not found | `{ error: "없음" }` | 404 |
-| P2003 | FK 위반 | `{ error: "참조 없음" }` | 400 |
+| 23505 | Unique 위반 | `{ error: "중복" }` | 409 |
+| 23503 | FK 위반 | `{ error: "참조 없음" }` | 400 |
+| 23502 | NOT NULL 위반 | `{ error: "필수 값 누락" }` | 400 |
 
 #### 4. Error Boundary
 
@@ -617,8 +605,8 @@ type ActionResult<T = void> =
 # API Route 에러 처리
 > 파일 업로드 API Route를 만들어줘
 
-# Prisma 에러 처리
-> Server Action에 Prisma 에러 처리를 추가해줘
+# DB 에러 처리
+> Server Action에 DB 에러 처리를 추가해줘
 
 # Error Boundary
 > 고객 상세 페이지에 error.tsx와 not-found.tsx를 추가해줘
@@ -640,7 +628,7 @@ type ActionResult<T = void> =
 ### 2. 스킬 내용 직접 참조
 
 ```bash
-> skills/prisma-7/SKILL.md 내용을 보여줘
+> skills/drizzle/SKILL.md 내용을 보여줘
 ```
 
 ### 3. 특정 스킬 강조
@@ -655,10 +643,10 @@ type ActionResult<T = void> =
 |-------|----------|
 | coding-conventions | Import 순서, 네이밍 규칙, 커밋 메시지 |
 | better-auth | `await headers()` 필수, 권한 체크 패턴 |
-| prisma-7 | pg adapter, select/include, 마이그레이션 |
+| drizzle | pgTable 스키마, columns/with 쿼리, drizzle-kit CLI |
 | tailwind-v4-shadcn | @theme 디렉티브, Form 패턴, useActionState |
 | testing | Server Action mock, 컴포넌트 render, Playwright Page Object |
-| error-handling | ActionResult 타입, Prisma 에러 코드, Error Boundary |
+| error-handling | ActionResult 타입, DB 에러 코드, Error Boundary |
 
 ---
 

@@ -1,11 +1,11 @@
 ---
 name: error-handling
-description: Error Handling Pattern Guide - Server Action, API Route, Prisma, and Error Boundary Error Handling
+description: Error Handling Pattern Guide - Server Action, API Route, Database, and Error Boundary Error Handling
 tested-with:
-  enf: "1.0.0"
+  enf: "1.1.0"
   next: "16.x"
   react: "19.x"
-  prisma: "7.x"
+  drizzle-orm: "0.45.x"
   better-auth: "^1.4.0"
   typescript: "5.x"
 triggers:
@@ -38,7 +38,8 @@ type ActionResult<T = void> =
 "use server"
 
 import { auth } from "@/lib/auth"
-import { prisma } from "@/lib/prisma"
+import { db } from "@/db"
+import { customers } from "@/db/schema"
 import { revalidatePath } from "next/cache"
 import { headers } from "next/headers"
 
@@ -63,10 +64,10 @@ export async function createCustomer(
 
   // 3. DB 작업 (try-catch)
   try {
-    await prisma.customer.create({ data: parsed.data })
+    await db.insert(customers).values(parsed.data)
   } catch (error) {
-    // → 섹션 3 "Prisma 에러" 패턴 참조
-    return handlePrismaError(error)
+    // → 섹션 3 "DB 에러" 패턴 참조
+    return handleDbError(error)
   }
 
   // 4. 캐시 무효화
@@ -279,39 +280,32 @@ export async function GET(request: NextRequest) {
 
 ---
 
-## 3. Prisma Errors
+## 3. Database Errors (PostgreSQL)
 
 ### Handling by Error Code
 
 ```typescript
-import { Prisma } from "@/generated/prisma"
+import { PostgresError } from 'postgres'
 
-function handlePrismaError(error: unknown): { error: string } {
-  if (error instanceof Prisma.PrismaClientKnownRequestError) {
+function handleDbError(error: unknown): { error: string } {
+  if (error instanceof PostgresError) {
     switch (error.code) {
-      case "P2002": {
-        // Unique constraint violation
-        const target = (error.meta?.target as string[]) ?? []
-        if (target.includes("email")) {
+      case '23505': {
+        // unique_violation
+        if (error.detail?.includes('email')) {
           return { error: "이미 사용 중인 이메일입니다." }
         }
         return { error: "중복된 데이터가 존재합니다." }
       }
-      case "P2025":
-        // Record not found
-        return { error: "데이터를 찾을 수 없습니다." }
-      case "P2003":
-        // Foreign key constraint failure
+      case '23503':
+        // foreign_key_violation
         return { error: "참조하는 데이터가 존재하지 않습니다." }
+      case '23502':
+        // not_null_violation
+        return { error: "필수 항목이 누락되었습니다." }
       default:
         return { error: "데이터 처리 중 오류가 발생했습니다." }
     }
-  }
-
-  if (error instanceof Prisma.PrismaClientInitializationError) {
-    // P2024: Connection pool timeout 등
-    console.error("Prisma connection error:", error.message)
-    return { error: "서비스가 일시적으로 불안정합니다. 잠시 후 다시 시도해주세요." }
   }
 
   console.error("Unexpected error:", error)
@@ -319,19 +313,19 @@ function handlePrismaError(error: unknown): { error: string } {
 }
 ```
 
-### Prisma Errors in API Routes
+### DB Errors in API Routes
 
 ```typescript
 // API Route에서는 HTTP 상태 코드와 함께 반환
-function handlePrismaApiError(error: unknown): NextResponse {
-  if (error instanceof Prisma.PrismaClientKnownRequestError) {
+function handleDbApiError(error: unknown): NextResponse {
+  if (error instanceof PostgresError) {
     switch (error.code) {
-      case "P2002":
+      case '23505':
         return NextResponse.json({ error: "중복된 데이터가 존재합니다." }, { status: 409 })
-      case "P2025":
-        return NextResponse.json({ error: "데이터를 찾을 수 없습니다." }, { status: 404 })
-      case "P2003":
+      case '23503':
         return NextResponse.json({ error: "참조 무결성 위반" }, { status: 400 })
+      case '23502':
+        return NextResponse.json({ error: "필수 항목 누락" }, { status: 400 })
       default:
         return NextResponse.json({ error: "데이터 처리 오류" }, { status: 500 })
     }
@@ -342,14 +336,14 @@ function handlePrismaApiError(error: unknown): NextResponse {
 }
 ```
 
-### Key Prisma Error Codes
+### Key PostgreSQL Error Codes
 
 | Code | Description | HTTP | User Message |
 |------|-------------|:----:|--------------|
-| P2002 | Unique constraint | 409 | "Duplicate data" |
-| P2025 | Record not found | 404 | "Not found" |
-| P2003 | Foreign key violation | 400 | "Referenced data missing" |
-| P2024 | Connection timeout | 503 | "Temporarily unavailable" |
+| 23505 | unique_violation | 409 | "Duplicate data" |
+| 23503 | foreign_key_violation | 400 | "Referenced data missing" |
+| 23502 | not_null_violation | 400 | "Required field missing" |
+| 08006 | connection_failure | 503 | "Temporarily unavailable" |
 
 ---
 
@@ -357,16 +351,17 @@ function handlePrismaApiError(error: unknown): NextResponse {
 
 ```typescript
 try {
-  const result = await prisma.$transaction(async (tx) => {
-    const campaign = await tx.campaign.update({
-      where: { id: campaignId },
-      data: { status: "COMPLETED" },
-    })
+  const result = await db.transaction(async (tx) => {
+    const [campaign] = await tx
+      .update(campaigns)
+      .set({ status: 'COMPLETED' })
+      .where(eq(campaigns.id, campaignId))
+      .returning()
 
-    await tx.campaignInfluencer.updateMany({
-      where: { campaignId },
-      data: { status: "COMPLETED" },
-    })
+    await tx
+      .update(campaignInfluencers)
+      .set({ status: 'COMPLETED' })
+      .where(eq(campaignInfluencers.campaignId, campaignId))
 
     return campaign
   })
@@ -375,11 +370,7 @@ try {
   return { success: true, data: result }
 } catch (error) {
   // 트랜잭션은 자동 롤백됨
-  if (error instanceof Prisma.PrismaClientKnownRequestError) {
-    return handlePrismaError(error)
-  }
-  console.error("Transaction failed:", error)
-  return { error: "작업 처리 중 오류가 발생했습니다. 변경사항이 취소되었습니다." }
+  return handleDbError(error)
 }
 ```
 
@@ -475,9 +466,9 @@ export default async function CustomerPage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const customer = await prisma.customer.findUnique({
-    where: { id },
-    select: { id: true, name: true, email: true },
+  const customer = await db.query.customers.findFirst({
+    where: eq(customers.id, id),
+    columns: { id: true, name: true, email: true },
   })
 
   if (!customer) notFound()
@@ -563,6 +554,6 @@ function ToggleStatus({ item }: { item: Item }) {
 1. **Do not expose error details** -- never pass internal errors (stack traces, SQL, etc.) directly to the user
 2. **console.error is mandatory** -- unexpected errors must always be logged on the server
 3. **Use digest** -- track production errors using the `digest` that Next.js passes to Error Boundaries
-4. **Prisma import path** -- in Prisma 7, import from `@/generated/prisma` (not `@prisma/client`)
+4. **DB error import** -- import `PostgresError` from `postgres` package for error handling
 5. **Follow HTTP status codes** -- API Routes must always return appropriate status codes (do not use only 200)
 6. **Expected vs unexpected errors** -- use user-friendly messages for validation/auth failures; use generic messages for DB failures and similar issues

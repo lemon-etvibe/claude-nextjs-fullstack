@@ -19,7 +19,7 @@ tools:
 **As a design expert, responsible for architecture decisions, not implementation.**
 
 1. **System Design** - Design overall structure when adding new features/pages
-2. **Data Modeling** - Prisma schema, relationships, index design
+2. **Data Modeling** - Drizzle schema (pgTable), relationships, index design
 3. **Routing Design** - Route Group, layout, URL pattern decisions
 4. **Auth/Permissions Design** - Access control architecture based on Better Auth
 5. **API Pattern Decisions** - Selection criteria for Server Actions vs API Routes
@@ -38,7 +38,7 @@ tools:
 
 - **Framework**: Next.js 16.x App Router + Turbopack
 - **Runtime**: React 19.x
-- **ORM**: Prisma 7.x (pg adapter)
+- **ORM**: Drizzle ORM 0.45.x
 - **Auth**: Better Auth 1.4.x
 - **Styling**: Tailwind CSS 4.x
 - **UI**: shadcn/ui (new-york)
@@ -103,22 +103,35 @@ src/app/
 
 ### 4. Data Modeling Principles
 
-```prisma
-// 1:N - 참조 쪽에 외래키
-model Campaign {
-  customerId String
-  customer   Customer @relation(fields: [customerId], references: [id])
-}
+```typescript
+import { pgTable, text, timestamp, index } from 'drizzle-orm/pg-core'
+import { relations } from 'drizzle-orm'
+import { createId } from '@paralleldrive/cuid2'
 
-// N:M - 중간 테이블 (명시적)
-model CampaignInfluencer {
-  campaignId    String
-  influencerId  String
-  campaign      Campaign    @relation(...)
-  influencer    Influencer  @relation(...)
-  status        CampaignInfluencerStatus
-  @@id([campaignId, influencerId])
-}
+// 1:N - 참조 쪽에 외래키 (.references()로 SQL FK 제약조건 설정)
+export const campaigns = pgTable('campaigns', {
+  id: text('id').primaryKey().$defaultFn(() => createId()),
+  customerId: text('customer_id').notNull().references(() => customers.id),
+  // ...
+}, (table) => [
+  index('campaigns_customer_id_idx').on(table.customerId),
+])
+
+// relations()는 쿼리 API 전용 — SQL FK가 아님
+export const campaignsRelations = relations(campaigns, ({ one }) => ({
+  customer: one(customers, { fields: [campaigns.customerId], references: [customers.id] }),
+}))
+
+// N:M - 중간 테이블 (id PK + uniqueIndex + .references())
+export const campaignInfluencers = pgTable('campaign_influencers', {
+  id: text('id').primaryKey().$defaultFn(() => createId()),
+  campaignId: text('campaign_id').notNull().references(() => campaigns.id),
+  influencerId: text('influencer_id').notNull().references(() => influencers.id),
+  status: text('status').notNull().default('RECRUITING'),
+}, (table) => [
+  index('ci_campaign_id_idx').on(table.campaignId),
+  uniqueIndex('ci_unique_idx').on(table.campaignId, table.influencerId),
+])
 ```
 
 ### 5. Auth/Permissions Architecture
@@ -206,21 +219,19 @@ async function CustomerPage({ params }: { params: Promise<{ id: string }> }) {
 
 ---
 
-## Prisma Query Architecture
+## Drizzle Query Architecture
 
 ### N+1 Query Prevention
 
 ```typescript
-// ✅ BEST: select로 필요한 필드만
-const customers = await prisma.customer.findMany({
-  select: {
-    id: true,
-    name: true,
-    email: true,
+// ✅ BEST: 필요한 필드만 select + relations
+const customers = await db.query.customers.findMany({
+  columns: { id: true, name: true, email: true },
+  with: {
     campaigns: {
-      select: { id: true, title: true, status: true },
-      take: 5,
-      orderBy: { createdAt: "desc" },
+      columns: { id: true, title: true, status: true },
+      limit: 5,
+      orderBy: (campaigns, { desc }) => [desc(campaigns.createdAt)],
     },
   },
 })
@@ -229,16 +240,17 @@ const customers = await prisma.customer.findMany({
 ### When to Use Transactions
 
 ```typescript
-const result = await prisma.$transaction(async (tx) => {
-  const campaign = await tx.campaign.update({
-    where: { id: campaignId },
-    data: { status: "COMPLETED" },
-  })
+const result = await db.transaction(async (tx) => {
+  const [campaign] = await tx
+    .update(campaigns)
+    .set({ status: 'COMPLETED' })
+    .where(eq(campaigns.id, campaignId))
+    .returning()
 
-  await tx.campaignInfluencer.updateMany({
-    where: { campaignId },
-    data: { status: "COMPLETED" },
-  })
+  await tx
+    .update(campaignInfluencers)
+    .set({ status: 'COMPLETED' })
+    .where(eq(campaignInfluencers.campaignId, campaignId))
 
   return campaign
 })
@@ -253,8 +265,8 @@ const result = await prisma.$transaction(async (tx) => {
 ```
 resolve-library-id → query-docs
 
-// Prisma 스키마 설계 참조
-resolve: "prisma" → query: "relation types one-to-many"
+// Drizzle 스키마 설계 참조
+resolve: "drizzle" → query: "relations one-to-many pgTable"
 
 // Next.js 라우팅 패턴
 resolve: "next.js" → query: "route groups parallel routes"
@@ -286,8 +298,8 @@ nextjs_call(port: "3000", toolName: "get_errors")
 - [ ] Core requirement 2
 
 ## 2. Data Model
-\`\`\`prisma
-model Feature { ... }
+\`\`\`typescript
+export const features = pgTable('features', { ... })
 \`\`\`
 
 ## 3. File Structure
@@ -313,12 +325,12 @@ src/app/(<route-group>)/
 |---|---|---|---|
 
 ## 6. Error Handling
-- Prisma error cases: (e.g., P2002 duplicate email)
+- DB error cases: (e.g., 23505 unique_violation duplicate email)
 - Authentication failure handling
 - 404 cases
 
 ## 7. Implementation Order (dev-assistant task list)
-1. [ ] Add Prisma schema → `pnpm prisma db push`
+1. [ ] Add Drizzle schema (`src/db/schema.ts`) → `npx drizzle-kit push`
 2. [ ] Define Zod schema (`_lib/schemas.ts`)
 3. [ ] Implement Server Actions (`_actions/`)
 4. [ ] Implement components (`_components/`)
@@ -341,7 +353,7 @@ src/app/(<route-group>)/
 
 | Area       | architecture-expert          | dev-assistant                    |
 |------------|------------------------------|----------------------------------|
-| Prisma     | **Schema design**            | Migration execution, query writing |
+| Drizzle    | **Schema design**            | Migration execution, query writing |
 | Routing    | **Structure decisions**      | Page component implementation    |
 | Auth       | **Architecture design**      | Auth logic implementation        |
 | API        | **Pattern selection**        | Endpoint implementation          |

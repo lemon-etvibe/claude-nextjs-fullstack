@@ -63,8 +63,8 @@ claude --plugin-dir .
 # Server Action 파일 수정 시 Hook 동작 확인
 # _actions/*.ts 파일 생성/수정 요청
 
-# Prisma 스키마 수정 시 Hook 동작 확인
-# schema.prisma 파일 수정 요청
+# Drizzle 스키마 수정 시 Hook 동작 확인
+# src/db/schema.ts 파일 수정 요청
 ```
 
 #### Agents 테스트
@@ -118,8 +118,8 @@ echo "[DEBUG] CLAUDE_PLUGIN_ROOT: $CLAUDE_PLUGIN_ROOT"
 # Server Action 검사 테스트
 ./scripts/check-server-action.sh /path/to/_actions/test.ts
 
-# Prisma 스키마 검사 테스트
-./scripts/check-prisma-schema.sh /path/to/schema.prisma
+# Drizzle 스키마 검사 테스트
+# src/db/schema.ts 수정 시 post-write-check.sh가 자동 안내
 ```
 
 ### MCP 서버 디버깅

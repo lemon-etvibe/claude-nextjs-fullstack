@@ -73,7 +73,7 @@ import { clsx } from "clsx"
 
 // 3. 내부 모듈 (절대 경로)
 import { Button } from "@/components/ui"
-import { prisma } from "@/lib/prisma"
+import { db } from "@/db"
 import { auth } from "@/lib/auth"
 
 // 4. 내부 모듈 (상대 경로)
@@ -81,7 +81,7 @@ import { CustomerTable } from "./_components/CustomerTable"
 import { updateCustomer } from "../../_actions/customer"
 
 // 5. 타입 (type-only)
-import type { Customer } from "@/generated/prisma"
+import type { Customer } from "@/db/schema"
 ```
 
 ## 4. TypeScript
@@ -97,7 +97,7 @@ import type { Customer } from "@/generated/prisma"
 "use server"
 
 import { auth } from "@/lib/auth"
-import { prisma } from "@/lib/prisma"
+import { db } from "@/db"
 import { revalidatePath } from "next/cache"
 import { headers } from "next/headers"
 
@@ -131,7 +131,7 @@ chore: 빌드/설정
 
 ## 7. Error Handling
 
-> **Detailed patterns**: See `error-handling` skill — covers Server Action, API Route, Prisma, and Error Boundary error handling
+> **Detailed patterns**: See `error-handling` skill — covers Server Action, API Route, Database, and Error Boundary error handling
 
 ```typescript
 // 서버 - 유효성 검증

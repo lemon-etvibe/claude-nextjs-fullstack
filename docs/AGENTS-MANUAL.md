@@ -84,7 +84,7 @@ etvibe-nextjs-fullstack (enf) 플러그인의 4개 에이전트 상세 사용법
 - 불필요한 'use client' 제거
 - Better Auth 인증 검사 적용
 - 적절한 에러 처리
-- Prisma 쿼리 최적화 (select/include)
+- Drizzle 쿼리 최적화 (columns/with)
 - revalidatePath 캐시 무효화
 
 #### 성능 최적화
@@ -101,7 +101,7 @@ etvibe-nextjs-fullstack (enf) 플러그인의 4개 에이전트 상세 사용법
 "use server"
 
 import { auth } from "@/lib/auth"
-import { prisma } from "@/lib/prisma"
+import { db } from "@/db"
 import { revalidatePath } from "next/cache"
 import { headers } from "next/headers"
 
@@ -134,7 +134,7 @@ export async function updateCustomer(
 ### 역할
 
 - 시스템 설계 (새 기능/페이지 추가)
-- 데이터 모델링 (Prisma 스키마 설계)
+- 데이터 모델링 (Drizzle 스키마 설계)
 - 라우팅 설계 (Route Group, 레이아웃)
 - 인증/권한 아키텍처 설계
 - API 패턴 결정 (Server Actions vs API Routes)
@@ -159,7 +159,7 @@ export async function updateCustomer(
 > 캠페인 관리 기능의 전체 구조를 설계해줘
 
 # 데이터 모델링
-> 인플루언서-캠페인 관계를 위한 Prisma 스키마를 설계해줘
+> 인플루언서-캠페인 관계를 위한 Drizzle 스키마를 설계해줘
 
 # 라우팅 설계
 > 고객 마이페이지 라우트 구조를 설계해줘
@@ -193,17 +193,15 @@ export async function updateCustomer(
 
 ### 2. 데이터 모델
 
-\`\`\`prisma
-model Campaign {
-  id         String         @id @default(cuid())
-  name       String
-  status     CampaignStatus @default(RECRUITING)
-  customerId String
-  customer   Customer       @relation(...)
-
-  @@index([customerId])
-  @@map("campaigns")
-}
+\`\`\`typescript
+export const campaigns = pgTable('campaigns', {
+  id: text('id').primaryKey().$defaultFn(() => createId()),
+  name: text('name').notNull(),
+  status: text('status').$type<'RECRUITING' | 'IN_PROGRESS' | 'COMPLETED'>().default('RECRUITING').notNull(),
+  customerId: text('customer_id').notNull().references(() => customers.id),
+}, (table) => [
+  index('campaigns_customer_id_idx').on(table.customerId),
+])
 \`\`\`
 
 ### 3. 라우팅 구조

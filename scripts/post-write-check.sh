@@ -31,30 +31,27 @@ fi
 # ─────────────────────────────────────────
 # 관련 없는 파일은 즉시 종료 (early return)
 # ─────────────────────────────────────────
-if [[ ! "$FILE" =~ \.(ts|tsx)$ ]] && [[ ! "$FILE" =~ schema\.prisma$ ]]; then
+if [[ ! "$FILE" =~ \.(ts|tsx)$ ]]; then
   exit 0
 fi
 
 # ─────────────────────────────────────────
-# Prisma 스키마 검사
+# Drizzle 스키마 검사 (src/db/schema.ts)
 # ─────────────────────────────────────────
-if [[ "$FILE" =~ schema\.prisma$ ]]; then
+if [[ "$FILE" =~ db/schema\.ts$ ]]; then
   echo ""
-  echo "Prisma 스키마가 수정되었습니다: $FILE"
+  echo "Drizzle 스키마가 수정되었습니다: $FILE"
   echo ""
   echo "다음 단계를 수행하세요:"
   echo ""
-  echo "  1. 스키마 검증:"
-  echo "     pnpm prisma validate"
+  echo "  1. 마이그레이션 파일 생성:"
+  echo "     npx drizzle-kit generate"
   echo ""
-  echo "  2. 개발 환경 마이그레이션:"
-  echo "     pnpm prisma migrate dev --name <migration_name>"
+  echo "  2. 개발 환경에 적용:"
+  echo "     npx drizzle-kit migrate"
   echo ""
-  echo "  3. Prisma Client 재생성:"
-  echo "     pnpm prisma generate"
-  echo ""
-  echo "  4. (선택) DB 시딩:"
-  echo "     pnpm prisma db seed"
+  echo "  3. (빠른 프로토타이핑) 마이그레이션 없이 직접 적용:"
+  echo "     npx drizzle-kit push"
   echo ""
   echo "또는 /schema-design 명령어로 스키마 설계 검토를 받으세요."
   exit 0

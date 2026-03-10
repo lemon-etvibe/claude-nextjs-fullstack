@@ -2,10 +2,10 @@
 name: testing
 description: Testing Pattern Guide - Vitest Unit Tests, Testing Library Component Tests, Playwright E2E, Server Action Tests
 tested-with:
-  enf: "1.0.0"
+  enf: "1.1.0"
   next: "16.x"
   react: "19.x"
-  prisma: "7.x"
+  drizzle-orm: "0.45.x"
   typescript: "5.x"
 triggers:
   - 테스트
@@ -184,15 +184,26 @@ vi.mock("@/lib/auth", () => ({
   },
 }))
 
-// --- Prisma (모델별 CRUD mock — 필요한 모델만 추가) ---
-export const mockPrisma = {
-  customer: { findMany: vi.fn(), findUnique: vi.fn(), create: vi.fn(), update: vi.fn(), delete: vi.fn() },
-  campaign: { findMany: vi.fn(), findUnique: vi.fn(), create: vi.fn(), update: vi.fn(), delete: vi.fn() },
+// --- Drizzle (DB mock — 체이닝 메서드 mock) ---
+export const mockDb = {
+  select: vi.fn().mockReturnThis(),
+  from: vi.fn().mockReturnThis(),
+  where: vi.fn().mockReturnThis(),
+  insert: vi.fn().mockReturnThis(),
+  values: vi.fn().mockReturnThis(),
+  update: vi.fn().mockReturnThis(),
+  set: vi.fn().mockReturnThis(),
+  delete: vi.fn().mockReturnThis(),
+  returning: vi.fn(),
+  query: {
+    customers: { findMany: vi.fn(), findFirst: vi.fn() },
+    campaigns: { findMany: vi.fn(), findFirst: vi.fn() },
+  },
+  transaction: vi.fn(),
 }
 
-vi.mock("@/lib/prisma", () => ({
-  default: mockPrisma,
-  prisma: mockPrisma,
+vi.mock("@/db", () => ({
+  db: mockDb,
 }))
 
 // --- Next.js ---
@@ -232,7 +243,7 @@ export function mockSession(overrides?: Record<string, unknown>) {
 import { describe, it, expect, beforeEach } from "vitest"
 import {
   mockGetSession,
-  mockPrisma,
+  mockDb,
   mockRevalidatePath,
 } from "@/test/mocks"
 import { createFormData, mockSession } from "@/test/helpers"
@@ -250,7 +261,7 @@ describe("updateCustomer", () => {
     const result = await updateCustomer("id-1", undefined, formData)
 
     expect(result).toEqual({ error: "인증이 필요합니다." })
-    expect(mockPrisma.customer.update).not.toHaveBeenCalled()
+    expect(mockDb.update).not.toHaveBeenCalled()
   })
 
   it("유효하지 않은 데이터 → 에러 반환", async () => {
@@ -264,21 +275,19 @@ describe("updateCustomer", () => {
 
   it("정상 업데이트 → success + revalidatePath", async () => {
     mockGetSession.mockResolvedValue(mockSession())
-    mockPrisma.customer.update.mockResolvedValue({ id: "id-1", name: "홍길동" })
+    mockDb.returning.mockResolvedValue([{ id: "id-1", name: "홍길동" }])
 
     const formData = createFormData({ name: "홍길동" })
     const result = await updateCustomer("id-1", undefined, formData)
 
     expect(result).toEqual({ success: true })
-    expect(mockPrisma.customer.update).toHaveBeenCalledWith(
-      expect.objectContaining({ where: { id: "id-1" } })
-    )
+    expect(mockDb.update).toHaveBeenCalled()
     expect(mockRevalidatePath).toHaveBeenCalledWith("/admin/customers")
   })
 
   it("DB 에러 → 에러 반환", async () => {
     mockGetSession.mockResolvedValue(mockSession())
-    mockPrisma.customer.update.mockRejectedValue(new Error("DB 연결 실패"))
+    mockDb.returning.mockRejectedValue(new Error("DB 연결 실패"))
 
     const formData = createFormData({ name: "홍길동" })
     const result = await updateCustomer("id-1", undefined, formData)
@@ -333,7 +342,7 @@ describe("customerSchema", () => {
 
 | Pattern | Usage | Example |
 |---------|-------|---------|
-| `vi.mock("module")` | Mock entire module | `vi.mock("@/lib/prisma")` |
+| `vi.mock("module")` | Mock entire module | `vi.mock("@/db")` |
 | `vi.fn()` | Mock function | `const onClick = vi.fn()` |
 | `vi.spyOn(obj, "method")` | Spy on existing method | `vi.spyOn(console, "error")` |
 

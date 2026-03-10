@@ -1,7 +1,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Claude_Code-Plugin-5A67D8?style=for-the-badge&logo=anthropic&logoColor=white" alt="Claude Code Plugin" />
   <img src="https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=next.js&logoColor=white" alt="Next.js 16" />
-  <img src="https://img.shields.io/badge/Prisma-7-2D3748?style=for-the-badge&logo=prisma&logoColor=white" alt="Prisma 7" />
+  <img src="https://img.shields.io/badge/Drizzle_ORM-0.45-C5F74F?style=for-the-badge&logo=drizzle&logoColor=black" alt="Drizzle ORM" />
   <img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
 </p>
 
@@ -13,7 +13,7 @@
 > 스킬/에이전트/커맨드 문서는 영문이지만, Claude와의 대화는 한국어로 진행됩니다.
 
 > **AI-First 풀스택 개발 워크플로우**
-> Next.js 16 + Prisma 7 + Better Auth 프로젝트를 위한 Claude Code 플러그인
+> Next.js 16 + Drizzle ORM + Better Auth 프로젝트를 위한 Claude Code 플러그인
 
 ```
 Plugin Name: enf
@@ -60,7 +60,7 @@ cd ~/projects/my-app && claude
 |:-----|:----:|------|
 | **Next.js** | 16.x | App Router + Turbopack |
 | **React** | 19.x | Server Components 우선 |
-| **Prisma** | 7.x | PostgreSQL + pg adapter |
+| **Drizzle ORM** | 0.45.x | PostgreSQL + pgTable |
 | **Better Auth** | 1.4.x | 세션 기반 인증 |
 | **Tailwind CSS** | 4.x | CSS-first 설정 |
 | **shadcn/ui** | latest | Radix 기반 컴포넌트 |
@@ -88,7 +88,7 @@ cd ~/projects/my-app && claude
 |:----:|---------|------|
 | **Core** | `code-review` | TypeScript, 성능, 보안 관점의 코드 품질 검사 |
 | | `design-feature` | 새 기능의 아키텍처 설계 (Route, Model, API) |
-| | `schema-design` | Prisma 스키마 설계 및 리뷰 |
+| | `schema-design` | Drizzle 스키마 설계 및 리뷰 |
 | | `perf-audit` | 번들 크기, Waterfall, Core Web Vitals 분석 |
 | **Dev** | `refactor` | 코드 리팩토링 제안 및 적용 |
 | | `type-check` | TypeScript strict 모드 검증 |
@@ -112,18 +112,17 @@ cd ~/projects/my-app && claude
 |-------|--------------|------|
 | **coding-conventions** | 컨벤션, 네이밍 | Import 순서, 네이밍 규칙, 커밋 메시지 |
 | **better-auth** | 인증, 로그인, 세션 | 세션 관리, RBAC, Server Action 통합 |
-| **prisma-7** | Prisma, 스키마, DB | v7 설정, pg adapter, 쿼리 패턴 |
+| **drizzle** | Drizzle, 스키마, DB | pgTable 스키마, 쿼리 패턴, drizzle-kit CLI |
 | **tailwind-v4-shadcn** | Tailwind, shadcn, 폼 | CSS-first 설정, Form 패턴, 테마 |
 | **testing** | 테스트, vitest, playwright | Vitest, Testing Library, Playwright E2E |
-| **error-handling** | 에러, API Route, Error Boundary | Server Action/API Route/Prisma 에러 처리 패턴 |
+| **error-handling** | 에러, API Route, Error Boundary | Server Action/API Route/DB 에러 처리 패턴 |
 
-### MCP Servers (3)
+### MCP Servers (2)
 
 | 서버 | 용도 |
 |------|------|
-| **context7** | Next.js, Prisma 등 라이브러리 최신 문서 조회 |
+| **context7** | Next.js, Drizzle 등 라이브러리 최신 문서 조회 |
 | **next-devtools** | Next.js 개발 서버 연동 (라우트, 에러 분석) |
-| **prisma-local** | Prisma CLI 연동 (마이그레이션, Studio) |
 
 ---
 

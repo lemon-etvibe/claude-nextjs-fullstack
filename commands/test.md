@@ -61,7 +61,7 @@ Generated files:
 - `vitest.config.ts` -- Vitest configuration (path alias, jsdom, coverage)
 - `playwright.config.ts` -- Playwright configuration (includes webServer)
 - `src/test/setup.ts` -- Testing Library setup
-- `src/test/mocks.ts` -- Central mocks (auth, prisma, headers)
+- `src/test/mocks.ts` -- Central mocks (auth, db, headers)
 - `src/test/helpers.ts` -- FormData helpers, mockSession
 - `package.json` scripts added
 
