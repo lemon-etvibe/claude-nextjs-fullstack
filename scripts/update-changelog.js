@@ -177,16 +177,80 @@ function addEntry(content, section, entry) {
 }
 
 /**
+ * 섹션 라인에서 placeholder와 빈 섹션을 제거
+ */
+function cleanSectionLines(lines) {
+  const placeholderPattern = /^- \(.*(?:예정|여기에 기록).*\)$/;
+  const cleaned = lines.filter((line) => !placeholderPattern.test(line));
+
+  const result = [];
+  for (let i = 0; i < cleaned.length; i++) {
+    if (!cleaned[i].startsWith('### ')) {
+      result.push(cleaned[i]);
+      continue;
+    }
+    // ### Header 뒤에 실제 내용이 있는지 확인
+    let hasContent = false;
+    for (let j = i + 1; j < cleaned.length; j++) {
+      if (cleaned[j].trim() === '') continue;
+      if (cleaned[j].startsWith('### ') || cleaned[j].startsWith('---')) break;
+      hasContent = true;
+      break;
+    }
+    if (hasContent) result.push(cleaned[i]);
+  }
+  return result;
+}
+
+/**
  * [Unreleased] 섹션을 특정 버전으로 변환
  */
 function release(content, version) {
   const today = new Date().toISOString().split('T')[0];
   const newVersionHeader = `## [${version}] - ${today}`;
 
-  // [Unreleased] 를 새 버전으로 변경
-  let result = content.replace(/## \[Unreleased\]/, `## [Unreleased]\n\n### Added\n- (예정된 기능 추가 시 여기에 기록)\n\n### Changed\n- (변경된 기능 있을 시 여기에 기록)\n\n### Fixed\n- (버그 수정 시 여기에 기록)\n\n---\n\n${newVersionHeader}`);
+  const lines = content.split('\n');
+  const unreleasedIdx = lines.findIndex((line) => line.startsWith('## [Unreleased]'));
 
-  return result;
+  if (unreleasedIdx === -1) {
+    throw new Error('[Unreleased] section not found');
+  }
+
+  // [Unreleased] 섹션의 끝 찾기
+  let nextVersionIdx = lines.length;
+  for (let i = unreleasedIdx + 1; i < lines.length; i++) {
+    if (lines[i].startsWith('## [') && !lines[i].includes('[Unreleased]')) {
+      nextVersionIdx = i;
+      break;
+    }
+  }
+
+  // [Unreleased] 섹션 정리
+  const unreleasedContent = lines.slice(unreleasedIdx + 1, nextVersionIdx);
+  const finalContent = cleanSectionLines(unreleasedContent);
+
+  const trimmedContent = finalContent
+    .join('\n')
+    .replaceAll(/\n{3,}/g, '\n\n')
+    .replace(/^\n+/, '\n')
+    .replace(/\n*---\s*$/, '')
+    .trim();
+
+  // 새 파일 구성
+  const before = lines.slice(0, unreleasedIdx);
+  const after = lines.slice(nextVersionIdx);
+  while (after.length > 0 && (after[0].trim() === '---' || after[0].trim() === '')) {
+    after.shift();
+  }
+
+  const newUnreleased = ['## [Unreleased]', '', '---', ''];
+
+  const newVersion = trimmedContent
+    ? [newVersionHeader, '', trimmedContent, '', '---', '']
+    : [newVersionHeader, '', '(변경사항 없음)', '', '---', ''];
+
+  const result = [...before, ...newUnreleased, ...newVersion, ...after];
+  return result.join('\n');
 }
 
 /**
@@ -198,9 +262,9 @@ function getNextVersion(content) {
     return '1.0.0';
   }
 
-  const major = parseInt(versionMatch[1], 10);
-  const minor = parseInt(versionMatch[2], 10);
-  const patch = parseInt(versionMatch[3], 10);
+  const major = Number.parseInt(versionMatch[1], 10);
+  const minor = Number.parseInt(versionMatch[2], 10);
+  const patch = Number.parseInt(versionMatch[3], 10);
 
   // 기본적으로 patch 버전 증가
   return `${major}.${minor}.${patch + 1}`;
@@ -210,7 +274,7 @@ function getNextVersion(content) {
  * PR 정보를 기반으로 CHANGELOG 엔트리 생성
  */
 function createEntryFromPr(prTitle, prNumber) {
-  const { type, scope, description } = parsePrTitle(prTitle);
+  const { scope, description } = parsePrTitle(prTitle);
   const scopeStr = scope ? `**${scope}**: ` : '';
   return `- ${scopeStr}${description} (#${prNumber})`;
 }
