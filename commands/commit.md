@@ -53,7 +53,7 @@ Area affected by the change:
 - `customer` - Customer related
 - `campaign` - Campaign related
 - `ui` - UI components
-- `prisma` - Database
+- `db` - Database
 - `api` - API related
 
 ### Examples

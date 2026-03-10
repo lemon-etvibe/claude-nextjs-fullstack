@@ -138,7 +138,7 @@ claude plugin install enf@enf-local --scope local
 ```json
 {
   "permissions": {
-    "allow": ["Bash(npm run *)", "Bash(npx prisma *)"]
+    "allow": ["Bash(npm run *)", "Bash(npx drizzle-kit *)"]
   }
 }
 ```

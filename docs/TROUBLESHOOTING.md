@@ -112,7 +112,7 @@ claude            # Claude 재시작 (MCP 재연결)
 | 라이브러리 | URL |
 |-----------|-----|
 | Next.js | https://nextjs.org/docs |
-| Prisma | https://www.prisma.io/docs |
+| Drizzle ORM | https://orm.drizzle.team/docs |
 | Better Auth | https://www.better-auth.com/docs |
 | Tailwind CSS | https://tailwindcss.com/docs |
 
@@ -126,16 +126,6 @@ claude            # Claude 재시작 (MCP 재연결)
 
 **수동 대체**: `ls -la src/app/`으로 라우트 확인, `pnpm build`로 에러 확인, 브라우저 DevTools 활용
 
-### prisma-local (마이그레이션/Studio)
-
-**증상**: Prisma MCP 명령 실행 불가
-
-**원인**: `prisma` CLI 미설치 또는 버전 불일치
-
-**진단**: `pnpm prisma --version`으로 CLI 확인
-
-**수동 대체**: `pnpm prisma validate`, `pnpm prisma migrate dev --name x`, `pnpm prisma studio`, `pnpm prisma generate` 직접 실행
-
 ### MCP 서버 활성화/비활성화
 
 `.claude/settings.local.json`에서 관리:
@@ -144,8 +134,7 @@ claude            # Claude 재시작 (MCP 재연결)
 {
   "disabledMcpjsonServers": [
     "context7",
-    "next-devtools",
-    "prisma-local"
+    "next-devtools"
   ]
 }
 ```
@@ -178,7 +167,7 @@ git revert <commit-hash>     # 특정 커밋
 | 스킬 | 주의사항 | 확인 방법 |
 |------|---------|----------|
 | better-auth | Next.js 16에서는 `proxy()` 대신 API Route handler 사용 | `skills/better-auth/SKILL.md` "Proxy" 섹션 |
-| prisma-7 | pg adapter 설정 누락 가능 | `src/lib/prisma.ts`에 adapter 설정 확인 |
+| drizzle | DB 연결 싱글톤 누락 가능 | `src/db/index.ts`에 globalForDb 패턴 확인 |
 | tailwind-v4-shadcn | Tailwind v3 문법 혼용 (`config.js` vs `@theme`) | `globals.css`에 `@theme` 블록 사용 확인 |
 | testing | mock 파일이 프로덕션 번들에 포함될 수 있음 | `tsconfig.json`의 exclude에 `src/test/` 포함 확인 |
 

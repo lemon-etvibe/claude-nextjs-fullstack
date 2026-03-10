@@ -26,7 +26,7 @@
 | `/enf:push` | 안전 체크 후 푸시 | `[--force]` `[-u]` |
 | `/enf:pr` | GitHub PR 생성 | `[--draft]` `[--release]` `[--version]` |
 | `/enf:design-feature` | 아키텍처 설계 | `"기능 설명"` |
-| `/enf:schema-design` | Prisma 스키마 리뷰 | - |
+| `/enf:schema-design` | Drizzle 스키마 리뷰 | - |
 | `/enf:perf-audit` | 성능 분석 | - |
 | `/enf:refactor` | 리팩토링 제안 | `<파일경로>` |
 | `/enf:type-check` | TypeScript 검증 | - |
@@ -64,7 +64,7 @@
 
 ```bash
 /enf:design-feature "결제 시스템"    # 아키텍처 설계
-/enf:schema-design                   # Prisma 스키마 리뷰
+/enf:schema-design                   # Drizzle 스키마 리뷰
 /enf:perf-audit                      # 번들/성능 분석
 /enf:waterfall-check                 # 전체 프로젝트 검사
 /enf:waterfall-check src/app/        # 특정 디렉토리 검사
@@ -180,7 +180,7 @@ PR을 6가지 관점에서 상세 리뷰합니다.
 
 **ENF `/enf:code-review`와 차이점**:
 - `/code-review`: 범용 코드 리뷰
-- `/enf:code-review`: Next.js + Prisma + Better Auth 특화 리뷰
+- `/enf:code-review`: Next.js + Drizzle + Better Auth 특화 리뷰
 
 ---
 
@@ -229,7 +229,7 @@ E2E 테스트를 작성하고 실행합니다.
 ```bash
 # 자동 활성화 (MCP 서버)
 > Next.js 16의 새로운 기능이 뭐야?
-> Prisma 7 마이그레이션 방법 알려줘
+> Drizzle ORM 마이그레이션 방법 알려줘
 ```
 
 **특징**:
@@ -442,14 +442,14 @@ GitHub PR을 생성합니다.
 
 **설계 항목**:
 - Route Group 결정
-- 데이터 모델 (Prisma 스키마)
+- 데이터 모델 (Drizzle 스키마)
 - API 패턴 (Server Action vs API Route)
 - 컴포넌트 구조
 - 인증/권한 처리
 
 ### `/enf:schema-design`
 
-Prisma 스키마를 리뷰합니다.
+Drizzle 스키마를 리뷰합니다.
 
 ```bash
 /enf:schema-design
@@ -484,7 +484,7 @@ Prisma 스키마를 리뷰합니다.
 ```
 
 **검사 항목**:
-- package.json 의존성 버전 (Next.js, React, Prisma, Better Auth, Tailwind, TypeScript)
+- package.json 의존성 버전 (Next.js, React, Drizzle ORM, Better Auth, Tailwind, TypeScript)
 - MCP 서버 버전 (.mcp.json)
 - 스킬별 tested-with 메타데이터 호환성
 

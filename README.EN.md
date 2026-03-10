@@ -1,7 +1,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Claude_Code-Plugin-5A67D8?style=for-the-badge&logo=anthropic&logoColor=white" alt="Claude Code Plugin" />
   <img src="https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=next.js&logoColor=white" alt="Next.js 16" />
-  <img src="https://img.shields.io/badge/Prisma-7-2D3748?style=for-the-badge&logo=prisma&logoColor=white" alt="Prisma 7" />
+  <img src="https://img.shields.io/badge/Drizzle_ORM-0.45-C5F74F?style=for-the-badge&logo=drizzle&logoColor=black" alt="Drizzle ORM" />
   <img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
 </p>
 
@@ -10,7 +10,7 @@
 > 🇰🇷 [한국어 README](./README.md)
 
 > **AI-First Full-Stack Development Workflow**
-> A Claude Code plugin for Next.js 16 + Prisma 7 + Better Auth projects
+> A Claude Code plugin for Next.js 16 + Drizzle ORM + Better Auth projects
 
 ```
 Plugin Name: enf
@@ -57,7 +57,7 @@ cd ~/projects/my-app && claude
 |:-----------|:-------:|---------|
 | **Next.js** | 16.x | App Router + Turbopack |
 | **React** | 19.x | Server Components first |
-| **Prisma** | 7.x | PostgreSQL + pg adapter |
+| **Drizzle ORM** | 0.45.x | PostgreSQL + pgTable |
 | **Better Auth** | 1.4.x | Session-based authentication |
 | **Tailwind CSS** | 4.x | CSS-first configuration |
 | **shadcn/ui** | latest | Radix-based components |
@@ -85,7 +85,7 @@ All commands use the `/enf:` namespace.
 |:--------:|---------|-------------|
 | **Core** | `code-review` | Code quality inspection (TypeScript, performance, security) |
 | | `design-feature` | Architecture design for new features (Route, Model, API) |
-| | `schema-design` | Prisma schema design and review |
+| | `schema-design` | Drizzle schema design and review |
 | | `perf-audit` | Bundle size, waterfall, Core Web Vitals analysis |
 | **Dev** | `refactor` | Code refactoring suggestions and application |
 | | `type-check` | TypeScript strict mode verification |
@@ -109,18 +109,17 @@ Keyword-activated knowledge bases.
 |-------|--------------------|---------|
 | **coding-conventions** | convention, naming | Import order, naming rules, commit messages |
 | **better-auth** | auth, login, session | Session management, RBAC, Server Action integration |
-| **prisma-7** | Prisma, schema, DB | v7 setup, pg adapter, query patterns |
+| **drizzle** | Drizzle, schema, DB | pgTable schema, query patterns, drizzle-kit CLI |
 | **tailwind-v4-shadcn** | Tailwind, shadcn, form | CSS-first config, Form patterns, theming |
 | **testing** | test, vitest, playwright | Vitest, Testing Library, Playwright E2E |
-| **error-handling** | error, API Route, Error Boundary | Server Action/API Route/Prisma error handling patterns |
+| **error-handling** | error, API Route, Error Boundary | Server Action/API Route/DB error handling patterns |
 
-### MCP Servers (3)
+### MCP Servers (2)
 
 | Server | Purpose |
 |--------|---------|
-| **context7** | Real-time library docs lookup (Next.js, Prisma, etc.) |
+| **context7** | Real-time library docs lookup (Next.js, Drizzle, etc.) |
 | **next-devtools** | Next.js dev server integration (routes, error analysis) |
-| **prisma-local** | Prisma CLI integration (migrations, Studio) |
 
 ---
 

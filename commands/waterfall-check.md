@@ -67,8 +67,8 @@ async function CustomerPage({ params }) {
   const { id } = await params
 
   // 검사 대상
-  const customer = await prisma.customer.findUnique(...)
-  const campaigns = await prisma.campaign.findMany(...)
+  const customer = await db.query.customer.findUnique(...)
+  const campaigns = await db.query.campaign.findMany(...)
 }
 ```
 

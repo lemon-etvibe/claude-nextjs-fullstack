@@ -46,12 +46,12 @@ DATABASE_URL="postgresql://..."
 ```typescript
 // src/lib/auth.ts
 import { betterAuth } from "better-auth"
-import { prismaAdapter } from "better-auth/adapters/prisma"
-import { prisma } from "./prisma"
+import { drizzleAdapter } from "better-auth/adapters/drizzle"
+import { db } from "@/db"
 
 export const auth = betterAuth({
-  database: prismaAdapter(prisma, {
-    provider: "postgresql",
+  database: drizzleAdapter(db, {
+    provider: "pg",
   }),
 
   // 세션 설정
@@ -131,7 +131,9 @@ export default async function ProtectedLayout({
 "use server"
 
 import { auth } from "@/lib/auth"
-import { prisma } from "@/lib/prisma"
+import { db } from "@/db"
+import { customers } from "@/db/schema"
+import { eq } from "drizzle-orm"
 import { revalidatePath } from "next/cache"
 import { headers } from "next/headers"
 
@@ -156,12 +158,10 @@ export async function updateCustomer(
 
   // 3. 비즈니스 로직
   try {
-    await prisma.customer.update({
-      where: { id },
-      data: {
-        name: formData.get("name") as string,
-      },
-    })
+    await db
+      .update(customers)
+      .set({ name: formData.get("name") as string })
+      .where(eq(customers.id, id))
 
     revalidatePath("/admin/customers")
     return { success: true }
@@ -478,4 +478,4 @@ export function SessionGuard({ children }: { children: React.ReactNode }) {
 1. **Session cookie name**: `better-auth.session_token`
 2. **HTTPS required**: Always use HTTPS in production
 3. **CSRF protection**: Handled automatically by Better Auth
-4. **DB connection**: Connection pooling setup required when using the Prisma adapter
+4. **DB connection**: Connection pooling setup required when using the Drizzle adapter

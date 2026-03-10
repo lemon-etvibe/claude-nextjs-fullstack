@@ -39,7 +39,7 @@ etvibe-nextjs-fullstack/
 │   ├── setup.sh
 │   ├── check-typescript.sh
 │   ├── check-server-action.sh
-│   └── check-prisma-schema.sh
+│   └── post-write-check.sh
 └── .claude-plugin/         # 플러그인 매니페스트
     └── plugin.json         # (hooks 섹션 포함)
 ```
@@ -356,7 +356,7 @@ export const useCounterStore = create<CounterStore>((set) => ({
 ```
 
 > **중요**: 스크립트 경로는 반드시 `${CLAUDE_PLUGIN_ROOT}`를 사용해야 다른 프로젝트에서 정상 동작합니다.
-> **참고**: 기존 3개 스크립트(check-typescript, check-server-action, check-prisma-schema)는 `post-write-check.sh`로 통합되었습니다.
+> **참고**: 기존 3개 스크립트(check-typescript, check-server-action, check-schema)는 `post-write-check.sh`로 통합되었습니다.
 
 ### 대안: plugin.json 인라인
 
@@ -433,7 +433,7 @@ chmod +x scripts/my-check.sh
 │                                                     │
 │  .env* → 차단 (exit 2)                               │
 │  .ts/.tsx 아닌 파일 → 즉시 종료 (exit 0)               │
-│  schema.prisma → Prisma 안내                         │
+│  db/schema.ts → Drizzle 안내                          │
 │  .ts/.tsx → TypeScript 안내                           │
 │  _actions/*.ts → Server Action 추가 검사              │
 └─────────────────────────────────────────────────────┘

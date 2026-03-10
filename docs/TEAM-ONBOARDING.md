@@ -19,7 +19,7 @@
 
 ### 이 플러그인이란?
 
-**enf** (etvibe-nextjs-fullstack)는 Next.js 16 + Prisma 7 + Better Auth 풀스택 개발을 위한 Claude Code 플러그인입니다.
+**enf** (etvibe-nextjs-fullstack)는 Next.js 16 + Drizzle ORM + Better Auth 풀스택 개발을 위한 Claude Code 플러그인입니다.
 
 ### 제공 기능
 
@@ -181,7 +181,7 @@ claude
 # 성능 분석
 > /enf:perf-audit
 
-# Prisma 스키마 리뷰
+# Drizzle 스키마 리뷰
 > /enf:schema-design
 
 # 리팩토링 제안
@@ -200,9 +200,9 @@ claude
 > 로그인 기능을 구현해줘
 # → better-auth 스킬 자동 활성화
 
-# Prisma 관련 작업
+# Drizzle 관련 작업
 > 캠페인 스키마를 설계해줘
-# → prisma-7 스킬 자동 활성화
+# → drizzle 스킬 자동 활성화
 
 # UI 관련 작업
 > shadcn 폼 컴포넌트를 만들어줘

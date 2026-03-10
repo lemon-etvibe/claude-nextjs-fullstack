@@ -63,16 +63,15 @@ src/app/(<route-group>)/
 
 ### 4. Data Model Design
 
-```prisma
-model Feature {
-  id        String   @id @default(cuid())
+```typescript
+export const features = pgTable('features', {
+  id: text('id').primaryKey().$defaultFn(() => createId()),
   // 필드 정의
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // 관계 정의
-  @@index([...])  // 검색 패턴 기반 인덱스
-}
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => [
+  index('features_idx').on(table./* 검색 패턴 기반 */),
+])
 ```
 
 ### 5. Server Action vs API Route Decision
@@ -110,17 +109,17 @@ Output the design result as a **Handoff Artifact**. This document should be at a
 # Handoff: {기능명}
 
 ## 1. 요구사항 요약
-## 2. 데이터 모델 (Prisma 스키마)
+## 2. 데이터 모델 (Drizzle 스키마)
 ## 3. 파일 구조 (SC/CC 타입 명시)
 ## 4. Server Actions / API Routes (함수명, 인증, 설명)
 ## 5. 컴포넌트 목록 (타입, Props)
-## 6. 에러 처리 (Prisma 에러 코드, 인증 실패, 404 케이스)
+## 6. 에러 처리 (DB 에러 코드, 인증 실패, 404 케이스)
 ## 7. 구현 순서 (체크리스트)
 ```
 
 ### Required Items
 
-- **Error Handling** section included -- Prisma error cases, authentication failures, 404, etc.
+- **Error Handling** section included -- DB error cases, authentication failures, 404, etc.
 - **Component type** specified -- SC (Server Component) / CC (Client Component)
 - **Implementation order** checklist -- Determines dev-assistant's work sequence
 
