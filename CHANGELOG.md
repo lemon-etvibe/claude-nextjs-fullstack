@@ -8,6 +8,7 @@
 ## [Unreleased]
 
 ### Changed
+- **skills**: 스킬 6개 고도화 — triggering, progressive disclosure, why (#30)
 - **db**: Prisma 7 → Drizzle ORM 0.45.x 전환 (#27)
 
 ---
