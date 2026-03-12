@@ -1,6 +1,6 @@
 ---
 name: error-handling
-description: Error Handling Pattern Guide - Server Action, API Route, Database, and Error Boundary Error Handling
+description: Error handling patterns — ALWAYS use when adding try-catch, returning errors from Server Actions or API Routes, handling DB errors, or creating error boundaries.
 tested-with:
   enf: "1.1.0"
   next: "16.x"
@@ -22,6 +22,17 @@ triggers:
 
 # Error Handling Patterns
 
+## Quick Reference
+
+| Layer | Success | Expected Error | Unexpected Error |
+|-------|---------|----------------|------------------|
+| Server Action | `{ success: true }` | `{ error: "reason" }` | `{ error: "generic message" }` + console.error |
+| API Route | `200/201` + JSON | `400/401/403/404` + JSON | `500` + JSON + console.error |
+| Error Boundary | N/A | N/A | `error.tsx` / `global-error.tsx` |
+| Client | toast.success | Inline / toast | Error Boundary catch |
+
+---
+
 ## 1. Server Action Errors
 
 ### Response Type
@@ -31,6 +42,8 @@ type ActionResult<T = void> =
   | { success: true; data?: T }
   | { error: string; fieldErrors?: Record<string, string[]> }
 ```
+
+> **Why discriminated union?** `ActionResult`은 `success` 또는 `error` 필드 존재 여부로 타입이 좁혀지는 discriminated union. 서버/클라이언트 경계에서 직렬화 가능하면서도 타입 안전한 에러 전달을 보장하고, 클라이언트에서 `if (result.success)` 한 줄로 타입 가드가 완성됨.
 
 ### Base Pattern
 
@@ -107,9 +120,9 @@ function CustomerForm() {
 
 ---
 
-## 2. API Route Errors (Next.js 16 Route Handlers)
+## 2. API Route Errors
 
-### Common Error Response
+### Common Error Response (`apiError` Helper)
 
 ```typescript
 // src/lib/api-error.ts
@@ -129,160 +142,13 @@ export function apiError(
 }
 ```
 
-### 2-1. File Upload
-
-```typescript
-// src/app/api/files/route.ts
-import { auth } from "@/lib/auth"
-import { headers } from "next/headers"
-import { NextRequest, NextResponse } from "next/server"
-
-const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
-const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "application/pdf"]
-
-export async function POST(request: NextRequest) {
-  // 1. 인증
-  const session = await auth.api.getSession({ headers: await headers() })
-  if (!session) {
-    return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 })
-  }
-
-  // 2. 파싱 + 검증
-  try {
-    const formData = await request.formData()
-    const file = formData.get("file") as File | null
-
-    if (!file) {
-      return NextResponse.json({ error: "파일이 필요합니다." }, { status: 400 })
-    }
-    if (file.size > MAX_FILE_SIZE) {
-      return NextResponse.json({ error: "파일 크기는 10MB 이하여야 합니다." }, { status: 400 })
-    }
-    if (!ALLOWED_TYPES.includes(file.type)) {
-      return NextResponse.json({ error: "허용되지 않는 파일 형식입니다." }, { status: 400 })
-    }
-
-    // 3. 처리
-    const bytes = await file.arrayBuffer()
-    // ... storage logic
-
-    return NextResponse.json({ success: true, url: "..." }, { status: 201 })
-  } catch {
-    return NextResponse.json({ error: "파일 업로드 중 오류가 발생했습니다." }, { status: 500 })
-  }
-}
-```
-
-### 2-2. External Webhook
-
-```typescript
-// src/app/api/webhooks/[provider]/route.ts
-import { NextRequest, NextResponse } from "next/server"
-
-export async function POST(request: NextRequest) {
-  // 1. 서명 검증 (세션 인증 아님 — 외부 호출자)
-  const signature = request.headers.get("x-webhook-signature")
-  if (!signature) {
-    return NextResponse.json({ error: "서명이 필요합니다." }, { status: 401 })
-  }
-
-  const body = await request.text()
-  const isValid = verifySignature(body, signature, process.env.WEBHOOK_SECRET!)
-  if (!isValid) {
-    return NextResponse.json({ error: "유효하지 않은 서명입니다." }, { status: 403 })
-  }
-
-  // 2. 처리
-  try {
-    const payload = JSON.parse(body) as unknown
-    // ... business logic
-    return NextResponse.json({ received: true })
-  } catch {
-    return NextResponse.json({ error: "처리 중 오류가 발생했습니다." }, { status: 500 })
-  }
-}
-```
-
-### 2-3. External API Proxy
-
-```typescript
-// src/app/api/external/[service]/route.ts
-import { auth } from "@/lib/auth"
-import { headers } from "next/headers"
-import { NextRequest, NextResponse } from "next/server"
-
-export async function GET(request: NextRequest) {
-  const session = await auth.api.getSession({ headers: await headers() })
-  if (!session) {
-    return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 })
-  }
-
-  try {
-    const response = await fetch(EXTERNAL_API_URL, {
-      headers: { Authorization: `Bearer ${process.env.EXTERNAL_API_KEY}` },
-      signal: AbortSignal.timeout(5000), // 5초 타임아웃
-    })
-
-    if (!response.ok) {
-      return NextResponse.json(
-        { error: "외부 서비스 응답 오류", code: `EXTERNAL_${response.status}` },
-        { status: 502 }
-      )
-    }
-
-    const data: unknown = await response.json()
-    return NextResponse.json(data)
-  } catch (error) {
-    if (error instanceof DOMException && error.name === "AbortError") {
-      return NextResponse.json({ error: "외부 서비스 응답 시간 초과" }, { status: 504 })
-    }
-    return NextResponse.json({ error: "외부 서비스 연결 실패" }, { status: 502 })
-  }
-}
-```
-
-### 2-4. SSE (Server-Sent Events)
-
-```typescript
-// src/app/api/events/route.ts
-import { auth } from "@/lib/auth"
-import { headers } from "next/headers"
-import { NextRequest, NextResponse } from "next/server"
-
-export async function GET(request: NextRequest) {
-  const session = await auth.api.getSession({ headers: await headers() })
-  if (!session) {
-    return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 })
-  }
-
-  const encoder = new TextEncoder()
-  const stream = new ReadableStream({
-    async start(controller) {
-      try {
-        // ... 이벤트 푸시
-        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: "update" })}\n\n`))
-      } catch {
-        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: "error" })}\n\n`))
-        controller.close()
-      }
-    },
-  })
-
-  return new Response(stream, {
-    headers: {
-      "Content-Type": "text/event-stream",
-      "Cache-Control": "no-cache",
-      Connection: "keep-alive",
-    },
-  })
-}
-```
+> For detailed API Route patterns (File Upload, External Webhook, External API Proxy, SSE), see [`references/api-route-patterns.md`](references/api-route-patterns.md).
 
 ---
 
 ## 3. Database Errors (PostgreSQL)
 
-### Handling by Error Code
+### handleDbError
 
 ```typescript
 import { PostgresError } from 'postgres'
@@ -312,6 +178,8 @@ function handleDbError(error: unknown): { error: string } {
   return { error: "알 수 없는 오류가 발생했습니다." }
 }
 ```
+
+> **Why PG error codes?** PostgreSQL은 에러 유형별로 표준화된 5자리 코드를 반환. 이 코드를 switch하면 `unique_violation(23505)` 같은 구조적 에러를 "이미 사용 중인 이메일입니다." 같은 사용자 친화적 메시지로 변환할 수 있어, 내부 구현을 노출하지 않으면서도 정확한 피드백 제공 가능.
 
 ### DB Errors in API Routes
 
@@ -378,6 +246,8 @@ try {
 
 ## 5. Error Boundary (Next.js 16)
 
+> **Why Error Boundaries?** React의 Error Boundary는 컴포넌트 트리의 일부에서 발생한 렌더링 에러를 격리하여, 단일 컴포넌트 실패가 전체 페이지를 크래시하지 않게 함. Next.js의 `error.tsx`는 라우트 세그먼트 단위로 자동 Error Boundary를 생성.
+
 ### error.tsx (Route Segment)
 
 ```tsx
@@ -436,45 +306,13 @@ export default function GlobalError({
 
 ### not-found.tsx
 
-```tsx
-// src/app/(admin)/admin/(protected)/customers/[id]/not-found.tsx
-import Link from "next/link"
-
-export default function NotFound() {
-  return (
-    <div className="flex flex-col items-center justify-center gap-4 p-8">
-      <h2 className="text-xl font-semibold">고객을 찾을 수 없습니다</h2>
-      <Link
-        href="/admin/customers"
-        className="text-primary underline"
-      >
-        목록으로 돌아가기
-      </Link>
-    </div>
-  )
-}
-```
-
-### Calling notFound() in Server Component
+`notFound()`를 호출하면 가장 가까운 `not-found.tsx`가 렌더링됨:
 
 ```typescript
 import { notFound } from "next/navigation"
 
-export default async function CustomerPage({
-  params,
-}: {
-  params: Promise<{ id: string }>
-}) {
-  const { id } = await params
-  const customer = await db.query.customers.findFirst({
-    where: eq(customers.id, id),
-    columns: { id: true, name: true, email: true },
-  })
-
-  if (!customer) notFound()
-
-  return <CustomerDetail customer={customer} />
-}
+const customer = await db.query.customers.findFirst({ where: eq(customers.id, id) })
+if (!customer) notFound()
 ```
 
 ---
@@ -538,18 +376,7 @@ function ToggleStatus({ item }: { item: Item }) {
 
 ---
 
-## 7. Quick Reference
-
-| Layer | Success | Expected Error | Unexpected Error |
-|-------|---------|----------------|------------------|
-| Server Action | `{ success: true }` | `{ error: "reason" }` | `{ error: "generic message" }` + console.error |
-| API Route | `200/201` + JSON | `400/401/403/404` + JSON | `500` + JSON + console.error |
-| Error Boundary | N/A | N/A | `error.tsx` / `global-error.tsx` |
-| Client | toast.success | Inline / toast | Error Boundary catch |
-
----
-
-## 8. Important Notes
+## 7. Important Notes
 
 1. **Do not expose error details** -- never pass internal errors (stack traces, SQL, etc.) directly to the user
 2. **console.error is mandatory** -- unexpected errors must always be logged on the server

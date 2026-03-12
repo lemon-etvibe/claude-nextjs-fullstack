@@ -1,6 +1,6 @@
 ---
 name: coding-conventions
-description: Coding conventions guide - reference for components, functions, and variables. Used for code writing, refactoring, and code review.
+description: Project coding conventions — ALWAYS use when writing new code, reviewing code, or refactoring. Covers naming, imports, TypeScript style, comments, and git commits.
 tested-with:
   enf: "1.0.0"
   next: "16.x"
@@ -84,11 +84,15 @@ import { updateCustomer } from "../../_actions/customer"
 import type { Customer } from "@/db/schema"
 ```
 
+> **Why this order?** Consistent import ordering makes files faster to scan visually and reduces merge conflicts — framework imports change rarely, so they stay at the top; relative imports change often, so they cluster at the bottom.
+
 ## 4. TypeScript
 
 - No `any` — use `unknown` instead
 - Prefer type guards over `as` assertions
 - Use `interface` for objects, `type` for unions
+
+> **Why `unknown` over `any`?** `unknown` forces explicit type narrowing before use, catching type errors at compile time that `any` would silently pass through to runtime.
 
 ## 5. Server Action Pattern
 
