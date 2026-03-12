@@ -1,6 +1,6 @@
 ---
 name: better-auth
-description: Better Auth Authentication Pattern Guide - Session Management, Role-based Access Control, Server Action Integration
+description: Better Auth authentication patterns — ALWAYS use when implementing login, signup, session checks, role-based access, or any auth-related code.
 tested-with:
   enf: "1.0.0"
   next: "16.x"
@@ -124,6 +124,8 @@ export default async function ProtectedLayout({
 }
 ```
 
+> **Why 2-layer session checks (Proxy + Server Component)?** Proxy(`proxy.ts`)는 쿠키 존재 여부만 확인하는 빠른 리다이렉트 레이어이고, Server Component는 실제 DB에서 세션 유효성을 검증하는 레이어. Proxy만으로는 만료된 세션이나 탈취된 토큰을 걸러낼 수 없고, Server Component만으로는 불필요한 렌더링 비용이 발생. 2계층으로 빠른 차단 + 정확한 검증을 분리.
+
 ### Authentication in Server Action
 
 ```typescript
@@ -207,96 +209,6 @@ export function UserMenu() {
 
 ---
 
-## Login / Signup Implementation
-
-### Login Form
-
-```tsx
-"use client"
-
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { signIn } from "@/lib/auth-client"
-
-export function LoginForm() {
-  const router = useRouter()
-  const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setLoading(true)
-    setError(null)
-
-    const formData = new FormData(e.currentTarget)
-    const email = formData.get("email") as string
-    const password = formData.get("password") as string
-
-    const { error } = await signIn.email({
-      email,
-      password,
-    })
-
-    if (error) {
-      setError(error.message || "로그인에 실패했습니다.")
-      setLoading(false)
-      return
-    }
-
-    router.push("/admin")
-    router.refresh()
-  }
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label htmlFor="email">이메일</label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          required
-          autoComplete="email"
-        />
-      </div>
-
-      <div>
-        <label htmlFor="password">비밀번호</label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          required
-          autoComplete="current-password"
-        />
-      </div>
-
-      {error && <p className="text-red-500">{error}</p>}
-
-      <button type="submit" disabled={loading}>
-        {loading ? "로그인 중..." : "로그인"}
-      </button>
-    </form>
-  )
-}
-```
-
-### Signup
-
-```typescript
-import { signUp } from "@/lib/auth-client"
-
-const { error } = await signUp.email({
-  email,
-  password,
-  name,
-  // 추가 필드
-  type: "customer",
-})
-```
-
----
-
 ## Role-based Access Control (RBAC)
 
 ### User Type Definition
@@ -353,6 +265,8 @@ export async function requireCustomer() {
   return session
 }
 ```
+
+> **Why extract `requireAuth`/`requireAdmin`?** 인증/권한 체크를 각 Server Action이나 페이지에서 직접 구현하면, 한 곳이라도 체크를 빠뜨리면 접근 제어 갭이 생김. 유틸리티로 추출하면 체크 로직이 단일 소스이고, 호출 누락 시 코드 리뷰에서 쉽게 발견 가능.
 
 ### Usage Examples
 
@@ -419,63 +333,14 @@ export const config = {
 
 ---
 
-## Session Refresh and Expiration Handling
-
-### Client Session Refresh
-
-```tsx
-"use client"
-
-import { useSession } from "@/lib/auth-client"
-import { useEffect } from "react"
-
-export function SessionRefresher() {
-  const { data: session, refetch } = useSession()
-
-  useEffect(() => {
-    // 5분마다 세션 갱신
-    const interval = setInterval(() => {
-      refetch()
-    }, 5 * 60 * 1000)
-
-    return () => clearInterval(interval)
-  }, [refetch])
-
-  return null
-}
-```
-
-### Session Expiration Detection
-
-```tsx
-"use client"
-
-import { useSession } from "@/lib/auth-client"
-import { useRouter } from "next/navigation"
-import { useEffect } from "react"
-
-export function SessionGuard({ children }: { children: React.ReactNode }) {
-  const { data: session, isPending, error } = useSession()
-  const router = useRouter()
-
-  useEffect(() => {
-    if (!isPending && !session) {
-      router.push("/login?expired=true")
-    }
-  }, [session, isPending, router])
-
-  if (isPending) return <LoadingScreen />
-  if (!session) return null
-
-  return <>{children}</>
-}
-```
-
----
-
 ## Important Notes
 
 1. **Session cookie name**: `better-auth.session_token`
 2. **HTTPS required**: Always use HTTPS in production
 3. **CSRF protection**: Handled automatically by Better Auth
 4. **DB connection**: Connection pooling setup required when using the Drizzle adapter
+
+### Reference Files
+
+- Login/Signup implementation (LoginForm, Signup snippet): [`references/login-signup.md`](references/login-signup.md)
+- Session refresh & expiration (SessionRefresher, SessionGuard): [`references/session-management.md`](references/session-management.md)

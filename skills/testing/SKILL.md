@@ -1,6 +1,6 @@
 ---
 name: testing
-description: Testing Pattern Guide - Vitest Unit Tests, Testing Library Component Tests, Playwright E2E, Server Action Tests
+description: Testing patterns — ALWAYS use when writing or modifying tests. Covers Vitest unit tests, Testing Library component tests, Playwright E2E, and Server Action test templates.
 tested-with:
   enf: "1.1.0"
   next: "16.x"
@@ -32,7 +32,9 @@ triggers:
 | Component | Testing Library | React client components | Medium |
 | E2E | Playwright | Full user flows | Slow |
 
-> **Principle**: Write the most unit tests; E2E only for critical flows
+> **Principle**: Write the most unit tests; E2E only for critical flows.
+>
+> **Why this pyramid?** Unit 테스트는 빠르고 유지비용이 낮아 신뢰도 대비 비용이 최적. E2E는 실제 사용자 흐름을 검증하지만 느리고 깨지기 쉬워서 핵심 플로우에만 집중해야 전체 테스트 스위트의 실행 시간과 유지보수 부담을 관리할 수 있음.
 
 ### File Structure: Co-location
 
@@ -166,6 +168,8 @@ To prevent mock files in `src/test/` from being included in the production build
 ## 3. Server Action Test Patterns
 
 Since the project's 21 Server Actions follow the same pattern (auth --> validation --> DB --> revalidate), a centralized mock setup is used.
+
+> **Why centralized mocks?** 21개 Server Action이 동일한 의존성(auth, db, headers, revalidatePath)을 사용하므로, 각 테스트 파일마다 mock을 중복 정의하면 의존성 변경 시 21곳을 모두 수정해야 함. 중앙화하면 mock 정의가 1곳이라 유지보수가 O(1).
 
 ### Centralized Mock Setup
 
@@ -350,224 +354,7 @@ describe("customerSchema", () => {
 
 ---
 
-## 5. Testing Library Component Tests
-
-### Basic Rendering Test
-
-```tsx
-// src/app/(admin)/_components/__tests__/CustomerCard.test.tsx
-import { render, screen } from "@testing-library/react"
-import { CustomerCard } from "../CustomerCard"
-
-it("고객 이름과 이메일을 표시", () => {
-  render(<CustomerCard customer={{ id: "1", name: "홍길동", email: "hong@test.com" }} />)
-  expect(screen.getByText("홍길동")).toBeInTheDocument()
-  expect(screen.getByText("hong@test.com")).toBeInTheDocument()
-})
-```
-
-### Form Component Test
-
-```tsx
-// src/app/(admin)/_components/__tests__/CustomerForm.test.tsx
-import { describe, it, expect, vi } from "vitest"
-import { render, screen } from "@testing-library/react"
-import userEvent from "@testing-library/user-event"
-import { CustomerForm } from "../CustomerForm"
-
-describe("CustomerForm", () => {
-  it("입력 후 제출 시 폼 데이터 전달", async () => {
-    const user = userEvent.setup()
-    const mockAction = vi.fn()
-
-    render(<CustomerForm action={mockAction} />)
-
-    await user.type(screen.getByLabelText("이름"), "홍길동")
-    await user.type(screen.getByLabelText("이메일"), "hong@test.com")
-    await user.click(screen.getByRole("button", { name: "저장" }))
-
-    expect(mockAction).toHaveBeenCalled()
-  })
-
-  it("필수 필드 미입력 시 에러 메시지 표시", async () => {
-    const user = userEvent.setup()
-
-    render(<CustomerForm action={vi.fn()} />)
-
-    await user.click(screen.getByRole("button", { name: "저장" }))
-
-    expect(screen.getByText(/필수/)).toBeInTheDocument()
-  })
-})
-```
-
-### useActionState Component Test
-
-```tsx
-// Server Action을 사용하는 폼 컴포넌트 테스트
-import { describe, it, expect, vi } from "vitest"
-import { render, screen } from "@testing-library/react"
-import userEvent from "@testing-library/user-event"
-
-// Server Action을 모킹
-vi.mock("../_actions/customer", () => ({
-  updateCustomer: vi.fn(),
-}))
-
-import { CustomerEditForm } from "../CustomerEditForm"
-import { updateCustomer } from "../_actions/customer"
-
-describe("CustomerEditForm", () => {
-  it("에러 상태 표시", async () => {
-    vi.mocked(updateCustomer).mockResolvedValue({
-      error: "이름은 필수입니다.",
-    })
-
-    render(
-      <CustomerEditForm
-        customer={{ id: "1", name: "홍길동", email: "hong@test.com" }}
-      />
-    )
-
-    // 폼 제출 시뮬레이션 후 에러 메시지 확인
-    const user = userEvent.setup()
-    await user.click(screen.getByRole("button", { name: /저장/ }))
-
-    // useActionState를 통해 에러가 표시되는지 확인
-    expect(await screen.findByText("이름은 필수입니다.")).toBeInTheDocument()
-  })
-})
-```
-
-### Query Priority
-
-| Priority | Query | Usage |
-|----------|-------|-------|
-| 1 | `getByRole` | Buttons, links, headings, etc. |
-| 2 | `getByLabelText` | Form fields |
-| 3 | `getByPlaceholderText` | Placeholder-based |
-| 4 | `getByText` | Text content |
-| 5 | `getByTestId` | Last resort (`data-testid`) |
-
----
-
-## 6. Playwright E2E Tests
-
-### Page Object Pattern
-
-```typescript
-// e2e/pages/login.page.ts
-import type { Page } from "@playwright/test"
-
-export class LoginPage {
-  constructor(private page: Page) {}
-
-  async goto() {
-    await this.page.goto("/admin/login")
-  }
-
-  async login(email: string, password: string) {
-    await this.page.getByLabel("이메일").fill(email)
-    await this.page.getByLabel("비밀번호").fill(password)
-    await this.page.getByRole("button", { name: "로그인" }).click()
-  }
-
-  async getErrorMessage() {
-    return this.page.getByRole("alert").textContent()
-  }
-}
-```
-
-### E2E Test Example
-
-```typescript
-// e2e/login.spec.ts
-import { test, expect } from "@playwright/test"
-import { LoginPage } from "./pages/login.page"
-
-test.describe("관리자 로그인", () => {
-  let loginPage: LoginPage
-
-  test.beforeEach(async ({ page }) => {
-    loginPage = new LoginPage(page)
-    await loginPage.goto()
-  })
-
-  test("올바른 자격 증명으로 로그인 성공", async ({ page }) => {
-    await loginPage.login("admin@test.com", "password123")
-    await expect(page).toHaveURL("/admin/dashboard")
-  })
-
-  test("잘못된 비밀번호로 에러 메시지 표시", async () => {
-    await loginPage.login("admin@test.com", "wrong-password")
-    const error = await loginPage.getErrorMessage()
-    expect(error).toContain("비밀번호")
-  })
-})
-```
-
----
-
-## 7. Advanced Pattern: MSW (Mock Service Worker)
-
-Used when testing components that call external APIs.
-
-> **When to use**: `vi.mock()` is sufficient for Server Actions. MSW is used for client components that directly call external APIs via `fetch`.
-
-### Handler Definition
-
-```typescript
-// src/test/handlers.ts
-import { http, HttpResponse } from "msw"
-
-export const handlers = [
-  http.get("/api/customers", () => {
-    return HttpResponse.json([
-      { id: "1", name: "홍길동", email: "hong@test.com" },
-      { id: "2", name: "김철수", email: "kim@test.com" },
-    ])
-  }),
-
-  http.post("/api/customers", async ({ request }) => {
-    const body = await request.json()
-    return HttpResponse.json({ id: "3", ...body }, { status: 201 })
-  }),
-]
-```
-
-### Vitest Integration
-
-```typescript
-// src/test/server.ts
-import { setupServer } from "msw/node"
-import { handlers } from "./handlers"
-export const server = setupServer(...handlers)
-
-// src/test/setup.ts (기존 파일에 MSW 추가)
-import "@testing-library/jest-dom/vitest"
-import { server } from "./server"
-import { afterAll, afterEach, beforeAll } from "vitest"
-beforeAll(() => server.listen({ onUnhandledRequest: "error" }))
-afterEach(() => server.resetHandlers())
-afterAll(() => server.close())
-```
-
-### Test Example
-
-```tsx
-import { render, screen } from "@testing-library/react"
-import { CustomerList } from "../CustomerList"
-
-it("API에서 고객 목록을 가져와 표시", async () => {
-  render(<CustomerList />)
-  // MSW가 /api/customers 응답을 자동 모킹
-  expect(await screen.findByText("홍길동")).toBeInTheDocument()
-})
-```
-
----
-
-## 8. Important Notes
+## 5. Important Notes
 
 > For file structure, see Section 1 "File Structure: Co-location"
 
@@ -590,3 +377,9 @@ it("API에서 고객 목록을 가져와 표시", async () => {
 5. **Playwright requires a dev server** -- auto-started via the `webServer` setting in `playwright.config.ts`
 6. **Async Server Action tests** -- always call with `await` and use `mockResolvedValue`/`mockRejectedValue`
 7. **Mock file isolation** -- `src/test/` is automatically excluded from production builds, but explicit isolation via `vitest.config.ts` `include` patterns and `tsconfig` `exclude` is recommended
+
+### Reference Files
+
+- Component tests (Basic Rendering, Form, useActionState, Query Priority): [`references/component-tests.md`](references/component-tests.md)
+- E2E patterns (Page Object Pattern, E2E Test Example): [`references/e2e-patterns.md`](references/e2e-patterns.md)
+- MSW patterns (Handler Definition, Vitest Integration, Test Example): [`references/msw-patterns.md`](references/msw-patterns.md)

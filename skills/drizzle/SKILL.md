@@ -1,6 +1,6 @@
 ---
 name: drizzle
-description: Drizzle ORM Guide - Schema Design, Query Patterns, Relations, and Migration
+description: Drizzle ORM patterns — ALWAYS use when writing database queries, defining schemas, creating migrations, or working with relations and transactions.
 tested-with:
   enf: "1.1.0"
   drizzle-orm: "0.45.x"
@@ -83,7 +83,7 @@ import { pgTable, text, timestamp, index } from 'drizzle-orm/pg-core'
 import { createId } from '@paralleldrive/cuid2'
 
 export const customers = pgTable('customers', {
-  // 1. ID (CUID 권장)
+  // 1. ID (CUID2 — 클라이언트 사이드 생성으로 DB 왕복 없이 optimistic insert 가능)
   id: text('id').primaryKey().$defaultFn(() => createId()),
 
   // 2. 핵심 필드
@@ -127,7 +127,9 @@ export const campaigns = pgTable('campaigns', {
   index('campaigns_customer_id_idx').on(table.customerId),
 ])
 
-// Relations 정의 (쿼리 API용 — relations()는 SQL FK가 아님, 쿼리 빌더 전용)
+// Relations 정의 (쿼리 API 전용 — SQL FK 제약조건과는 별개)
+// Why: relations()는 Drizzle의 query API(db.query.*)에서 with 절을 사용할 때만 참조됨.
+// 실제 DB 외래키는 .references()로 별도 설정 필요. 둘을 혼동하면 FK 누락 버그 발생.
 export const customersRelations = relations(customers, ({ many }) => ({
   campaigns: many(campaigns),
 }))
@@ -298,7 +300,7 @@ for (const customer of allCustomers) {
     .where(eq(campaigns.customerId, customer.id))
 }
 
-// ✅ GOOD: relations 사용
+// ✅ GOOD: relations 사용 — with 절은 단일 JOIN 쿼리로 변환되어 N+1 문제 해결
 const allCustomers = await db.query.customers.findMany({
   with: { campaigns: true },
 })
@@ -313,6 +315,8 @@ const allCustomers = await db.query.customers.findMany({
   },
 })
 ```
+
+> **Why `with` over manual joins?** Drizzle's `with` clause compiles to a single SQL JOIN query internally, eliminating N+1 while keeping the API declarative. Manual loops always produce N+1.
 
 ---
 
@@ -371,3 +375,5 @@ export const campaigns = pgTable('campaigns', {
 import { pgEnum } from 'drizzle-orm/pg-core'
 export const campaignStatusEnum = pgEnum('campaign_status', ['DRAFT', 'ACTIVE', 'COMPLETED', 'CANCELLED'])
 ```
+
+> **Why `text` + TS type over `pgEnum`?** `pgEnum`은 값을 추가/삭제할 때마다 `ALTER TYPE` 마이그레이션이 필요하고, 일부 경우 테이블 재작성까지 발생. `text` + TypeScript union은 컴파일 타임 안전성은 동일하면서 마이그레이션 부담이 없음.

@@ -1,6 +1,6 @@
 ---
 name: tailwind-v4-shadcn
-description: Tailwind CSS v4 + shadcn/ui Form Patterns and Styling Guide
+description: Tailwind CSS v4 + shadcn/ui patterns — ALWAYS use when styling components, building forms, creating dialogs, data tables, or customizing themes.
 tested-with:
   enf: "1.0.0"
   tailwind: "4.x"
@@ -41,7 +41,8 @@ triggers:
 }
 ```
 
-> Uses CSS `@theme` directive instead of `tailwind.config.js`
+> Uses CSS `@theme` directive instead of `tailwind.config.js`.
+> **Why CSS-first?** JS 빌드 스텝이 제거되어 빌드 속도가 향상되고, 네이티브 CSS 변수와 직접 정합되어 런타임에서도 변수를 참조할 수 있음.
 
 ### 2. New Utilities
 
@@ -162,6 +163,8 @@ export function CustomerForm() {
 
 ### 3. Usage with Server Action
 
+> **Why `useActionState` + `useForm` together?** `useActionState`는 서버 액션의 응답 상태(에러/성공)와 pending 상태를 관리하고, `useForm`(React Hook Form)은 클라이언트 사이드 검증과 UX를 담당. 이 조합으로 서버 검증 결과를 폼에 즉시 반영하면서도 클라이언트 검증으로 불필요한 서버 왕복을 줄임.
+
 ```tsx
 "use client"
 
@@ -230,7 +233,9 @@ export function CustomerDialog() {
 }
 ```
 
-### 5. Data Table (TanStack Table)
+### 5. Data Table (TanStack Table + shadcn/ui Table)
+
+> **Why this split?** TanStack Table은 headless 라이브러리로 정렬/필터링/페이지네이션 로직만 제공하고, shadcn/ui Table은 스타일된 `<table>` 마크업을 제공. 역할을 분리하여 로직 변경이 스타일에 영향을 주지 않음.
 
 ```tsx
 "use client"
