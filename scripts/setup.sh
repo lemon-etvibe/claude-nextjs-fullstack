@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================
-# etvibe-nextjs-fullstack 셋업 스크립트 (macOS/Linux)
+# claude-nextjs-fullstack 셋업 스크립트 (macOS/Linux)
 # ============================================
 #
 # 이 스크립트는 다음을 수행합니다:
@@ -29,7 +29,7 @@ if [ -n "$1" ]; then
 elif [ -f "$PLUGIN_DIR/.claude-plugin/plugin.json" ] && [ "$PWD" = "$PLUGIN_DIR" ]; then
     echo ""
     echo "================================================"
-    echo "  etvibe-nextjs-fullstack 셋업"
+    echo "  claude-nextjs-fullstack 셋업"
     echo "================================================"
     echo ""
     echo "📂 설치할 프로젝트 경로를 입력하세요 (Tab으로 자동완성):"
@@ -189,7 +189,7 @@ add_marketplace() {
 
 echo ""
 echo "=============================================="
-echo "  etvibe-nextjs-fullstack 셋업"
+echo "  claude-nextjs-fullstack 셋업"
 echo "=============================================="
 echo ""
 echo "Note: MCP 서버 (context7, next-devtools)는"
@@ -324,7 +324,7 @@ echo "   - javascript-typescript (JS/TS 전문가)"
 echo "   - database-design (스키마 설계)"
 echo ""
 echo "   [로컬 플러그인]"
-echo "   - enf (etvibe-nextjs-fullstack)"
+echo "   - enf (claude-nextjs-fullstack)"
 echo ""
 echo "📋 MCP 서버 (플러그인에서 자동 설정):"
 echo "   - context7 (라이브러리 문서 조회)"
