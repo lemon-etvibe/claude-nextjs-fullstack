@@ -7,6 +7,10 @@
 
 ## [Unreleased]
 
+---
+
+## [1.2.0] - 2026-03-30
+
 ### Added
 - **workflow**: `/enf:validate` — PR 전 통합 검증 커맨드 (type-check + waterfall + code-review)
 - **workflow**: `/enf:release` — 릴리즈 자동화 커맨드 (버전 bump + CHANGELOG + PR)
