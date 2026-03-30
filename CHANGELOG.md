@@ -26,14 +26,14 @@
 ## [1.1.1] - 2026-03-12
 
 ### Changed
-- **skills**: 스킬 6개 고도화 — triggering, progressive disclosure, why (#30)
+- **skills**: 스킬 6개 고도화 — triggering, progressive disclosure, why
 
 ---
 
 ## [1.1.0] - 2026-03-10
 
 ### Changed
-- **db**: Prisma 7 → Drizzle ORM 0.45.x 전환 (#27)
+- **db**: Prisma 7 → Drizzle ORM 0.45.x 전환
 
 ---
 
@@ -50,7 +50,7 @@
 - Quick Start 설치 가이드를 마켓플레이스 방식으로 변경 (git clone 제거)
 - 팀 온보딩 문서 설치 섹션 마켓플레이스 방식으로 변경
 - Update 섹션 간소화 (`claude plugin update enf@enf`)
-- **changelog**: v1.0.1 릴리즈 노트 업데이트 (#22)
+- **changelog**: v1.0.1 릴리즈 노트 업데이트
 
 ### Fixed
 - CI: deliver 워크플로우 태그 재생성 시 기존 태그 처리 개선
@@ -84,7 +84,7 @@
 - **auth**: Better Auth proxy.ts 패턴을 Next.js 16 표준으로 업데이트
 - **i18n**: frontmatter description 영문 전환 (skills/agents/commands 전체)
 - **version**: 0.9.1 → 1.0.0
-- v1.0.0 준비 — 버전 업데이트, 딜리버리 워크플로우, 문의처 추가 (#17)
+- v1.0.0 준비 — 버전 업데이트, 딜리버리 워크플로우, 문의처 추가
 
 ### Fixed
 - **i18n**: design-feature.md 한글 인라인 예시 영문 전환
@@ -94,14 +94,14 @@
 ## [0.9.1] - 2026-01-30
 
 ### Changed
-- 문서 구조 개선 및 COMMANDS-REFERENCE 추가 (#5)
-- **better-auth**: proxy.ts 패턴을 Next.js 16 표준으로 업데이트 — `middleware()` → `proxy()`, Edge → Node.js Runtime (#10)
-- **docs**: DEVELOPMENT.md에 권장 권한 설정 가이드 추가 (#10)
+- 문서 구조 개선 및 COMMANDS-REFERENCE 추가
+- **better-auth**: proxy.ts 패턴을 Next.js 16 표준으로 업데이트 — `middleware()` → `proxy()`, Edge → Node.js Runtime
+- **docs**: DEVELOPMENT.md에 권장 권한 설정 가이드 추가
 
 ### Fixed
-- **hooks**: P0 — hooks 3개→1개 통합, .env 커밋 방어 (exit 2), 영문 설명 추가 (#9)
-- **mcp**: 패키지명 수정 및 버전 고정 — `@upstash/context7-mcp@2.1.2`, `next-devtools-mcp@0.3.10` (기존 패키지명 npm 미존재) (#10)
-- **security**: 권한 설정 축소 — `claude:*` 와일드카드 제거, `git branch -D`/`git push --force` 차단 (#10)
+- **hooks**: P0 — hooks 3개→1개 통합, .env 커밋 방어 (exit 2), 영문 설명 추가
+- **mcp**: 패키지명 수정 및 버전 고정 — `@upstash/context7-mcp@2.1.2`, `next-devtools-mcp@0.3.10` (기존 패키지명 npm 미존재)
+- **security**: 권한 설정 축소 — `claude:*` 와일드카드 제거, `git branch -D`/`git push --force` 차단
 
 ---
 
