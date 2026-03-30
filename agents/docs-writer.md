@@ -9,6 +9,8 @@ tools:
   - Grep
   - mcp__context7__query-docs
   - mcp__context7__resolve-library-id
+skills:
+  - coding-conventions
 ---
 
 # Documentation Expert

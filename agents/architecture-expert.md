@@ -10,6 +10,10 @@ tools:
   - mcp__context7__resolve-library-id
   - mcp__next-devtools__nextjs_docs
   - mcp__next-devtools__nextjs_index
+skills:
+  - drizzle
+  - better-auth
+  - error-handling
 ---
 
 # Architecture Expert

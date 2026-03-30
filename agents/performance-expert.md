@@ -9,6 +9,8 @@ tools:
   - mcp__next-devtools__nextjs_index
   - mcp__next-devtools__nextjs_call
   - mcp__next-devtools__browser_eval
+skills:
+  - tailwind-v4-shadcn
 ---
 
 # Performance Optimization Expert

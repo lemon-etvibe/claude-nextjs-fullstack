@@ -24,7 +24,7 @@ Namespace:   /enf:command (e.g. /enf:commit, /enf:code-review)
 | Problem | Solution |
 |---------|----------|
 | Inconsistent code styles across teams | **6 Skills** auto-enforce conventions |
-| Repetitive boilerplate | **17 Commands** automate workflows |
+| Repetitive boilerplate | **20 Commands** automate workflows |
 | Steep learning curve for the tech stack | **4 Agents** guide best practices |
 | Code review bottlenecks | AI-powered pre-review for quality |
 
@@ -77,7 +77,7 @@ Role-specific AI agents to support your development workflow.
 | **performance-expert** | Bundle analysis/Core Web Vitals | next-devtools integration |
 | **docs-writer** | API/component documentation | Template-based automation |
 
-### Commands (17)
+### Commands (20)
 
 All commands use the `/enf:` namespace.
 
@@ -98,6 +98,9 @@ All commands use the `/enf:` namespace.
 | | `component-docs` | Component Props documentation |
 | | `update-changelog` | CHANGELOG.md auto-update |
 | **Test** | `test` | Test execution and test code generation (Vitest, Playwright) |
+| **Workflow** | `validate` | Pre-PR integrated validation (type + waterfall + review) |
+| | `release` | Automated release (version bump + CHANGELOG + PR) |
+| | `flow` | Development workflow chaining (task→design→validate→commit→pr) |
 | **Diagnostics** | `health` | Project version compatibility check |
 | **Guide** | `init` | Plugin usage and project guide |
 

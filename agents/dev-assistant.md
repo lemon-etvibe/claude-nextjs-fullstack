@@ -12,6 +12,8 @@ tools:
   - mcp__next-devtools__nextjs_call
 skills:
   - vercel-react-best-practices
+  - coding-conventions
+  - error-handling
 ---
 
 # Development Support Agent

@@ -94,12 +94,74 @@ Claude가 로드하는 파일을 영문 전환. 사용자 대면 문서(docs/, R
 - [x] 영문화 검증 — frontmatter 무결성, triggers 한글+영문 병행, 코드 주석 한글 유지 확인
 - [x] 팀 리뷰 피드백 반영 — design-feature.md 한글 인라인 예시 영문 전환, CONTRIBUTING.md i18n 규칙 문서화 (#16)
 
-## Phase 6-B: 배포/모니터링 가이드 (1.1)
+## Phase 7: 에이전트 & Hook 강화 (v1.2.0)
+
+> 근거: gstack 역할 기반 에이전트 패턴 + Claude Code Hook 베스트 프랙티스
+
+### 7-A. Agent skills 매핑 확대
+
+- [x] `architecture-expert` → skills: `drizzle`, `better-auth`, `error-handling`
+- [x] `dev-assistant` → skills: `coding-conventions`, `error-handling` 추가 (기존 `vercel-react-best-practices` 유지)
+- [x] `performance-expert` → skills: `tailwind-v4-shadcn`
+- [x] `docs-writer` → skills: `coding-conventions`
+
+### 7-B. PostToolUse Hook 강화
+
+- [x] `lucide-react` barrel import 감지 → 개별 import 권장 경고
+- [x] `console.log` in production code 감지 → 제거 권장 경고
+- [x] `page.tsx` + `route.ts` 같은 폴더 감지 → Next.js 충돌 경고
+
+### 7-C. PreToolUse Hook (Safety Gate)
+
+- [x] 위험 Bash 커맨드 감지 (drizzle-kit push, git push --force, git reset --hard, rm -rf)
+- [x] prompt 타입 hook으로 사용자 확인 요청
+
+## Phase 8: 통합 검증 커맨드 `/enf:validate` (v1.2.0) ✅
+
+> 근거: PR 전 code-review + type-check + waterfall-check 반복 호출 비효율
+
+- [x] `commands/validate.md` 생성
+- [x] TypeScript strict 검증 (tsc --noEmit)
+- [x] Waterfall 패턴 검출
+- [x] Code Review (보안, 성능, 패턴)
+- [x] PASS/FAIL 결과 요약 리포트
+
+## Phase 9: 릴리즈 자동화 `/enf:release` (v1.3.0) ✅
+
+> 근거: v1.1.1 릴리즈 시 plugin.json 미업데이트, CHANGELOG 중복, 수동 절차 실수
+
+- [x] `commands/release.md` 생성
+- [x] dev 브랜치 확인 + 최신 상태 검증
+- [x] CHANGELOG [Unreleased] 확인
+- [x] plugin.json version 자동 업데이트
+- [x] 커밋 + push + Release PR 생성
+
+## Phase 10: 워크플로우 체이닝 `/enf:flow` (v1.3.0) ✅
+
+> 근거: gstack 순차 스킬 체이닝 + `.local.md` 상태 파일 패턴
+
+- [x] `commands/flow.md` 생성
+- [x] `.local/flow-state.md` 상태 관리
+- [x] feature 플로우: task → design → implement → validate → commit → pr
+- [x] fix 플로우: task → implement → validate → commit → pr
+- [x] refactor 플로우: task → refactor → validate → commit → pr
+- [x] resume 기능: 중단된 단계부터 재개
+
+## Phase 6-B: 배포/모니터링 가이드 (v1.4.0)
 
 - [ ] Vercel 배포 가이드
 - [ ] Sentry 모니터링 가이드
 
-## Phase 6-C: 모노레포 가이드 (1.2+ 필요 시)
+## Phase 11: DB 마이그레이션 자동화 `/enf:migrate` (v1.5.0)
+
+> ⚠️ 리스크 높음 — Phase 7~10 안정화 후 별도 진행
+
+- [ ] `commands/migrate.md` 생성
+- [ ] schema.ts 변경 감지 (git diff)
+- [ ] drizzle-kit generate 실행 + SQL diff 표시
+- [ ] 사용자 확인 후 push (로컬) / migrate (프로덕션)
+
+## Phase 6-C: 모노레포 가이드 (v1.5.0+ 필요 시)
 
 - [ ] 모노레포 가이드
 

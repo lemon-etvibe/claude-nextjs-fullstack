@@ -7,21 +7,19 @@
 
 ## [Unreleased]
 
+### Added
+- **workflow**: `/enf:validate` — PR 전 통합 검증 커맨드 (type-check + waterfall + code-review)
+- **workflow**: `/enf:release` — 릴리즈 자동화 커맨드 (버전 bump + CHANGELOG + PR)
+- **workflow**: `/enf:flow` — 개발 워크플로우 체이닝 (feature/fix/refactor + 상태 관리)
+- **hooks**: PreToolUse Safety Gate — 위험 Bash 커맨드 실행 전 확인 프롬프트
+
+### Changed
+- **agents**: 4개 에이전트에 관련 스킬 자동 로드 매핑 추가
+- **hooks**: PostToolUse 강화 — lucide barrel import, console.log, page+route 충돌 감지
+
 ---
 
 ## [1.1.1] - 2026-03-12
-
-(변경사항 없음)
-
----
-
-## [1.1.1] - 2026-03-12
-
-(변경사항 없음)
-
----
-
-## [1.1.0] - 2026-03-10
 
 ### Changed
 - **skills**: 스킬 6개 고도화 — triggering, progressive disclosure, why (#30)

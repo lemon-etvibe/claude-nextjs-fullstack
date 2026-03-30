@@ -1,5 +1,16 @@
 {
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "Check if the command contains any of these dangerous patterns: 'drizzle-kit push', 'git push --force', 'git push -f', 'git reset --hard', 'rm -rf', 'DROP TABLE', 'DROP DATABASE', 'git branch -D'. If it does, respond with a warning message asking the user to confirm. If the command is safe, respond with an empty string."
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Write|Edit",

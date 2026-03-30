@@ -58,6 +58,46 @@ if [[ "$FILE" =~ db/schema\.ts$ ]]; then
 fi
 
 # ─────────────────────────────────────────
+# lucide-react barrel import 감지
+# ─────────────────────────────────────────
+if grep -q "from \"lucide-react\"" "$FILE" 2>/dev/null || grep -q "from 'lucide-react'" "$FILE" 2>/dev/null; then
+  echo ""
+  echo "lucide-react barrel import가 감지되었습니다: $FILE"
+  echo ""
+  echo "  번들 사이즈 최적화를 위해 개별 import를 권장합니다:"
+  echo "    import { Search } from 'lucide-react'       # ❌ barrel import"
+  echo "    import { Search } from 'lucide-react/search' # ✅ 개별 import"
+  echo ""
+fi
+
+# ─────────────────────────────────────────
+# console.log 감지 (테스트 파일 제외)
+# ─────────────────────────────────────────
+if [[ ! "$FILE" =~ \.test\.(ts|tsx)$ ]] && [[ ! "$FILE" =~ __tests__/ ]]; then
+  if grep -q "console\.log" "$FILE" 2>/dev/null; then
+    echo ""
+    echo "console.log가 감지되었습니다: $FILE"
+    echo "  프로덕션 코드에서는 console.log를 제거하세요."
+    echo "  디버깅용이라면 console.error 또는 로깅 유틸리티를 사용하세요."
+    echo ""
+  fi
+fi
+
+# ─────────────────────────────────────────
+# page.tsx + route.ts 같은 폴더 충돌 감지
+# ─────────────────────────────────────────
+DIR=$(dirname "$FILE")
+if [[ "$BASENAME" =~ ^(page|route)\.(ts|tsx)$ ]]; then
+  if [[ -f "$DIR/page.tsx" || -f "$DIR/page.ts" ]] && [[ -f "$DIR/route.tsx" || -f "$DIR/route.ts" ]]; then
+    echo ""
+    echo "⚠️ Next.js 충돌: page와 route가 같은 폴더에 있습니다: $DIR"
+    echo "  page.tsx와 route.ts는 같은 라우트 세그먼트에 공존할 수 없습니다."
+    echo "  하나를 제거하거나 다른 폴더로 이동하세요."
+    echo ""
+  fi
+fi
+
+# ─────────────────────────────────────────
 # TypeScript 파일 공통 안내
 # ─────────────────────────────────────────
 echo ""
